@@ -9,14 +9,14 @@ public abstract class DAO<T> {
      * @return
      */
 
-    public abstract T find(int id);
+    //public abstract T find(int id);
 
     /**
      * Permet de créer une entrée dans la base de données
      * par rapport à un objet
      * @param object
      */
-    public abstract T create(T object);
+    //public abstract T create(T object);
 
     /**
      * Permet de mettre à jour les données d'une entrée dans la base
@@ -28,5 +28,5 @@ public abstract class DAO<T> {
      * Permet la suppression d'une entrée de la base
      * @param object
      */
-    public abstract void delete(T object);
+    //public abstract void delete(T object);
 }
