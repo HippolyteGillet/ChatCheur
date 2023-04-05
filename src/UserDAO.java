@@ -39,9 +39,22 @@ public class UserDAO extends DAO<User>{
 
     public User update(User object) {
         try {
+
             this.connect.createStatement().executeUpdate("UPDATE table SET userName = '" + object.getUserName() + "', password = '" + object.getPassword() + "', email = '" + object.getEmail() + "', firstName = '" + object.getFirstName() + "', lastName = '" + object.getLastName() + "', permission = '" + object.getPermission() + "', status = '" + object.getStatus() + "', state = '" + object.getState() + "', lastConnectionTime = '" + object.getLastConnectionTime() + "' WHERE id = " + object.getId());
+
         }catch (SQLException e){
+
             e.printStackTrace();
+
+        }finally {
+
+            try {
+                this.connect.close();
+                this.connect.createStatement().close();
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
         }
         return object;
     }

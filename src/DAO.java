@@ -1,4 +1,5 @@
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public abstract class DAO<T> {
     public Connection connect = ConnectionDataBaseSQL.getInstance();
@@ -22,7 +23,7 @@ public abstract class DAO<T> {
      * Permet de mettre à jour les données d'une entrée dans la base
      * @param object
      */
-    public abstract T update(T object);
+    public abstract T update(T object) throws SQLException;
 
     /**
      * Permet la suppression d'une entrée de la base
