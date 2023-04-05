@@ -33,6 +33,7 @@ public class User {
     //DAO Attributes:
     //private static final UserDAO userDAO = new UserDAO();
 
+    public User(){}
 
     public User(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDate lastConnectionTime) {
         this.id = id;
