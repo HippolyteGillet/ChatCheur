@@ -1,4 +1,4 @@
-/*import java.sql.PreparedStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -7,7 +7,7 @@ public class UserDAO extends DAO<User>{
 
     public User create(User object){
         try {
-            ResultSet result = this.connect.createStatement(*//*ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE*//*).executeQuery("SELECT id FROM table");
+            ResultSet result = this.connect.createStatement(/*ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE*/).executeQuery("SELECT id FROM table");
             if (result.first()){
                 int id = result.getInt("id");
                 PreparedStatement preparedStatement = this.connect.prepareStatement("INSERT INTO table (id) VALUES ?");
@@ -25,9 +25,25 @@ public class UserDAO extends DAO<User>{
 
     public User find(int id){
         User user = new User();
+        try {
+            ResultSet result = this.connect.createStatement().executeQuery("");
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
         return user;
+    }
+
+    @Override
+    public User update(User object) {
+        return null;
+    }
+
+    @Override
+    public void delete(User object) {
+
     }
 
 
 
-}*/
+
+}
