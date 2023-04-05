@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="126fc9d5-7f60-434a-bd9f-5f2bb8e4dbc3" name="Changes" comment="workspace pour les nuls">
-      <change beforePath="$PROJECT_DIR$/src/UserDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/UserDAO.java" afterDir="false" />
-    </list>
+    <list default="true" id="126fc9d5-7f60-434a-bd9f-5f2bb8e4dbc3" name="Changes" comment="workspace pour les nuls" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -71,7 +69,7 @@
       <workItem from="1680635486002" duration="85000" />
       <workItem from="1680679303231" duration="4313000" />
       <workItem from="1680686579347" duration="4419000" />
-      <workItem from="1680698785920" duration="29000" />
+      <workItem from="1680698785920" duration="380000" />
     </task>
     <task id="LOCAL-00001" summary="workspace pour les nuls">
       <created>1680630632373</created>
