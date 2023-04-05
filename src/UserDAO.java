@@ -46,7 +46,7 @@ public class UserDAO extends DAO<User>{
         return object;
     }
 
-    //public void delete(User object) {}
+    public void delete(User object) {}
 
 
 
