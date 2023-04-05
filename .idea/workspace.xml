@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="126fc9d5-7f60-434a-bd9f-5f2bb8e4dbc3" name="Changes" comment="workspace pour les nuls">
+      <change afterPath="$PROJECT_DIR$/src/ConnectionDataBaseSQL.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/DAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/UserDAO.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Administrator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Administrator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Moderator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Moderator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,9 +34,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
   <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
@@ -57,6 +70,8 @@
       <option name="presentableId" value="Default" />
       <updated>1680629564551</updated>
       <workItem from="1680629566395" duration="271000" />
+      <workItem from="1680635486002" duration="85000" />
+      <workItem from="1680679303231" duration="4313000" />
     </task>
     <task id="LOCAL-00001" summary="workspace pour les nuls">
       <created>1680630632373</created>
@@ -81,7 +96,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="workspace pour les nuls" />
