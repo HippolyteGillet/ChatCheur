@@ -31,7 +31,7 @@ public class User {
     private LocalDate lastConnectionTime;
 
     //DAO Attributes:
-    //private static final UserDAO userDAO = new UserDAO();
+    private static final UserDAO userDAO = new UserDAO();
 
     public User(){}
 

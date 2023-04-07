@@ -1,5 +1,12 @@
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Bonjour gros caca");
+        ConnectionDataBaseSQL.accessDriver();
+        //UserDAO userDAO = new UserDAO();
+        //User user = new User();
+
+        // Test find() OK
+        //System.out.println(userDAO.find(1));
+
+
     }
 }
