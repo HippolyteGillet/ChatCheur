@@ -7,15 +7,15 @@ public class ConnectionDataBaseSQL{
     /**
      * URL de connexion
      */
-    private static String url = "";
+    private static String url = "jdbc:mysql://localhost:8889/ChatCheur";
     /**
      * Nom du user
      */
-    private static String user = "";
+    private static String user = "root";
     /**
      * Mot de passe du user
      */
-    private static String passwd = "";
+    private static String passwd = "root";
     /**
      * Objet Connexion
      */
@@ -35,5 +35,13 @@ public class ConnectionDataBaseSQL{
             }
         }
         return connect;
+    }
+
+    public static void accessDriver(){
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
