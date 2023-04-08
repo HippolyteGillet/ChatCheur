@@ -10,7 +10,7 @@ public abstract class DAO<T> {
      * @return
      */
 
-    public abstract T find(int id) throws ClassNotFoundException;
+    public abstract T find(int id);
 
     /**
      * Permet de créer une entrée dans la base de données
@@ -23,7 +23,7 @@ public abstract class DAO<T> {
      * Permet de mettre à jour les données d'une entrée dans la base
      * @param object
      */
-    public abstract T update(T object) throws SQLException;
+    public abstract T update(T object);
 
     /**
      * Permet la suppression d'une entrée de la base

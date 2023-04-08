@@ -7,23 +7,27 @@ import java.time.LocalDateTime;
 
 public class UserDAO extends DAO<User>{
 
+/*
     public User create(User object){
         //ConnectionDataBaseSQL.accessDriver();
+
+
         try {
-            ResultSet result = this.connect.createStatement(/*ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE*/).executeQuery("SELECT id FROM table");
+            //ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user2");
             //if (!result.first()){}
             while (result.next()){
-                PreparedStatement preparedStatement = this.connect.prepareStatement("INSERT INTO user2 (*) VALUES ?, ?, ?, ?, ?, ?, ?, ?, ?, ?");
+                PreparedStatement preparedStatement = this.connect.prepareStatement("INSERT INTO user2 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 preparedStatement.setInt(1, object.getId());
                 preparedStatement.setString(2, object.getUserName());
                 preparedStatement.setString(3, object.getFirstName());
                 preparedStatement.setString(4, object.getLastName());
                 preparedStatement.setString(5, object.getEmail());
                 preparedStatement.setString(6, object.getPassword());
-                preparedStatement.setObject(7, object.getPermission());
+                preparedStatement.setObject(7, object.getPermission().name());
                 preparedStatement.setObject(8, object.getLastConnectionTime());
-                preparedStatement.setObject(9, object.getStatus());
-                preparedStatement.setObject(10, object.getState());
+                preparedStatement.setObject(9, object.getStatus().name());
+                preparedStatement.setObject(10, object.getState().name());
 
                 preparedStatement.executeUpdate();
                 object = this.find(object.getId());
@@ -38,6 +42,36 @@ public class UserDAO extends DAO<User>{
                 //this.connect.createStatement().close();
 
             }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }
+        return object;
+    }
+*/
+
+    public User create(User object){
+        try {
+            PreparedStatement preparedStatement = this.connect.prepareStatement("INSERT INTO user2 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement.setInt(1, object.getId());
+            preparedStatement.setString(2, object.getUserName());
+            preparedStatement.setString(3, object.getFirstName());
+            preparedStatement.setString(4, object.getLastName());
+            preparedStatement.setString(5, object.getEmail());
+            preparedStatement.setString(6, object.getPassword());
+            preparedStatement.setObject(7, object.getPermission().name());
+            preparedStatement.setObject(8, object.getLastConnectionTime());
+            preparedStatement.setObject(9, object.getStatus().name());
+            preparedStatement.setObject(10, object.getState().name());
+
+            preparedStatement.executeUpdate();
+
+            System.out.println("Insertion OK");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                this.connect.close();
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
@@ -72,6 +106,26 @@ public class UserDAO extends DAO<User>{
         return user;
     }
 
+    public int newIdUser(){
+        int previousId = 0;
+        try {
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT MAX(id) as id FROM user2");
+            while (result.next()) previousId = result.getInt("id");
+        }catch (SQLException e) {
+            e.printStackTrace();
+        } /*finally {
+
+            try {
+                this.connect.close();
+                //this.connect.createStatement().close();
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        }*/
+        return previousId + 1;
+    }
+
     public User update(User object) {
         //ConnectionDataBaseSQL.accessDriver();
         try {
@@ -103,7 +157,7 @@ public class UserDAO extends DAO<User>{
     public void delete(User object) {
         //ConnectionDataBaseSQL.accessDriver();
         try {
-            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM table WHERE id = " + object.getId());
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user2 WHERE id = " + object.getId());
             if (result.first()){
                 this.connect.createStatement().executeUpdate("DELETE FROM table WHERE id = " + object.getId());
             }
