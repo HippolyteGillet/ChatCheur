@@ -16,6 +16,7 @@ public class Log {
         this.id = -1;
         this.user_id = -1;
         this.type = TypeLog.UNKNOWN;
+        this.localDateTime = now();
     }
     public Log(int user_id, TypeLog type) {
         this.user_id = user_id;
@@ -51,11 +52,11 @@ public class Log {
         this.user_id = user_id;
     }
 
-    public LocalDateTime getTimeStamp() {
+    public LocalDateTime getLocalDateTime() {
         return localDateTime;
     }
 
-    public void setTimeStamp(LocalDateTime localDateTime) {
+    public void setLocalDateTime(LocalDateTime localDateTime) {
         this.localDateTime = localDateTime;
     }
 

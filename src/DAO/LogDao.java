@@ -1,4 +1,5 @@
 package DAO;
+
 import modele.Log;
 
 public interface LogDao {

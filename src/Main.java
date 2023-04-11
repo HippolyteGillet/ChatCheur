@@ -1,7 +1,9 @@
 import DAO.*;
 import modele.*;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 public class Main {
@@ -18,15 +20,14 @@ public class Main {
             // Etape 2 : récupération de la connexion
             cn = DriverManager.getConnection(url, login, passwd);
 
-            LogDao logDao = new LogDaoImpl(cn);
-            logDao.delete(1);
-
-
+            MessageDao messageDao = new MessageDaoImpl(cn);
+            Message message = new Message(1, 1, LocalDateTime.now(), "meth update");
+            messageDao.delete(1);
+            System.out.println(message);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            // TODO: handle exception
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } finally {
             try {
                 // Etape 6 : libérer ressources de la mémoire.

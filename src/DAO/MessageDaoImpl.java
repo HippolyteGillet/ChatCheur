@@ -1,6 +1,6 @@
 package DAO;
 
-import modele.Log;
+import modele.Message;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -8,27 +8,27 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.ResultSet;
 
-public class LogDaoImpl implements LogDao {
+public class MessageDaoImpl implements MessageDao {
     private final Connection connection;
 
     //On construit notre objet avec en paramètre l'adresse de notre BDD
-    public LogDaoImpl(Connection connection) {
+    public MessageDaoImpl(Connection connection) {
         this.connection = connection;
     }
 
-    //Méthode pour récupérer un log dans la BDD
+    //Méthode pour récupérer un message dans la BDD
     @Override
-    public Log find(int id) {
+    public Message find(int id) {
         try (Statement statement = connection.createStatement()) {
             //On crée la requête SQL pour trouver le log en fonction de l'id dans la BDD
-            ResultSet rs = statement.executeQuery("SELECT * FROM log WHERE ID=" + id);
+            ResultSet rs = statement.executeQuery("SELECT * FROM message WHERE id=" + id);
             if (rs.next()) {
                 //On récupère les informations nécessaires
                 int user_id = rs.getInt("USER_ID");
-                Log.TypeLog type = Log.TypeLog.valueOf(rs.getString("TYPELOG"));
+                String content = rs.getString("CONTENT");
                 Timestamp timeStamp = Timestamp.valueOf(rs.getString("TIMESTAMP"));
                 //On retourne l'objet
-                return new Log(id, user_id, timeStamp.toLocalDateTime(), type);
+                return new Message(id, user_id, timeStamp.toLocalDateTime(), content);
             }
             //On ferme les connections
             rs.close();
@@ -40,31 +40,12 @@ public class LogDaoImpl implements LogDao {
         return null;
     }
 
-    //Méthode pour ajouter un log dans la BDD
     @Override
-    public void create(Log log) {
+    public void create(Message message) {
         try (Statement statement = connection.createStatement()) {
-            //On crée la requête SQL pour ajouter un modele.log dans la BDD
-            statement.executeUpdate("INSERT INTO chatcheur.log (log.USER_ID, log.TIMESTAMP, log.TYPELOG) VALUES (" + log.getUser_id() +
-                    ",'" + Timestamp.valueOf(log.getLocalDateTime()) + "','" + log.getType() + "')");
-            //On ferme les connections
-
-            statement.close();
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //Méthode pour modifier les valeurs d'un log dans la BDD
-    @Override
-    public void update(Log log) {
-        try (Statement statement = connection.createStatement()) {
-            //On crée la requête SQL pour mettre à jour un modele.log dans la BDD
-            statement.executeUpdate("UPDATE log SET user_id='" + log.getUser_id() +
-                    "', timeStamp='" + Timestamp.valueOf(log.getLocalDateTime()) +
-                    "', typelog='" + log.getType() +
-                    "'WHERE id=" + log.getId());
+            //On crée la requête SQL pour ajouter un message dans la BDD
+            statement.executeUpdate("INSERT INTO chatcheur.message (message.USER_ID, message.TIMESTAMP, message.CONTENT) VALUES (" + message.getUser_id() +
+                    ",'" + Timestamp.valueOf(message.getLocalDateTime()) + "','" + message.getContent() + "')");
             //On ferme les connections
             statement.close();
             connection.close();
@@ -73,11 +54,26 @@ public class LogDaoImpl implements LogDao {
         }
     }
 
-    //Méthode pour supprimer un modele.log dans la BDD
+    @Override
+    public void update(Message message) {
+        try (Statement statement = connection.createStatement()) {
+            //On crée la requête SQL pour mettre à jour un modele.message dans la BDD
+            statement.executeUpdate("UPDATE message SET USER_ID='" + message.getUser_id() +
+                    "', TIMESTAMP='" + Timestamp.valueOf(message.getLocalDateTime()) +
+                    "', CONTENT='" + message.getContent() +
+                    "'WHERE ID=" + message.getId());
+            //On ferme les connections
+            statement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void delete(int id) {
         try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate("DELETE FROM log WHERE id=" + id);
+            statement.executeUpdate("DELETE FROM message WHERE id=" + id);
             //On ferme les connections
             statement.close();
             connection.close();

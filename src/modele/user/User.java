@@ -1,24 +1,10 @@
+package modele.user;
+
 import java.time.LocalDate;
-
-enum Permission {
-    BANNED,
-    ACCEPTED
-}
-
-enum State {
-    ONLINE,
-    AWAY,
-    OFFLINE
-}
-
-enum Status {
-    USER,
-    MODERATOR,
-    ADMINISTRATOR
-}
 
 public class User {
 
+    //DAO Attributes:
     private int id;
     private String userName;
     private String password;
@@ -30,10 +16,25 @@ public class User {
     private State state;
     private LocalDate lastConnectionTime;
 
-    //DAO Attributes:
-    private static final UserDAO userDAO = new UserDAO();
+    enum Permission {
+        BANNED,
+        ACCEPTED
+    }
 
-    public User(){}
+    enum State {
+        ONLINE,
+        AWAY,
+        OFFLINE
+    }
+
+    enum Status {
+        USER,
+        MODERATOR,
+        ADMINISTRATOR
+    }
+
+    public User() {
+    }
 
     public User(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDate lastConnectionTime) {
         this.id = id;

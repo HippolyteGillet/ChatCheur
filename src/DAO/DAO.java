@@ -1,8 +1,9 @@
+package DAO;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public abstract class DAO<T> {
-    public Connection connect = ConnectionDataBaseSQL.getInstance();
 
     /**
      * Permet de récupérer un objet via son ID
