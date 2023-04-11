@@ -5,7 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="126fc9d5-7f60-434a-bd9f-5f2bb8e4dbc3" name="Changes" comment="Creation classes log">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/mysql_connector_j_8_0_32.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/mysql_connector_j_8_0_32__2_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/lib/mysql-connector-j-8.0.32.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/DAO/LogDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/DAO/LogDaoImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/modele/Log.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resources/data-mysql.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resources/schema-mysql.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ChatCheur.iml" beforeDir="false" afterPath="$PROJECT_DIR$/ChatCheur.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/How To Use GitHub.md" beforeDir="false" afterPath="$PROJECT_DIR$/How To Use GitHub.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Administrator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modele/user/Administrator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Log/Log.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Log/LogDao.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Log/LogDaoImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Moderator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modele/user/Moderator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/modele/user/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,6 +35,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -36,18 +57,35 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "WebServerToolWindowFactoryState": "false",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/stani/Programmation/IntelliJ IDEA/ChatCheur/lib&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;database.query.execution&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
+    ]
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\stani\Programmation\IntelliJ IDEA\ChatCheur\lib" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\stani\Programmation\IntelliJ IDEA\ChatCheur\src\resources" />
+    </key>
+  </component>
   <component name="RunManager">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="Main" />
       <module name="ChatCheur" />
       <method v="2">
@@ -69,7 +107,11 @@
       <option name="presentableId" value="Default" />
       <updated>1680629564551</updated>
       <workItem from="1680629566395" duration="271000" />
-      <workItem from="1680679361695" duration="350000" />
+      <workItem from="1680679361695" duration="10289000" />
+      <workItem from="1680699385678" duration="652000" />
+      <workItem from="1680975037245" duration="10211000" />
+      <workItem from="1681028078414" duration="3041000" />
+      <workItem from="1681206816697" duration="345000" />
     </task>
     <task id="LOCAL-00001" summary="workspace pour les nuls">
       <created>1680630632373</created>
