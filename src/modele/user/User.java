@@ -1,6 +1,21 @@
-package modele.user;
-
 import java.time.LocalDate;
+
+enum Permission {
+    BANNED,
+    ACCEPTED
+}
+
+enum State {
+    ONLINE,
+    AWAY,
+    OFFLINE
+}
+
+enum Status {
+    USER,
+    MODERATOR,
+    ADMINISTRATOR
+}
 
 public class User {
 
@@ -15,6 +30,11 @@ public class User {
     private State state;
     private LocalDate lastConnectionTime;
 
+    //DAO Attributes:
+    private static final UserDAO userDAO = new UserDAO();
+
+    public User(){}
+
     public User(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDate lastConnectionTime) {
         this.id = id;
         this.userName = userName;
@@ -27,7 +47,7 @@ public class User {
         this.state = state;
         this.lastConnectionTime = lastConnectionTime;
 
-        //java.DAO update:
+        //DAO update:
         //userDAO.update(this);
     }
 
@@ -37,12 +57,9 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
-        //java.DAO update:
+        //DAO update:
         //userDAO.update(this);
     }
-
-    //java.DAO Attributes:
-    //private static final UserDAO userDAO = new UserDAO();
 
     public String getUserName() {
         return userName;
@@ -50,7 +67,7 @@ public class User {
 
     public void setUserName(String userName) {
         this.userName = userName;
-        //java.DAO update:
+        //DAO update:
         //userDAO.update(this);
     }
 
@@ -60,7 +77,7 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-        //java.DAO update:
+        //DAO update:
         //userDAO.update(this);
     }
 
@@ -70,7 +87,7 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-        //java.DAO update:
+        //DAO update:
         //userDAO.update(this);
     }
 
@@ -80,7 +97,7 @@ public class User {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
-        //java.DAO update:
+        //DAO update:
         //userDAO.update(this);
     }
 
@@ -90,7 +107,7 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-        //java.DAO update:
+        //DAO update:
         //userDAO.update(this);
     }
 
@@ -100,7 +117,7 @@ public class User {
 
     public void setPermission(Permission permission) {
         this.permission = permission;
-        //java.DAO update:
+        //DAO update:
         //userDAO.update(this);
     }
 
@@ -110,7 +127,7 @@ public class User {
 
     public void setStatus(Status status) {
         this.status = status;
-        //java.DAO update:
+        //DAO update:
         //userDAO.update(this);
     }
 
@@ -120,7 +137,7 @@ public class User {
 
     public void setState(State state) {
         this.state = state;
-        //java.DAO update:
+        //DAO update:
         //userDAO.update(this);
     }
 
@@ -130,26 +147,7 @@ public class User {
 
     public void setLastConnectionTime(LocalDate lastConnectionTime) {
         this.lastConnectionTime = lastConnectionTime;
-        //java.DAO update:
-        //userDAO.update(this);
-    }
-
-    public void connect() {
-        this.state = State.ONLINE;
-        this.lastConnectionTime = LocalDate.now();
-        //java.DAO update:
-        //userDAO.update(this);
-    }
-
-    public void disconnect() {
-        this.state = State.OFFLINE;
-        //java.DAO update:
-        //userDAO.update(this);
-    }
-
-    public void away() {
-        this.state = State.AWAY;
-        //java.DAO update:
+        //DAO update:
         //userDAO.update(this);
     }
 
@@ -166,15 +164,34 @@ public class User {
         userDAO.delete(this);
     }
 
-    public static java.DAO.modele.modele.user.User find(int id){
+    public static User find(int id){
         return userDAO.find(id);
     }
 
     */
 
+    public void connect() {
+        this.state = State.ONLINE;
+        this.lastConnectionTime = LocalDate.now();
+        //DAO update:
+        //userDAO.update(this);
+    }
+
+    public void disconnect() {
+        this.state = State.OFFLINE;
+        //DAO update:
+        //userDAO.update(this);
+    }
+
+    public void away() {
+        this.state = State.AWAY;
+        //DAO update:
+        //userDAO.update(this);
+    }
+
     public void back() {
         this.state = State.ONLINE;
-        //java.DAO update:
+        //DAO update:
         //userDAO.update(this);
     }
 
@@ -184,24 +201,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "java.DAO.modele.modele.user.User{" + "id=" + id + ", userName=" + userName + ", password=" + password + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName + ", permission=" + permission + ", status=" + status + ", state=" + state + ", lastConnectionTime=" + lastConnectionTime + '}';
-    }
-
-    enum Permission {
-        BANNED,
-        ACCEPTED
-    }
-
-    enum State {
-        ONLINE,
-        AWAY,
-        OFFLINE
-    }
-
-    enum Status {
-        USER,
-        MODERATOR,
-        ADMINISTRATOR
+        return "User{" + "id=" + id + ", userName=" + userName + ", password=" + password + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName + ", permission=" + permission + ", status=" + status + ", state=" + state + ", lastConnectionTime=" + lastConnectionTime + '}';
     }
 
 
