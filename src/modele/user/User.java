@@ -1,13 +1,10 @@
 package modele.user;
 
-import DAO.UserDAO;
-
 import java.time.LocalDate;
 
 public class User {
 
     //DAO Attributes:
-    private static final UserDAO userDAO = new UserDAO();
     private int id;
     private String userName;
     private String password;

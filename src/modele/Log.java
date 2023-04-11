@@ -52,11 +52,11 @@ public class Log {
         this.user_id = user_id;
     }
 
-    public LocalDateTime getTimeStamp() {
+    public LocalDateTime getLocalDateTime() {
         return localDateTime;
     }
 
-    public void setTimeStamp(LocalDateTime localDateTime) {
+    public void setLocalDateTime(LocalDateTime localDateTime) {
         this.localDateTime = localDateTime;
     }
 

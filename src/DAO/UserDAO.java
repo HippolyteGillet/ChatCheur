@@ -1,3 +1,4 @@
+/*
 package DAO;
 
 import modele.user.User;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 
 public class UserDAO extends DAO<User> {
 
-/*
+
     public User create(User object){
         //ConnectionDataBaseSQL.accessDriver();
 
@@ -52,7 +53,7 @@ public class UserDAO extends DAO<User> {
         return object;
     }
 */
-
+    /*
     public User create(User object){
         try {
             PreparedStatement preparedStatement = this.connect.prepareStatement("INSERT INTO user2 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -126,7 +127,7 @@ public class UserDAO extends DAO<User> {
             }catch (SQLException e){
                 e.printStackTrace();
             }
-        }*/
+        }
         return previousId + 1;
     }
 
@@ -181,4 +182,4 @@ public class UserDAO extends DAO<User> {
             }
         }
     }
-}
+}*/

@@ -24,10 +24,10 @@ public class Message {
         this.content = content;
     }
 
-    public Message(int id, int user_id, LocalDateTime localDateTime, String content) {
+    public Message(int id, int user_id, LocalDateTime time, String content) {
         this.id = id;
         this.user_id = user_id;
-        this.localDateTime = localDateTime;
+        this.localDateTime = time;
         this.content = content;
     }
 

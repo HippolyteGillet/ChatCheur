@@ -1,14 +1,13 @@
 package DAO;
 
-import com.mysql.cj.protocol.Resultset;
 import modele.Log;
 
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.util.concurrent.TimeoutException;
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.ResultSet;
 
-
-//TODO revoir les requêtes SQL (find ok, create ok,
 public class LogDaoImpl implements LogDao {
     private final Connection connection;
 
@@ -22,7 +21,7 @@ public class LogDaoImpl implements LogDao {
     public Log find(int id) {
         try (Statement statement = connection.createStatement()) {
             //On crée la requête SQL pour trouver le log en fonction de l'id dans la BDD
-            ResultSet rs = statement.executeQuery("SELECT * FROM log WHERE id=" + id);
+            ResultSet rs = statement.executeQuery("SELECT * FROM log WHERE ID=" + id);
             if (rs.next()) {
                 //On récupère les informations nécessaires
                 int user_id = rs.getInt("USER_ID");
@@ -47,7 +46,7 @@ public class LogDaoImpl implements LogDao {
         try (Statement statement = connection.createStatement()) {
             //On crée la requête SQL pour ajouter un modele.log dans la BDD
             statement.executeUpdate("INSERT INTO chatcheur.log (log.USER_ID, log.TIMESTAMP, log.TYPELOG) VALUES (" + log.getUser_id() +
-                    ",'" + Timestamp.valueOf(log.getTimeStamp()) + "','" + log.getType() + "')");
+                    ",'" + Timestamp.valueOf(log.getLocalDateTime()) + "','" + log.getType() + "')");
             //On ferme les connections
 
             statement.close();
@@ -63,7 +62,7 @@ public class LogDaoImpl implements LogDao {
         try (Statement statement = connection.createStatement()) {
             //On crée la requête SQL pour mettre à jour un modele.log dans la BDD
             statement.executeUpdate("UPDATE log SET user_id='" + log.getUser_id() +
-                    "', timeStamp='" + Timestamp.valueOf(log.getTimeStamp()) +
+                    "', timeStamp='" + Timestamp.valueOf(log.getLocalDateTime()) +
                     "', typelog='" + log.getType() +
                     "'WHERE id=" + log.getId());
             //On ferme les connections
