@@ -1,3 +1,5 @@
+package modele.user;
+
 import java.time.LocalDate;
 
 public class Administrator extends Moderator{
@@ -5,7 +7,7 @@ public class Administrator extends Moderator{
     Administrator(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDate lastConnectionTime) {
         super(id, userName, password, email, firstName, lastName, state, lastConnectionTime);
         setStatus(Status.ADMINISTRATOR);
-        //DAO update:
+        //java.DAO update:
         //userDAO.update(this);
     }
 

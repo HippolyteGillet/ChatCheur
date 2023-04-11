@@ -1,24 +1,39 @@
-import java.time.LocalDate;
+import DAO.*;
+import modele.*;
+
+import java.sql.*;
+import java.time.LocalDateTime;
 
 public class Main {
     public static void main(String[] args) {
-        ConnectionDataBaseSQL.accessDriver();
-        //UserDAO userDAO = new UserDAO();
-        //User user = new User(userDAO.newIdUser(), "userName", "password", "email", "firstName", "lastName", State.ONLINE, LocalDate.now());
+        // Information d'accès à la base de données
+        String url = "jdbc:mysql://localhost/chatcheur";
+        String login = "root";
+        String passwd = "";
+        Connection cn = null;
 
-        // Test newIdUser() OK
-        //System.out.println(userDAO.newIdUser());
+        try {
+            // Etape 1 : Chargement du driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            // Etape 2 : récupération de la connexion
+            cn = DriverManager.getConnection(url, login, passwd);
 
-        // Test find() OK
-        //System.out.println(userDAO.find(1));
-
-        // Test create() OK
-        //userDAO.create(user);
-
-        // Test delete()
+            LogDao logDao = new LogDaoImpl(cn);
+            logDao.delete(1);
 
 
-        // Test update()
-
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        } finally {
+            try {
+                // Etape 6 : libérer ressources de la mémoire.
+                cn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
