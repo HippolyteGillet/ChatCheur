@@ -1,3 +1,7 @@
+package DAO;
+
+import modele.user.User;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -5,7 +9,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class UserDAO extends DAO<User>{
+public class UserDAO extends DAO<User> {
 
 /*
     public User create(User object){
