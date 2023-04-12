@@ -20,7 +20,7 @@ public class Main {
             // Etape 2 : récupération de la connexion
             cn = DriverManager.getConnection(url, login, passwd);
 
-            MessageDao messageDao = new MessageDaoImpl(cn);
+            MessageDao messageDao = new MessageDao(cn);
             Message message = new Message(1, 1, LocalDateTime.now(), "meth update");
             messageDao.delete(1);
             System.out.println(message);

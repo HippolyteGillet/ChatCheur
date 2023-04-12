@@ -11,6 +11,7 @@ public class Log {
     public enum TypeLog {
         CONNECTION, DISCONNECTION, MESSAGE, UNKNOWN;
     }
+
     //Constructeurs
     public Log() {
         this.id = -1;
