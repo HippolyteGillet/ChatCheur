@@ -1,8 +1,3 @@
-/*
-package DAO;
-
-import modele.user.User;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -10,53 +5,15 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class UserDAO extends DAO<User> {
-
+public class UserDAO extends DAO<User>{
 
     public User create(User object){
-        //ConnectionDataBaseSQL.accessDriver();
-
-
         try {
             //ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE
-            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user2");
+            //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user2");
             //if (!result.first()){}
-            while (result.next()){
-                PreparedStatement preparedStatement = this.connect.prepareStatement("INSERT INTO user2 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                preparedStatement.setInt(1, object.getId());
-                preparedStatement.setString(2, object.getUserName());
-                preparedStatement.setString(3, object.getFirstName());
-                preparedStatement.setString(4, object.getLastName());
-                preparedStatement.setString(5, object.getEmail());
-                preparedStatement.setString(6, object.getPassword());
-                preparedStatement.setObject(7, object.getPermission().name());
-                preparedStatement.setObject(8, object.getLastConnectionTime());
-                preparedStatement.setObject(9, object.getStatus().name());
-                preparedStatement.setObject(10, object.getState().name());
-
-                preparedStatement.executeUpdate();
-                object = this.find(object.getId());
-            }
-
-        }catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-
-            try {
-                this.connect.close();
-                //this.connect.createStatement().close();
-
-            }catch (SQLException e){
-                e.printStackTrace();
-            }
-        }
-        return object;
-    }
-*/
-    /*
-    public User create(User object){
-        try {
-            PreparedStatement preparedStatement = this.connect.prepareStatement("INSERT INTO user2 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            //while (result.next()){}
+            PreparedStatement preparedStatement = this.connect.prepareStatement("INSERT INTO user VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement.setInt(1, object.getId());
             preparedStatement.setString(2, object.getUserName());
             preparedStatement.setString(3, object.getFirstName());
@@ -71,14 +28,10 @@ public class UserDAO extends DAO<User> {
             preparedStatement.executeUpdate();
 
             System.out.println("Insertion OK");
+            //object = this.find(object.getId());
+
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                this.connect.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         return object;
     }
@@ -87,7 +40,8 @@ public class UserDAO extends DAO<User> {
         //ConnectionDataBaseSQL.accessDriver();
         User user = new User();
         try {
-            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user2 WHERE id = " + id);
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE id = " + id);
+            //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + id);
             //if (result.first()){}
             while (result.next()){
                 user = new User(id, result.getString("user_name"), result.getString("password"),
@@ -98,15 +52,6 @@ public class UserDAO extends DAO<User> {
 
         }catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-
-            try {
-                this.connect.close();
-                //this.connect.createStatement().close();
-
-            }catch (SQLException e){
-                e.printStackTrace();
-            }
         }
         return user;
     }
@@ -114,19 +59,10 @@ public class UserDAO extends DAO<User> {
     public int newIdUser(){
         int previousId = 0;
         try {
-            ResultSet result = this.connect.createStatement().executeQuery("SELECT MAX(id) as id FROM user2");
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT MAX(id) as id FROM user");
             while (result.next()) previousId = result.getInt("id");
         }catch (SQLException e) {
             e.printStackTrace();
-        } /*finally {
-
-            try {
-                this.connect.close();
-                //this.connect.createStatement().close();
-
-            }catch (SQLException e){
-                e.printStackTrace();
-            }
         }
         return previousId + 1;
     }
@@ -134,52 +70,55 @@ public class UserDAO extends DAO<User> {
     public User update(User object) {
         //ConnectionDataBaseSQL.accessDriver();
         try {
+            //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + object.getId());
+            //if (result.first()){}
+                this.connect.createStatement().executeUpdate("UPDATE user SET user_name = '" + object.getUserName() +
+                        "', first_name = '" + object.getFirstName() + "', last_name = '" + object.getLastName() +
+                        "', email = '" + object.getEmail()  + "', password = '" + object.getPassword() +
+                        "', permission = '" + object.getPermission() + "', last_connection_time = '" + object.getLastConnectionTime() +
+                        "', login = '" + object.getStatus() +
+                        "', state = '" + object.getState() +
+                        "' WHERE id = " + object.getId());
 
-            this.connect.createStatement().executeUpdate("UPDATE table SET userName = '" + object.getUserName()
-                    + "', password = '" + object.getPassword() + "', email = '" + object.getEmail() +
-                    "', firstName = '" + object.getFirstName() + "', lastName = '" + object.getLastName() +
-                    "', permission = '" + object.getPermission() + "', status = " + object.getStatus() +
-                    ", state = '" + object.getState() + "', lastConnectionTime = '" + object.getLastConnectionTime() +
-                    "' WHERE id = " + object.getId());
+                System.out.println("Update OK.");
+
+            //else System.out.println("User not found.");
 
         }catch (SQLException e){
 
             e.printStackTrace();
 
-        }finally {
-
-            try {
-                this.connect.close();
-                //this.connect.createStatement().close();
-
-            }catch (SQLException e){
-                e.printStackTrace();
-            }
         }
         return object;
     }
 
-    public void delete(User object) {
-        //ConnectionDataBaseSQL.accessDriver();
+    public void delete(User object){
         try {
-            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user2 WHERE id = " + object.getId());
+            ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + object.getId());
             if (result.first()){
-                this.connect.createStatement().executeUpdate("DELETE FROM table WHERE id = " + object.getId());
+                this.connect.createStatement().executeUpdate("DELETE FROM user WHERE id = " + object.getId());
+                System.out.println("Delete completed.");
+
             }
+
+            else System.out.println("User doesn't exist.");
+
 
         }catch (SQLException e){
 
             e.printStackTrace();
 
-        }finally {
-
-            try {
-                this.connect.close();
-                //this.connect.createStatement().close();
-
-            }catch (SQLException e){
-                e.printStackTrace();
-            }
         }
     }
-}*/
+
+    public void allClose(){
+        try {
+            this.connect.close();
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    // TODO update() | findPassword() | findUserName
+}
