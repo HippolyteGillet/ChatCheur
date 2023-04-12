@@ -57,8 +57,12 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
+
+        // Pas de update pour l'id car on ne peut pas le changer
+
         //DAO update:
         //userDAO.update(this);
+
     }
 
     public String getUserName() {
@@ -68,7 +72,9 @@ public class User {
     public void setUserName(String userName) {
         this.userName = userName;
         //DAO update:
-        //userDAO.update(this);
+        userDAO.update(this);
+        // OU
+        //userDAO.update(userDAO.find(this.getId()));
     }
 
     public String getPassword() {
