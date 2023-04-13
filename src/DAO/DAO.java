@@ -3,7 +3,8 @@ package DAO;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public abstract class DAO<T> {
+public interface DAO<T> {
+    Connection connect = ConnectionDataBaseSQL.getInstance();
 
     /**
      * Permet de récupérer un objet via son ID
@@ -11,14 +12,14 @@ public abstract class DAO<T> {
      * @return
      */
 
-    public abstract T find(int id);
+     T find(int id);
 
     /**
      * Permet de créer une entrée dans la base de données
      * par rapport à un objet
      * @param object
      */
-    public abstract T create(T object);
+    T create(T object);
 
     /**
      * Permet de mettre à jour les données d'une entrée dans la base
