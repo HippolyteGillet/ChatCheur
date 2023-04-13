@@ -2,20 +2,23 @@ package DAO;
 
 import modele.user.User;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-public class UserDAO implements DAO<User>{
+public class UserDAO implements DAO<User> {
+    private final Connection connect = ConnectionDataBaseSQL.getInstance();
 
-    public User create(User object){
+    @Override
+    public User create(User object) {
         try {
             //ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE
             //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user2");
             //if (!result.first()){}
             //while (result.next()){}
-            PreparedStatement preparedStatement = this.connect.prepareStatement("INSERT INTO user VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement preparedStatement = this.connect.prepareStatement("INSERT INTO chatcheur.user VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement.setInt(1, object.getId());
             preparedStatement.setString(2, object.getUserName());
             preparedStatement.setString(3, object.getFirstName());
@@ -39,55 +42,57 @@ public class UserDAO implements DAO<User>{
         return object;
     }
 
+    @Override
     public User find(int id) {
         //ConnectionDataBaseSQL.accessDriver();
         User user = new User();
         try {
-            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE id = " + id);
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM chatcheur.user WHERE id = " + id);
             //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + id);
             //if (result.first()){}
-            while (result.next()){
+            while (result.next()) {
                 user = new User(id, result.getString("user_name"), result.getString("password"),
                         result.getString("email"), result.getString("first_name"),
                         result.getString("last_name"), User.State.valueOf(result.getString("state")),
                         LocalDate.now());
             }
 
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return user;
     }
 
-    public int newIdUser(){
+    public int newIdUser() {
         int previousId = 0;
         try {
-            ResultSet result = this.connect.createStatement().executeQuery("SELECT MAX(id) as id FROM user");
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT MAX(id) as id FROM chatcheur.user");
             while (result.next()) previousId = result.getInt("id");
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return previousId + 1;
     }
 
+    @Override
     public User update(User object) {
         //ConnectionDataBaseSQL.accessDriver();
         try {
             //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + object.getId());
             //if (result.first()){}
-                this.connect.createStatement().executeUpdate("UPDATE user SET user_name = '" + object.getUserName() +
-                        "', first_name = '" + object.getFirstName() + "', last_name = '" + object.getLastName() +
-                        "', email = '" + object.getEmail()  + "', password = '" + object.getPassword() +
-                        "', permission = '" + object.getPermission() + "', last_connection_t = '" + object.getLastConnectionTime() +
-                        "', ACCESS = '" + object.getAccess() +
-                        "', state = '" + object.getState() +
-                        "' WHERE id = " + object.getId());
+            this.connect.createStatement().executeUpdate("UPDATE chatcheur.user SET user_name = '" + object.getUserName() +
+                    "', first_name = '" + object.getFirstName() + "', last_name = '" + object.getLastName() +
+                    "', email = '" + object.getEmail() + "', password = '" + object.getPassword() +
+                    "', permission = '" + object.getPermission() + "', last_connection_t = '" + object.getLastConnectionTime() +
+                    "', ACCESS = '" + object.getAccess() +
+                    "', state = '" + object.getState() +
+                    "' WHERE id = " + object.getId());
 
-                System.out.println("Update OK.");
+            System.out.println("Update OK.");
 
             //else System.out.println("User not found.");
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
 
             e.printStackTrace();
 
@@ -95,31 +100,21 @@ public class UserDAO implements DAO<User>{
         return object;
     }
 
-    public void delete(User object){
+    @Override
+    public void delete(int id) {
         try {
-            ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + object.getId());
-            if (result.first()){
-                this.connect.createStatement().executeUpdate("DELETE FROM user WHERE id = " + object.getId());
+            ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM chatcheur.user WHERE id = " + id);
+            if (result.first()) {
+                this.connect.createStatement().executeUpdate("DELETE FROM chatcheur.user WHERE id = " + id);
                 System.out.println("Delete completed.");
 
-            }
-
-            else System.out.println("User doesn't exist.");
+            } else System.out.println("User doesn't exist.");
 
 
-        }catch (SQLException e){
+        } catch (SQLException e) {
 
             e.printStackTrace();
 
-        }
-    }
-
-    public void allClose(){
-        try {
-            this.connect.close();
-
-        }catch (SQLException e){
-            e.printStackTrace();
         }
     }
 

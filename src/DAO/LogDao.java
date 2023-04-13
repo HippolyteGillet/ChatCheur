@@ -9,17 +9,12 @@ import java.sql.Timestamp;
 import java.sql.ResultSet;
 
 public class LogDao implements DAO<Log> {
-    private final Connection connection;
-
-    //On construit notre objet avec en paramètre l'adresse de notre BDD
-    public LogDao(Connection connection) {
-        this.connection = connection;
-    }
+    private final Connection connect = ConnectionDataBaseSQL.getInstance();
 
     //Méthode pour récupérer un log dans la BDD
     @Override
     public Log find(int id) {
-        try (Statement statement = connection.createStatement()) {
+        try (Statement statement = this.connect.createStatement()) {
             //On crée la requête SQL pour trouver le log en fonction de l'id dans la BDD
             ResultSet rs = statement.executeQuery("SELECT * FROM log WHERE ID=" + id);
             if (rs.next()) {
@@ -33,7 +28,7 @@ public class LogDao implements DAO<Log> {
             //On ferme les connections
             rs.close();
             statement.close();
-            connection.close();
+            connect.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,24 +37,24 @@ public class LogDao implements DAO<Log> {
 
     //Méthode pour ajouter un log dans la BDD
     @Override
-    public void create(Log log) {
-        try (Statement statement = connection.createStatement()) {
+    public Log create(Log log) {
+        try (Statement statement = this.connect.createStatement()) {
             //On crée la requête SQL pour ajouter un modele.log dans la BDD
             statement.executeUpdate("INSERT INTO chatcheur.log (log.USER_ID, log.TIMESTAMP, log.TYPELOG) VALUES (" + log.getUser_id() +
                     ",'" + Timestamp.valueOf(log.getLocalDateTime()) + "','" + log.getType() + "')");
             //On ferme les connections
-
             statement.close();
-            connection.close();
+            connect.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return log;
     }
 
     //Méthode pour modifier les valeurs d'un log dans la BDD
     @Override
-    public void update(Log log) {
-        try (Statement statement = connection.createStatement()) {
+    public Log update(Log log) {
+        try (Statement statement = this.connect.createStatement()) {
             //On crée la requête SQL pour mettre à jour un modele.log dans la BDD
             statement.executeUpdate("UPDATE log SET user_id='" + log.getUser_id() +
                     "', timeStamp='" + Timestamp.valueOf(log.getLocalDateTime()) +
@@ -67,20 +62,21 @@ public class LogDao implements DAO<Log> {
                     "'WHERE id=" + log.getId());
             //On ferme les connections
             statement.close();
-            connection.close();
+            connect.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return log;
     }
 
     //Méthode pour supprimer un modele.log dans la BDD
     @Override
     public void delete(int id) {
-        try (Statement statement = connection.createStatement()) {
+        try (Statement statement = this.connect.createStatement()) {
             statement.executeUpdate("DELETE FROM log WHERE id=" + id);
             //On ferme les connections
             statement.close();
-            connection.close();
+            connect.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
