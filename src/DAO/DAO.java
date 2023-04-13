@@ -1,7 +1,5 @@
 package DAO;
 
-import modele.Log;
-
 public interface DAO<T> {
     /**
      * Permet de récupérer un objet dans la BDD via son Id
@@ -17,7 +15,7 @@ public interface DAO<T> {
      *
      * @param obj L'object est ce qu'on veut envoyer dans la BDD
      */
-    void create(T obj);
+    T create(T object);
 
     /**
      * Permet de mettre à jour les données de l'objet dans BDD

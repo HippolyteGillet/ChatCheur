@@ -1,14 +1,18 @@
 import DAO.*;
 import modele.*;
+import modele.user.User;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Main {
     public static void main(String[] args) {
-        // Information d'accès à la base de données
+        ConnectionDataBaseSQL.accessDriver();
+
+        /*// Information d'accès à la base de données
         String url = "jdbc:mysql://localhost/chatcheur";
         String login = "root";
         String passwd = "";
@@ -34,6 +38,29 @@ public class Main {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
+
+        //UserDAO userDAO = new UserDAO();
+        //User user = new User(userDAO.newIdUser(), "userName", "password", "email", "firstName", "lastName", User.State.ONLINE, LocalDate.now());
+
+        // Test create() OK
+        //userDAO.create(user);
+
+        // Test newIdUser() OK
+        //System.out.println(userDAO.newIdUser());
+
+        // Test find() OK
+        //System.out.println(userDAO.find(1));
+
+        // Test delete() OK
+        //userDAO.delete(userDAO.find(1));
+
+        // Test update() OK
+        //user.setUserName("new_username");
+        //userDAO.update(user);
+        //System.out.println(user);
+
+        // Test allClose() OK
+        //userDAO.allClose();
     }
 }

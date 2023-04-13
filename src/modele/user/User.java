@@ -12,27 +12,26 @@ public class User {
     private String firstName;
     private String lastName;
     private Permission permission;
-    private Status status;
+    private Access access;
     private State state;
     private LocalDate lastConnectionTime;
 
-    enum Permission {
+    public enum Permission {
         BANNED,
         ACCEPTED
     }
 
-    enum State {
+    public enum State {
         ONLINE,
         AWAY,
         OFFLINE
     }
 
-    enum Status {
+    public enum Access {
         USER,
         MODERATOR,
         ADMINISTRATOR
     }
-
     public User() {
     }
 
@@ -44,7 +43,7 @@ public class User {
         this.firstName = firstName;
         this.lastName = lastName;
         this.permission = Permission.ACCEPTED;
-        this.status = Status.USER;
+        this.access = Access.USER;
         this.state = state;
         this.lastConnectionTime = lastConnectionTime;
 
@@ -58,8 +57,12 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
+
+        // Pas de update pour l'id car on ne peut pas le changer
+
         //DAO update:
         //userDAO.update(this);
+
     }
 
     public String getUserName() {
@@ -70,6 +73,8 @@ public class User {
         this.userName = userName;
         //DAO update:
         //userDAO.update(this);
+        // OU
+        //userDAO.update(userDAO.find(this.getId()));
     }
 
     public String getPassword() {
@@ -113,7 +118,7 @@ public class User {
     }
 
     public Permission getPermission() {
-        return permission;
+        return this.permission;
     }
 
     public void setPermission(Permission permission) {
@@ -122,12 +127,12 @@ public class User {
         //userDAO.update(this);
     }
 
-    public Status getStatus() {
-        return status;
+    public Access getAccess() {
+        return this.access;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setAccess(Access access) {
+        this.access = access;
         //DAO update:
         //userDAO.update(this);
     }
@@ -202,7 +207,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", userName=" + userName + ", password=" + password + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName + ", permission=" + permission + ", status=" + status + ", state=" + state + ", lastConnectionTime=" + lastConnectionTime + '}';
+        return "User{" + "id=" + id + ", userName=" + userName + ", password=" + password + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName + ", permission=" + permission + ", status=" + access + ", state=" + state + ", lastConnectionTime=" + lastConnectionTime + '}';
     }
 
 
