@@ -21,7 +21,7 @@ public class MessageDaoImpl implements MessageDao {
     public Message find(int id) {
         try (Statement statement = connection.createStatement()) {
             //On crée la requête SQL pour trouver le log en fonction de l'id dans la BDD
-            ResultSet rs = statement.executeQuery("SELECT * FROM message WHERE id=" + id);
+            ResultSet rs = statement.executeQuery("SELECT * FROM chatcheur.message WHERE id=" + id);
             if (rs.next()) {
                 //On récupère les informations nécessaires
                 int user_id = rs.getInt("USER_ID");
@@ -58,7 +58,7 @@ public class MessageDaoImpl implements MessageDao {
     public void update(Message message) {
         try (Statement statement = connection.createStatement()) {
             //On crée la requête SQL pour mettre à jour un modele.message dans la BDD
-            statement.executeUpdate("UPDATE message SET USER_ID='" + message.getUser_id() +
+            statement.executeUpdate("UPDATE chatcheur.message SET USER_ID='" + message.getUser_id() +
                     "', TIMESTAMP='" + Timestamp.valueOf(message.getLocalDateTime()) +
                     "', CONTENT='" + message.getContent() +
                     "'WHERE ID=" + message.getId());
@@ -73,7 +73,7 @@ public class MessageDaoImpl implements MessageDao {
     @Override
     public void delete(int id) {
         try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate("DELETE FROM message WHERE id=" + id);
+            statement.executeUpdate("DELETE FROM chatcheur.message WHERE id=" + id);
             //On ferme les connections
             statement.close();
             connection.close();

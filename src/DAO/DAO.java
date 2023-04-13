@@ -25,11 +25,11 @@ public interface DAO<T> {
      * Permet de mettre à jour les données d'une entrée dans la base
      * @param object
      */
-    public abstract T update(T object);
+    T update(T object);
 
     /**
      * Permet la suppression d'une entrée de la base
      * @param object
      */
-    public abstract void delete(T object);
+    void delete(T object);
 }
