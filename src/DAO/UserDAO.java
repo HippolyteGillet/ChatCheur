@@ -1,11 +1,13 @@
+package DAO;
+
+import modele.user.User;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-public class UserDAO extends DAO<User>{
+public class UserDAO implements DAO<User>{
 
     public User create(User object){
         try {
@@ -22,7 +24,7 @@ public class UserDAO extends DAO<User>{
             preparedStatement.setString(6, object.getPassword());
             preparedStatement.setObject(7, object.getPermission().name());
             preparedStatement.setObject(8, object.getLastConnectionTime());
-            preparedStatement.setObject(9, object.getStatus().name());
+            preparedStatement.setObject(9, object.getAccess().name());
             preparedStatement.setObject(10, object.getState().name());
 
             preparedStatement.executeUpdate();
@@ -33,6 +35,7 @@ public class UserDAO extends DAO<User>{
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return object;
     }
 
@@ -46,7 +49,7 @@ public class UserDAO extends DAO<User>{
             while (result.next()){
                 user = new User(id, result.getString("user_name"), result.getString("password"),
                         result.getString("email"), result.getString("first_name"),
-                        result.getString("last_name"), State.valueOf(result.getString("state")),
+                        result.getString("last_name"), User.State.valueOf(result.getString("state")),
                         LocalDate.now());
             }
 
@@ -75,8 +78,8 @@ public class UserDAO extends DAO<User>{
                 this.connect.createStatement().executeUpdate("UPDATE user SET user_name = '" + object.getUserName() +
                         "', first_name = '" + object.getFirstName() + "', last_name = '" + object.getLastName() +
                         "', email = '" + object.getEmail()  + "', password = '" + object.getPassword() +
-                        "', permission = '" + object.getPermission() + "', last_connection_time = '" + object.getLastConnectionTime() +
-                        "', login = '" + object.getStatus() +
+                        "', permission = '" + object.getPermission() + "', last_connection_t = '" + object.getLastConnectionTime() +
+                        "', ACCESS = '" + object.getAccess() +
                         "', state = '" + object.getState() +
                         "' WHERE id = " + object.getId());
 
