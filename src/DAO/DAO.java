@@ -1,35 +1,33 @@
 package DAO;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
 public interface DAO<T> {
-    Connection connect = ConnectionDataBaseSQL.getInstance();
-
     /**
-     * Permet de récupérer un objet via son ID
-     * @param id
-     * @return
+     * Permet de récupérer un objet dans la BDD via son Id
+     *
+     * @param id L'id est l'identification unique de l'objet
+     * @return T
+     * La fonction retourne un objet crée depuis la BDD
      */
-
-     T find(int id);
+    T find(int id);
 
     /**
-     * Permet de créer une entrée dans la base de données
-     * par rapport à un objet
-     * @param object
+     * Permet d'envoyer les données de l'objet dans la BDD
+     *
+     * @param obj L'object est ce qu'on veut envoyer dans la BDD
      */
     T create(T object);
 
     /**
-     * Permet de mettre à jour les données d'une entrée dans la base
-     * @param object
+     * Permet de mettre à jour les données de l'objet dans BDD
+     *
+     * @param obj obj est l'objet que l'on veut mettre à jour dans la BDD
      */
-    public abstract T update(T object);
+    void update(T obj);
 
     /**
-     * Permet la suppression d'une entrée de la base
-     * @param object
+     * Permet la suppression d'un objet dans la BDD
+     *
+     * @param id L'id est l'identification unique de l'objet
      */
-    public abstract void delete(T object);
+    void delete(int id);
 }

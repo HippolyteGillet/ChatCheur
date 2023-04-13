@@ -16,6 +16,8 @@ CREATE TABLE chatcheur.user
     STATE             enum ('ONLINE','OFFLINE','AWAY'),
     PRIMARY KEY (ID)
 );
+ALTER TABLE chatcheur.user MODIFY ACCESS VARCHAR(50);
+ALTER TABLE chatcheur.user MODIFY PERMISSION VARCHAR(50);
 
 # Dump of table message
 # ------------------------------------------------------------
