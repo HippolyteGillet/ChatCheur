@@ -21,8 +21,7 @@ public class Main {
             cn = DriverManager.getConnection(url, login, passwd);
 
             MessageDao messageDao = new MessageDao(cn);
-            Message message = new Message(1, 1, LocalDateTime.now(), "meth update");
-            messageDao.delete(1);
+            Message message = new Message(messageDao.find(1));
             System.out.println(message);
         } catch (SQLException e) {
             e.printStackTrace();

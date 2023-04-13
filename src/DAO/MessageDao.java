@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 
 public class MessageDao implements DAO<Message> {
     private final Connection connection;
-
     //On construit notre objet avec en paramètre l'adresse de notre BDD
     public MessageDao(Connection connection) {
         this.connection = connection;
