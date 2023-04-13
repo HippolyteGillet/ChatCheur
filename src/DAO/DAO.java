@@ -1,6 +1,9 @@
 package DAO;
 
+import java.sql.Connection;
+
 public interface DAO<T> {
+
     /**
      * Permet de récupérer un objet dans la BDD via son Id
      *
@@ -13,7 +16,7 @@ public interface DAO<T> {
     /**
      * Permet d'envoyer les données de l'objet dans la BDD
      *
-     * @param obj L'object est ce qu'on veut envoyer dans la BDD
+     * @param object L'object est ce qu'on veut envoyer dans la BDD
      */
     T create(T object);
 
@@ -22,7 +25,7 @@ public interface DAO<T> {
      *
      * @param obj obj est l'objet que l'on veut mettre à jour dans la BDD
      */
-    void update(T obj);
+    T update(T obj);
 
     /**
      * Permet la suppression d'un objet dans la BDD

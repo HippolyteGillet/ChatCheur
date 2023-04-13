@@ -39,7 +39,7 @@ public class Main {
                 e.printStackTrace();
             }
         }*/
-
+        MessageDao messageDao = new MessageDao();
         //UserDAO userDAO = new UserDAO();
         //User user = new User(userDAO.newIdUser(), "userName", "password", "email", "firstName", "lastName", User.State.ONLINE, LocalDate.now());
 
