@@ -1,3 +1,6 @@
+import View.Menu;
+
+import java.awt.*;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -13,8 +16,9 @@ class Client {
         this.name = name;
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) throws IOException, FontFormatException {
+        Menu fenetre = new Menu();
+        fenetre.setVisible(true);
 
         Scanner sc = new Scanner(System.in);
         //ask for a name:
