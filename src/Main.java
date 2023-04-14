@@ -40,6 +40,8 @@ public class Main {
             }
         }*/
         MessageDao messageDao = new MessageDao();
+
+        // Test User DAO
         //UserDAO userDAO = new UserDAO();
         //User user = new User(userDAO.newIdUser(), "userName", "password", "email", "firstName", "lastName", User.State.ONLINE, LocalDate.now());
 
@@ -53,14 +55,14 @@ public class Main {
         //System.out.println(userDAO.find(1));
 
         // Test delete() OK
-        //userDAO.delete(userDAO.find(1));
+        //userDAO.delete(1);
 
         // Test update() OK
         //user.setUserName("new_username");
         //userDAO.update(user);
         //System.out.println(user);
 
-        // Test allClose() OK
-        //userDAO.allClose();
+        // Tout fermer UserDAO TODO Pourquoi pas l'appliquer à tous les DAO ?
+        userDAO.finalClose();
     }
 }

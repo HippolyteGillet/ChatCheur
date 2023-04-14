@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class UserDAO implements DAO<User> {
     private final Connection connect = ConnectionDataBaseSQL.getInstance();
@@ -34,6 +35,7 @@ public class UserDAO implements DAO<User> {
 
             System.out.println("Insertion OK");
             //object = this.find(object.getId());
+            preparedStatement.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -47,15 +49,16 @@ public class UserDAO implements DAO<User> {
         //ConnectionDataBaseSQL.accessDriver();
         User user = new User();
         try {
-            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM chatcheur.user WHERE id = " + id);
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM chatcheur.user WHERE ID = " + id);
             //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + id);
             //if (result.first()){}
             while (result.next()) {
-                user = new User(id, result.getString("user_name"), result.getString("password"),
-                        result.getString("email"), result.getString("first_name"),
-                        result.getString("last_name"), User.State.valueOf(result.getString("state")),
-                        LocalDate.now());
+                user = new User(id, result.getString("USER_NAME"), result.getString("PASSWORD"),
+                        result.getString("EMAIL"), result.getString("FIRST_NAME"),
+                        result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
+                        result.getDate("LAST_CONNECTION_T").toLocalDate());
             }
+            result.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,8 +69,9 @@ public class UserDAO implements DAO<User> {
     public int newIdUser() {
         int previousId = 0;
         try {
-            ResultSet result = this.connect.createStatement().executeQuery("SELECT MAX(id) as id FROM chatcheur.user");
-            while (result.next()) previousId = result.getInt("id");
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT MAX(ID) as id FROM chatcheur.user");
+            while (result.next()) previousId = result.getInt("ID");
+            result.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -100,16 +104,43 @@ public class UserDAO implements DAO<User> {
         return object;
     }
 
+    public User update2(User object) {
+        //ConnectionDataBaseSQL.accessDriver();
+        try {
+            ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM chatcheur.user WHERE ID = " + object.getId());
+            if (result.first()) {
+                this.connect.createStatement().executeUpdate("UPDATE chatcheur.user SET USER_NAME = '" + object.getUserName() +
+                        "', FIRST_NAME = '" + object.getFirstName() + "', LAST_NAME = '" + object.getLastName() +
+                        "', email = '" + object.getEmail() + "', password = '" + object.getPassword() +
+                        "', PERMISSION = '" + object.getPermission() + "', LAST_CONNECTION_T = '" + object.getLastConnectionTime() +
+                        "', ACCESS = '" + object.getAccess() +
+                        "', STATE = '" + object.getState() +
+                        "' WHERE ID = " + object.getId());
+
+                System.out.println("Update OK.");
+
+            }else System.out.println("User not found.");
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+        return object;
+    }
+
+
     @Override
     public void delete(int id) {
         try {
             ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM chatcheur.user WHERE id = " + id);
             if (result.first()) {
-                this.connect.createStatement().executeUpdate("DELETE FROM chatcheur.user WHERE id = " + id);
+                this.connect.createStatement().executeUpdate("DELETE FROM chatcheur.user WHERE ID = " + id);
                 System.out.println("Delete completed.");
 
             } else System.out.println("User doesn't exist.");
 
+            result.close();
 
         } catch (SQLException e) {
 
@@ -118,5 +149,15 @@ public class UserDAO implements DAO<User> {
         }
     }
 
-    // TODO update() | findPassword() | findUserName
+    public void finalClose() {
+        try {
+            this.connect.close();
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }    }
+
+    // TODO findPassword() | findUserName
 }
