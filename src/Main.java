@@ -63,6 +63,6 @@ public class Main {
         //System.out.println(user);
 
         // Tout fermer UserDAO TODO Pourquoi pas l'appliquer à tous les DAO ?
-        userDAO.finalClose();
+        //userDAO.finalClose();
     }
 }
