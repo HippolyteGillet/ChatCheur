@@ -7,11 +7,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
-public class UserDAO implements DAO<User> {
+public class UserDao implements DAO<User> {
     private final Connection connect = ConnectionDataBaseSQL.getInstance();
 
     @Override
