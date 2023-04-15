@@ -1,12 +1,15 @@
 package DAO;
 
-import modele.Log;
+import model.Log;
+import model.user.User;
 
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LogDao implements DAO<Log> {
     private final Connection connect = ConnectionDataBaseSQL.getInstance();
@@ -27,8 +30,6 @@ public class LogDao implements DAO<Log> {
             }
             //On ferme les connections
             rs.close();
-            statement.close();
-            connect.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,9 +43,6 @@ public class LogDao implements DAO<Log> {
             //On crée la requête SQL pour ajouter un modele.log dans la BDD
             statement.executeUpdate("INSERT INTO chatcheur.log (log.USER_ID, log.TIMESTAMP, log.TYPELOG) VALUES (" + log.getUser_id() +
                     ",'" + Timestamp.valueOf(log.getLocalDateTime()) + "','" + log.getType() + "')");
-            //On ferme les connections
-            statement.close();
-            connect.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -60,9 +58,6 @@ public class LogDao implements DAO<Log> {
                     "', timeStamp='" + Timestamp.valueOf(log.getLocalDateTime()) +
                     "', typelog='" + log.getType() +
                     "'WHERE id=" + log.getId());
-            //On ferme les connections
-            statement.close();
-            connect.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -74,11 +69,27 @@ public class LogDao implements DAO<Log> {
     public void delete(int id) {
         try (Statement statement = this.connect.createStatement()) {
             statement.executeUpdate("DELETE FROM log WHERE id=" + id);
-            //On ferme les connections
-            statement.close();
-            connect.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Log> retrieveLogsFromDB() {
+        List<Log> logs = new ArrayList<>();
+        int id = 0;
+        try {
+            ResultSet rs = this.connect.createStatement().executeQuery("SELECT * FROM log");
+            do {
+                id++;
+                if (find(id) != null) {
+                    logs.add(find(id));
+                }
+            } while (rs.next());
+            //On ferme les connections
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return logs;
     }
 }

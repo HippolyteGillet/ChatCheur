@@ -1,4 +1,4 @@
-package modele;
+package model;
 
 import java.time.LocalDateTime;
 import static java.time.LocalDateTime.*;
@@ -8,6 +8,8 @@ public class Log {
     private int user_id;
     private LocalDateTime localDateTime;
     private TypeLog type;
+
+
     public enum TypeLog {
         CONNECTION, DISCONNECTION, MESSAGE, UNKNOWN;
     }

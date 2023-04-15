@@ -1,4 +1,4 @@
-package modele.user;
+package model.user;
 
 import java.time.LocalDate;
 
