@@ -1,5 +1,6 @@
 package DAO;
 
+import model.Log;
 import model.user.User;
 
 import java.sql.Connection;
@@ -7,11 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDAO implements DAO<User> {
+public class UserDao implements DAO<User> {
     private final Connection connect = ConnectionDataBaseSQL.getInstance();
 
     @Override
@@ -119,6 +119,25 @@ public class UserDAO implements DAO<User> {
             e.printStackTrace();
 
         }
+    }
+
+    public List<User> retrieveUsersFromDB() {
+        List<User> users = new ArrayList<>();
+        int id = 0;
+        try {
+            ResultSet rs = this.connect.createStatement().executeQuery("SELECT * FROM user");
+            do {
+                id++;
+                if (find(id) != null) {
+                    users.add(find(id));
+                }
+            } while (rs.next());
+            //On ferme les connections
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 
     // TODO update() | findPassword() | findUserName
