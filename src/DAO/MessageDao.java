@@ -1,12 +1,15 @@
 package DAO;
 
-import modele.Message;
+import model.Message;
+import model.user.User;
 
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MessageDao implements DAO<Message> {
     private final Connection connect = ConnectionDataBaseSQL.getInstance();
@@ -27,8 +30,6 @@ public class MessageDao implements DAO<Message> {
             }
             //On ferme les connections
             rs.close();
-            statement.close();
-            connect.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -41,9 +42,6 @@ public class MessageDao implements DAO<Message> {
             //On crée la requête SQL pour ajouter un message dans la BDD
             statement.executeUpdate("INSERT INTO chatcheur.message (message.USER_ID, message.TIMESTAMP, message.CONTENT) VALUES (" + message.getUser_id() +
                     ",'" + Timestamp.valueOf(message.getLocalDateTime()) + "','" + message.getContent() + "')");
-            //On ferme les connections
-            statement.close();
-            connect.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -58,9 +56,6 @@ public class MessageDao implements DAO<Message> {
                     "', TIMESTAMP='" + Timestamp.valueOf(message.getLocalDateTime()) +
                     "', CONTENT='" + message.getContent() +
                     "'WHERE ID=" + message.getId());
-            //On ferme les connections
-            statement.close();
-            connect.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -71,11 +66,27 @@ public class MessageDao implements DAO<Message> {
     public void delete(int id) {
         try (Statement statement = this.connect.createStatement()) {
             statement.executeUpdate("DELETE FROM message WHERE id=" + id);
-            //On ferme les connections
-            statement.close();
-            connect.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Message> retrieveMessagesFromDB() {
+        List<Message> messages = new ArrayList<>();
+        int id = 0;
+        try {
+            ResultSet rs = this.connect.createStatement().executeQuery("SELECT * FROM message");
+            do {
+                id++;
+                if (find(id) != null) {
+                    messages.add(find(id));
+                }
+            } while (rs.next());
+            //On ferme les connections
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return messages;
     }
 }

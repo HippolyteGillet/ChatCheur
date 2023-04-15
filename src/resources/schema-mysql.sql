@@ -1,4 +1,4 @@
-# Dump of table modele.modele.user
+# Dump of table model.model.user
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS chatcheur.user;
@@ -33,7 +33,7 @@ CREATE TABLE chatcheur.message
     FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID)
 );
 
-# Dump of table modele.log
+# Dump of table model.log
 # ------------------------------------------------------------
 
 DROP TABLE IF EXISTS chatcheur.log;

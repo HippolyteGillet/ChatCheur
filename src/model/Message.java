@@ -1,6 +1,5 @@
-package modele;
+package model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;

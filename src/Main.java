@@ -1,12 +1,5 @@
 import DAO.*;
-import modele.*;
-import modele.user.User;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import model.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -40,8 +33,6 @@ public class Main {
             }
         }*/
         MessageDao messageDao = new MessageDao();
-
-        // Test User DAO
         //UserDAO userDAO = new UserDAO();
         //User user = new User(userDAO.newIdUser(), "userName", "password", "email", "firstName", "lastName", User.State.ONLINE, LocalDate.now());
 
@@ -55,14 +46,14 @@ public class Main {
         //System.out.println(userDAO.find(1));
 
         // Test delete() OK
-        //userDAO.delete(1);
+        //userDAO.delete(userDAO.find(1));
 
         // Test update() OK
         //user.setUserName("new_username");
         //userDAO.update(user);
         //System.out.println(user);
 
-        // Tout fermer UserDAO TODO Pourquoi pas l'appliquer à tous les DAO ?
-        //userDAO.finalClose();
+        // Test allClose() OK
+        //userDAO.allClose();
     }
 }
