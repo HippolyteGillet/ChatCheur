@@ -1,6 +1,6 @@
 package DAO;
 
-import modele.user.User;
+import model.user.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
