@@ -4,6 +4,9 @@ out/
 !**/src/test/**/out/
 .idea/
 
+### connection ###
+src/DAO/ConnectionDataBaseSQL.java
+
 ### Eclipse ###
 .apt_generated
 .classpath

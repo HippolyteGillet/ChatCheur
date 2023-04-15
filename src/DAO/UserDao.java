@@ -125,7 +125,7 @@ public class UserDao implements DAO<User> {
         List<User> users = new ArrayList<>();
         int id = 0;
         try {
-            ResultSet rs = this.connect.createStatement().executeQuery("SELECT * FROM user");
+            ResultSet rs = this.connect.createStatement().executeQuery("SELECT * FROM chatcheur.user");
             do {
                 id++;
                 if (find(id) != null) {
