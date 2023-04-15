@@ -1,16 +1,17 @@
 package DAO;
 
-import model.user.User;
+import modele.user.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDao implements DAO<User> {
+public class UserDAO implements DAO<User> {
     private final Connection connect = ConnectionDataBaseSQL.getInstance();
 
     @Override
@@ -46,9 +47,12 @@ public class UserDao implements DAO<User> {
 
     @Override
     public User find(int id) {
+        //ConnectionDataBaseSQL.accessDriver();
         User user = new User();
         try {
             ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM chatcheur.user WHERE id = " + id);
+            //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + id);
+            //if (result.first()){}
             while (result.next()) {
                 user = new User(id, result.getString("user_name"), result.getString("password"),
                         result.getString("email"), result.getString("first_name"),
@@ -75,6 +79,7 @@ public class UserDao implements DAO<User> {
 
     @Override
     public User update(User object) {
+        //ConnectionDataBaseSQL.accessDriver();
         try {
             //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + object.getId());
             //if (result.first()){}
@@ -114,25 +119,6 @@ public class UserDao implements DAO<User> {
             e.printStackTrace();
 
         }
-    }
-
-    public List<User> retrieveUsersFromDB() {
-        List<User> users = new ArrayList<>();
-        int id = 0;
-        try {
-            ResultSet rs = this.connect.createStatement().executeQuery("SELECT * FROM user");
-            do {
-                id++;
-                if (find(id) != null) {
-                    users.add(find(id));
-                }
-            } while (rs.next());
-            //On ferme les connections
-            rs.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return users;
     }
 
     // TODO update() | findPassword() | findUserName

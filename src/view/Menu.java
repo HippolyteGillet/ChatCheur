@@ -18,12 +18,10 @@ public class Menu extends JFrame {
                 super.paintComponent(g);
                 g.setColor(new Color(20, 48, 46));
                 g.fillRoundRect(100, 40, 500, 125, 120, 120);
+                g.fillRoundRect(200, 500, 300, 75, 60, 60);
                 g.setColor(Color.WHITE);
                 g.fillRoundRect(150, 225, 400, 80, 80, 80);
                 g.fillRoundRect(150, 355, 400, 80, 80, 80);
-                g.setColor(new Color(20, 48, 46));
-                g.fillRoundRect(200, 500, 300, 75, 60, 60);
-                g.setColor(Color.WHITE);
                 try {
                     Font customFont1 = Font.createFont(Font.TRUETYPE_FONT, new File("ALBAS.TTF"));
                     Font customFont2 = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc"));
@@ -122,7 +120,11 @@ public class Menu extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 NewPassword popup;
-                popup = new NewPassword();
+                try {
+                    popup = new NewPassword();
+                } catch (IOException | FontFormatException ex) {
+                    throw new RuntimeException(ex);
+                }
                 popup.setVisible(true);
             }
         });

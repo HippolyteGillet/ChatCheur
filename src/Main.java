@@ -33,8 +33,6 @@ public class Main {
             }
         }*/
         MessageDao messageDao = new MessageDao();
-        Message message = new Message();
-        messageDao.update(message);
         //UserDAO userDAO = new UserDAO();
         //User user = new User(userDAO.newIdUser(), "userName", "password", "email", "firstName", "lastName", User.State.ONLINE, LocalDate.now());
 
