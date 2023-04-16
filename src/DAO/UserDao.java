@@ -132,6 +132,8 @@ public class UserDao implements DAO<User> {
                     users.add(find(id));
                 }
             } while (rs.next());
+            //On remove derniere case car null
+            users.remove(id-1);
             //On ferme les connections
             rs.close();
         } catch (SQLException e) {

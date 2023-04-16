@@ -10,9 +10,14 @@ import java.io.File;
 import java.io.IOException;
 
 public class Menu extends JFrame {
+    private JPanel panel;
+    private JTextField textField1, textField2;
+    private JButton button;
+    private JLabel label;
+
     public Menu() throws IOException, FontFormatException {
         // Création de mon conteneur JPanel
-        JPanel panel = new JPanel(new BorderLayout()) {
+        panel = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -40,7 +45,7 @@ public class Menu extends JFrame {
         setSize(700, 700);
         Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(30f);
 
-        JTextField textField1 = new JTextField("Utilisateur");
+        textField1 = new JTextField("Utilisateur");
         textField1.setHorizontalAlignment(JTextField.CENTER);
         textField1.setBounds(150, 225, 400, 80);
         textField1.setFont(customFont);
@@ -67,7 +72,7 @@ public class Menu extends JFrame {
         });
         panel.add(textField1);
 
-        JTextField textField2 = new JTextField("Mot de passe");
+        textField2 = new JTextField("Mot de passe");
         textField2.setHorizontalAlignment(JTextField.CENTER);
         textField2.setBounds(150, 355, 400, 80);
         textField2.setFont(customFont);
@@ -83,6 +88,7 @@ public class Menu extends JFrame {
                     textField2.setForeground(Color.BLACK);
                 }
             }
+
             @Override
             public void focusLost(FocusEvent e) {
                 if (textField2.getText().isEmpty()) {
@@ -93,26 +99,16 @@ public class Menu extends JFrame {
         });
         panel.add(textField2);
 
-        JButton button = new JButton("Connexion");
+        button = new JButton("Connexion");
         button.setBounds(200, 500, 300, 75);
         button.setFont(customFont);
         button.setForeground(Color.WHITE);
         button.setOpaque(false);
         button.setContentAreaFilled(false);
         button.setBorderPainted(false);
-        button.addActionListener(e -> {
-            Home home;
-            try {
-                home = new Home();
-            } catch (IOException | FontFormatException ex) {
-                throw new RuntimeException(ex);
-            }
-            home.setVisible(true);
-            dispose();
-        });
         panel.add(button);
 
-        JLabel label = new JLabel("Mot de passe oublié ?");
+        label = new JLabel("Mot de passe oublié ?");
         label.setBounds(250, 435, 250, 40);
         label.setFont(customFont.deriveFont(20f));
         label.setForeground(Color.WHITE);
@@ -134,5 +130,18 @@ public class Menu extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
+
+    }
+
+    public String getUsername() {
+        return textField1.getText();
+    }
+
+    public String getPassword() {
+        return textField2.getText();
+    }
+
+    public JButton getButton() {
+        return button;
     }
 }
