@@ -3,10 +3,13 @@ package controller;
 import model.Log;
 import model.Message;
 import model.user.User;
+import view.Home;
 import view.Menu;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.List;
 
 public class ClientController implements ActionListener {
@@ -71,6 +74,14 @@ public class ClientController implements ActionListener {
         switch (e.getActionCommand()) {
             case "Connexion":
                 connection(view.getUsername(), view.getPassword());
+                if (user != null) {
+                    Home home;
+                    try {
+                        home = new Home();
+                    } catch (IOException | FontFormatException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
         }
     }
 
