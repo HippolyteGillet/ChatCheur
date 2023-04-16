@@ -1,5 +1,9 @@
 package view;
 
+import model.Log;
+import model.Message;
+import model.user.User;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
@@ -8,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class Menu extends JFrame {
     private JPanel panel;
@@ -15,7 +20,7 @@ public class Menu extends JFrame {
     private JButton button;
     private JLabel label;
 
-    public Menu() throws IOException, FontFormatException {
+    public Menu(List<User> userList, List<Log> logList, List<Message> messageList) throws IOException, FontFormatException {
         // Création de mon conteneur JPanel
         panel = new JPanel(new BorderLayout()) {
             @Override
@@ -108,7 +113,7 @@ public class Menu extends JFrame {
         button.setBorderPainted(false);
         panel.add(button);
 
-        label = new JLabel("Mot de passe oublié ?");
+        JLabel label = new JLabel("Mot de passe oublié ?");
         label.setBounds(250, 435, 250, 40);
         label.setFont(customFont.deriveFont(20f));
         label.setForeground(Color.WHITE);
