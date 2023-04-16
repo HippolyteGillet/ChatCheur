@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class LogDao implements DAO<Log> {
     private final Connection connect = ConnectionDataBaseSQL.getInstance();
@@ -23,7 +24,7 @@ public class LogDao implements DAO<Log> {
             if (rs.next()) {
                 //On récupère les informations nécessaires
                 int user_id = rs.getInt("USER_ID");
-                Log.TypeLog type = Log.TypeLog.valueOf(rs.getString("TYPELOG"));
+                Log.TypeLog type = Log.TypeLog.valueOf(rs.getString("TYPELOG").toUpperCase());
                 Timestamp timeStamp = Timestamp.valueOf(rs.getString("TIMESTAMP"));
                 //On retourne l'objet
                 return new Log(id, user_id, timeStamp.toLocalDateTime(), type);
