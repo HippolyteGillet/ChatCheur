@@ -58,6 +58,8 @@ public class UserDao implements DAO<User> {
                         result.getString("email"), result.getString("first_name"),
                         result.getString("last_name"), User.State.valueOf(result.getString("state")),
                         LocalDate.now());
+                user.setPermission(User.Permission.valueOf(result.getString("permission")));
+                user.setAccess(User.Access.valueOf(result.getString("access")));
             }
 
         } catch (SQLException e) {
