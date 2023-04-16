@@ -6,6 +6,7 @@ import model.user.User;
 import view.Home;
 import view.Menu;
 
+import javax.swing.text.Style;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -68,6 +69,9 @@ public class ClientController implements ActionListener {
                     System.out.println("Connexion refusee, le user est banni");
                 }
             }
+        }
+        if (user == null) {
+            System.out.println("Aucun utilisateur trouve");
         }
     }
 
