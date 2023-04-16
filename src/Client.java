@@ -8,7 +8,6 @@ import model.Message;
 import model.user.User;
 import view.Menu;
 
-import javax.swing.text.View;
 import java.awt.*;
 import java.io.*;
 import java.net.*;

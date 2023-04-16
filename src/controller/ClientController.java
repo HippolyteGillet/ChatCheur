@@ -13,18 +13,20 @@ import java.io.IOException;
 import java.util.List;
 
 public class ClientController implements ActionListener {
-    private final Menu view;
+    private final Menu view1;
+    private Home view2;
     private User user;
     private List<User> users;
     private List<Log> logs;
     private List<Message> messages;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view) {
+        this.view2 = null;
         this.user = null;
         this.users = users;
         this.logs = logs;
         this.messages = messages;
-        this.view = view;
+        this.view1 = view;
     }
 
     public List<User> getUsers() {
@@ -73,11 +75,11 @@ public class ClientController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "Connexion":
-                connection(view.getUsername(), view.getPassword());
+                connection(view1.getUsername(), view1.getPassword());
                 if (user != null) {
-                    Home home;
                     try {
-                        home = new Home();
+                        view1.dispose();
+                        view2 = new Home();
                     } catch (IOException | FontFormatException ex) {
                         throw new RuntimeException(ex);
                     }
