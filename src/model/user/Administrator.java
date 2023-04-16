@@ -6,12 +6,12 @@ public class Administrator extends Moderator{
 
     Administrator(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDate lastConnectionTime) {
         super(id, userName, password, email, firstName, lastName, state, lastConnectionTime);
-        setAccess(Access.ADMINISTRATOR);
+        setPermission(Permission.ADMINISTRATOR);
         //java.DAO update:
         //userDAO.update(this);
     }
 
-    public void changeStatus(User user, Access access){
+    public void changeStatus(User user, Permission access){
 
         switch (access) {
             case ADMINISTRATOR -> {

@@ -19,14 +19,13 @@ import java.util.List;
 class Client {
 
     static String name;
-    //static Controller controller;
-
 
     Client(String name) throws IOException, FontFormatException {
         this.name = name;
     }
 
     public static void main(String[] args) throws IOException, FontFormatException {
+        //---------------------------------------INITIALISATION------------------------------------
         //Create the connection to the DB
         ConnectionDataBaseSQL.accessDriver();
         //Create all dao class to retrieve data from the database
@@ -34,6 +33,7 @@ class Client {
         LogDao logDao = new LogDao();
         MessageDao messageDao = new MessageDao();
         //Create all the model and retrieve the data stored in the database
+        User userModel = new User();
         List<User> usersModel = userDao.retrieveUsersFromDB();
         List<Message> messagesModel = messageDao.retrieveMessagesFromDB();
         List<Log> logsModel = logDao.retrieveLogsFromDB();
@@ -42,11 +42,13 @@ class Client {
         //Create the controller
         ClientController controller = new ClientController(usersModel, logsModel, messagesModel, view);
 
+        //
+        view.getButton().addActionListener(controller);
         Scanner sc = new Scanner(System.in);
+
         //ask for a name:
         System.out.println("Enter your Username: ");
         name = sc.nextLine();
-        //TODO : Connexion()
 
 
         try (Socket socket = new Socket("localhost", 9000)) {

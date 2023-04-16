@@ -1,7 +1,7 @@
 # Dump of table model.model.user
 # ------------------------------------------------------------
 
-LOCK TABLES chatcheur.model.model.user WRITE;
+LOCK TABLES chatcheur.user WRITE;
 INSERT INTO chatcheur.user (USER_NAME, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PERMISSION,
                             LAST_CONNECTION_T, ACCESS, STATE)
 VALUES ('gabyformula', 'gabriel', 'henaux', 'gaby.henaux@gmail.com', 'mercedes08', 'moderator', CURRENT_TIMESTAMP,
@@ -28,7 +28,7 @@ UNLOCK TABLES;
 # Dump of table model.log
 # ------------------------------------------------------------
 
-LOCK TABLES chatcheur.model.log WRITE;
+LOCK TABLES chatcheur.log WRITE;
 INSERT INTO chatcheur.log (USER_ID, TIMESTAMP, TYPELOG)
 VALUES (5, CURRENT_TIMESTAMP, 'CONNECTION'),
        (1, CURRENT_TIMESTAMP,'DISCONNECTION');

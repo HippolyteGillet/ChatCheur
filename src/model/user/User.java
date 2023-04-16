@@ -16,7 +16,7 @@ public class User {
     private State state;
     private LocalDate lastConnectionTime;
 
-    public enum Permission {
+    public enum Access {
         BANNED,
         ACCEPTED
     }
@@ -27,7 +27,7 @@ public class User {
         OFFLINE
     }
 
-    public enum Access {
+    public enum Permission {
         USER,
         MODERATOR,
         ADMINISTRATOR
@@ -42,13 +42,10 @@ public class User {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.permission = Permission.ACCEPTED;
-        this.access = Access.USER;
+        this.access= Access.ACCEPTED;
+        this.permission = Permission.USER;
         this.state = state;
         this.lastConnectionTime = lastConnectionTime;
-
-        //DAO update:
-        //userDAO.update(this);
     }
 
     public int getId() {
@@ -133,8 +130,6 @@ public class User {
 
     public void setAccess(Access access) {
         this.access = access;
-        //DAO update:
-        //userDAO.update(this);
     }
 
     public State getState() {
@@ -179,8 +174,6 @@ public class User {
     public void connect() {
         this.state = State.ONLINE;
         this.lastConnectionTime = LocalDate.now();
-        //DAO update:
-        //userDAO.update(this);
     }
 
     public void disconnect() {

@@ -42,7 +42,7 @@ CREATE TABLE chatcheur.log
     ID        int NOT NULL AUTO_INCREMENT,
     USER_ID   varchar(255) DEFAULT NULL,
     TIMESTAMP timestamp    DEFAULT CURRENT_TIMESTAMP,
-    TYPELOG   enum ('connection','disconnection','sent','ban','stateUpdate'),
+    TYPELOG   enum ('CONNECTION','DISCONNECTION','SENT','BAN','STATEUPDATE'),
     PRIMARY KEY (ID),
     FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID)
 );
