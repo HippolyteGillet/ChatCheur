@@ -4,16 +4,16 @@
 LOCK TABLES chatcheur.user WRITE;
 INSERT INTO chatcheur.user (USER_NAME, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, PERMISSION,
                             LAST_CONNECTION_T, ACCESS, STATE)
-VALUES ('gabyformula', 'gabriel', 'henaux', 'gaby.henaux@gmail.com', 'mercedes08', 'moderator', CURRENT_TIMESTAMP,
-        'banned', 'offline'),
-       ('baloo', 'hippolyte', 'gillet', 'hippo.gillet@gmail.com', 'GitHub007', 'admin', CURRENT_TIMESTAMP,
-        'accepted', 'offline'),
-       ('chofo', 'nathan', 'outrey', 'nathoudu66@gmail.com', '@perpignan', 'normal', CURRENT_TIMESTAMP, 'accepted',
-        'offline'),
-       ('jujulafondue', 'juliette', 'lafond', 'juliettelafond@gmail.com', '123456789', 'admin', CURRENT_TIMESTAMP,
-        'accepted', 'offline'),
-       ('stanounette', 'stanislas', 'bourseau', 'stan_bourseau@gmail.com', 'Socket69', 'moderator',
-        CURRENT_TIMESTAMP, 'accepted', 'offline');
+VALUES ('gabyformula', 'gabriel', 'henaux', 'gaby.henaux@gmail.com', 'mercedes08', 'MODERATOR', CURRENT_TIMESTAMP,
+        'BANNED', 'OFFLINE'),
+       ('baloo', 'hippolyte', 'gillet', 'hippo.gillet@gmail.com', 'GitHub007', 'ADMINISTRATOR', CURRENT_TIMESTAMP,
+        'ACCEPTED', 'OFFLINE'),
+       ('chofo', 'nathan', 'outrey', 'nathoudu66@gmail.com', '@perpignan', 'USER', CURRENT_TIMESTAMP, 'ACCEPTED',
+        'OFFLINE'),
+       ('jujulafondue', 'juliette', 'lafond', 'juliettelafond@gmail.com', '123456789', 'ADMINISTRATOR', CURRENT_TIMESTAMP,
+        'ACCEPTED', 'OFFLINE'),
+       ('stanounette', 'stanislas', 'bourseau', 'stan_bourseau@gmail.com', 'Socket69', 'MODERATOR',
+        CURRENT_TIMESTAMP, 'ACCEPTED', 'OFFLINE');
 UNLOCK
 TABLES;
 

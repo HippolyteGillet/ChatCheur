@@ -10,7 +10,7 @@ CREATE TABLE chatcheur.user
     LAST_NAME         varchar(255) DEFAULT NULL,
     EMAIL             varchar(255) DEFAULT NULL,
     PASSWORD          varchar(255) DEFAULT NULL,
-    PERMISSION        enum ('ADMIN','MODERATOR','NORMAL'),
+    PERMISSION        enum ('ADMINISTRATOR','MODERATOR','USER'),
     LAST_CONNECTION_T timestamp    DEFAULT CURRENT_TIMESTAMP,
     ACCESS            enum ('ACCEPTED','BANNED'),
     STATE             enum ('ONLINE','OFFLINE','AWAY'),
