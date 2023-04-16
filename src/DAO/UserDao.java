@@ -21,7 +21,7 @@ public class UserDao implements DAO<User> {
             //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user2");
             //if (!result.first()){}
             //while (result.next()){}
-            PreparedStatement preparedStatement = this.connect.prepareStatement("INSERT INTO chatcheur.user VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement preparedStatement = this.connect.prepareStatement("INSERT INTO user VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement.setInt(1, object.getId());
             preparedStatement.setString(2, object.getUserName());
             preparedStatement.setString(3, object.getFirstName());
@@ -50,7 +50,7 @@ public class UserDao implements DAO<User> {
         //ConnectionDataBaseSQL.accessDriver();
         User user = new User();
         try {
-            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM chatcheur.user WHERE id = " + id);
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE id = " + id);
             //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + id);
             //if (result.first()){}
             while (result.next()) {
@@ -71,7 +71,7 @@ public class UserDao implements DAO<User> {
     public int newIdUser() {
         int previousId = 0;
         try {
-            ResultSet result = this.connect.createStatement().executeQuery("SELECT MAX(id) as id FROM chatcheur.user");
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT MAX(id) as id FROM user");
             while (result.next()) previousId = result.getInt("id");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -85,7 +85,7 @@ public class UserDao implements DAO<User> {
         try {
             //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + object.getId());
             //if (result.first()){}
-            this.connect.createStatement().executeUpdate("UPDATE chatcheur.user SET user_name = '" + object.getUserName() +
+            this.connect.createStatement().executeUpdate("UPDATE user SET user_name = '" + object.getUserName() +
                     "', first_name = '" + object.getFirstName() + "', last_name = '" + object.getLastName() +
                     "', email = '" + object.getEmail() + "', password = '" + object.getPassword() +
                     "', permission = '" + object.getPermission() + "', last_connection_t = '" + object.getLastConnectionTime() +
@@ -108,9 +108,9 @@ public class UserDao implements DAO<User> {
     @Override
     public void delete(int id) {
         try {
-            ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM chatcheur.user WHERE id = " + id);
+            ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + id);
             if (result.first()) {
-                this.connect.createStatement().executeUpdate("DELETE FROM chatcheur.user WHERE id = " + id);
+                this.connect.createStatement().executeUpdate("DELETE FROM user WHERE id = " + id);
                 System.out.println("Delete completed.");
 
             } else System.out.println("User doesn't exist.");
@@ -127,7 +127,7 @@ public class UserDao implements DAO<User> {
         List<User> users = new ArrayList<>();
         int id = 0;
         try {
-            ResultSet rs = this.connect.createStatement().executeQuery("SELECT * FROM chatcheur.user");
+            ResultSet rs = this.connect.createStatement().executeQuery("SELECT * FROM user");
             do {
                 id++;
                 if (find(id) != null) {

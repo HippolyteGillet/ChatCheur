@@ -1,9 +1,14 @@
 package view;
 
+import model.Log;
+import model.Message;
+import model.user.User;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class LogOut extends JDialog {
     Font font;
@@ -15,7 +20,7 @@ public class LogOut extends JDialog {
         }
     }
 
-    public LogOut(JFrame parentFrame) {
+    public LogOut(JFrame parentFrame, java.util.List<User> userList, java.util.List<Log> logList, List<Message> messageList) {
         setBounds(650, 200, 400, 400);
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -70,7 +75,7 @@ public class LogOut extends JDialog {
             parentFrame.dispose();
             Menu logIn;
             try {
-                logIn = new Menu();
+                logIn = new Menu(userList, logList, messageList);
             } catch (IOException | FontFormatException ex) {
                 throw new RuntimeException(ex);
             }

@@ -11,9 +11,9 @@ public class Administrator extends Moderator{
         //userDAO.update(this);
     }
 
-    public void changeStatus(User user, Permission access){
+    public void changeStatus(User user, Permission permission){
 
-        switch (access) {
+        switch (permission) {
             case ADMINISTRATOR -> {
                 Administrator administrator = new Administrator(user.getId(), user.getUserName(), user.getPassword(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getState(), user.getLastConnectionTime());
                 //Replace the old object by the new one:

@@ -37,8 +37,8 @@ class Client {
         List<Message> messagesModel = messageDao.retrieveMessagesFromDB();
         List<Log> logsModel = logDao.retrieveLogsFromDB();
         //Create a view
-        System.out.println("usersModel = " + usersModel);
-        Menu view = new Menu();
+        Menu view = new Menu(usersModel, logsModel, messagesModel);
+        System.out.println(usersModel);
         //Create the controller
         ClientController controller = new ClientController(usersModel, logsModel, messagesModel, view);
 
