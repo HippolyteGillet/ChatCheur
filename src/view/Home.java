@@ -227,6 +227,51 @@ public class Home extends JFrame {
         });
         contactPanel.add(logOut);
 
+        //Ban Icon
+        ImageIcon iconBan = new ImageIcon("IMG/ban-icon.png");
+        Image imgBan = iconBan.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        iconBan = new ImageIcon(imgBan);
+
+        //Unban Icon
+        ImageIcon iconUnban = new ImageIcon("IMG/unban-icon.png");
+        Image imgUnban = iconUnban.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        iconUnban = new ImageIcon(imgUnban);
+
+        //Dessine les icones de ban et unban selon les utilisateurs et leur status
+        for (int i = 0; i < users.length; i++) {
+            JLabel ban = new JLabel(iconUnban);
+            switch (status[i]) {
+                case "Online", "Offline", "Away" -> ban.setIcon(iconBan);
+                case "Banned" -> ban.setIcon(iconUnban);
+            }
+            int finalI = i;
+            ImageIcon finalIconBan = iconBan;
+            ImageIcon finalIconUnban = iconUnban;
+            ban.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    //Si l'utilisateur est banni, on le débanni, sinon on le banni
+                    if (status[finalI].equals("Banned")) {
+                        int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir débannir cet utilisateur ?", "Confirmer le débannissement", JOptionPane.YES_NO_OPTION);
+                        if (response == JOptionPane.YES_OPTION) {
+                            ban.setIcon(finalIconBan);
+                            status[finalI] = "Offline";
+                        }
+                    }
+                    else{
+                        int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir bannir cet utilisateur ?", "Confirmer le bannissement", JOptionPane.YES_NO_OPTION);
+                        if (response == JOptionPane.YES_OPTION) {
+                            ban.setIcon(finalIconUnban);
+                            status[finalI] = "Banned";
+                        }
+                    }
+                    repaint();
+                }
+            });
+            ban.setBounds(130, 155 + (90 * i), ban.getIcon().getIconWidth(), ban.getIcon().getIconHeight());
+            contactPanel.add(ban);
+        }
+
         JLabel label = new JLabel("Online");
         label.setFont(customFont1.deriveFont(25f));
         label.setForeground(Color.WHITE);
