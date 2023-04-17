@@ -26,8 +26,8 @@ public class Home extends JFrame {
 
     public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
         UserDao userDao = new UserDao();
-        for(User user : userList){
-            if(user.getUserName().equals(username)){
+        for (User user : userList) {
+            if (user.getUserName().equals(username)) {
                 currentUser = user;
             }
         }
@@ -103,6 +103,7 @@ public class Home extends JFrame {
                     textField1.setForeground(Color.BLACK);
                 }
             }
+
             @Override
             public void focusLost(FocusEvent e) {
                 if (textField1.getText().isEmpty()) {
@@ -141,6 +142,8 @@ public class Home extends JFrame {
                 g.fillRoundRect(25, 15, 300, 90, 75, 75);
                 g.fillRoundRect(90, 620, 160, 50, 50, 50);
                 int y = 150;
+                int y1 = 180;
+                g.setFont(customFont1.deriveFont(25f));
                 for (User user : userList) {
                     if (user.getUserName() != null) {
                         if (user.getAccess().equals(User.Access.BANNED)) {
@@ -150,19 +153,14 @@ public class Home extends JFrame {
                         }
                         g.fillRoundRect(10, y, 330, 70, 20, 20);
                         y += 90;
-                    }
-                }
-                g.setColor(Color.WHITE);
-                g.setFont(customFont1.deriveFont(25f));
-                int x = 25 + ((300 - g.getFontMetrics().stringWidth(currentUser.getUserName())) / 2);
-                g.drawString(currentUser.getUserName(), x, 50);
-                int y1 = 180;
-                for (User user : userList) {
-                    if (user.getUserName() != null) {
+                        g.setColor(Color.WHITE);
                         g.drawString(user.getUserName(), 20, y1);
                         y1 += 90;
                     }
                 }
+                g.setColor(Color.WHITE);
+                int x = 25 + ((300 - g.getFontMetrics().stringWidth(currentUser.getUserName())) / 2);
+                g.drawString(currentUser.getUserName(), x, 50);
                 g.setFont(customFont2.deriveFont(25f));
                 g.drawString("ChatCheur", 110, 650);
                 g.setColor(new Color(226, 226, 226));
@@ -267,9 +265,9 @@ public class Home extends JFrame {
         iconUnban = new ImageIcon(imgUnban);
 
         //Dessine les icones de ban et unban selon les utilisateurs et leur status (moderateur et admin)
-        if(!currentUser.getPermission().equals(User.Permission.USER)){
+        if (!currentUser.getPermission().equals(User.Permission.USER)) {
             for (int i = 0; i < userList.size(); i++) {
-                if(userList.get(i).getUserName() != null) {
+                if (userList.get(i).getUserName() != null) {
                     JLabel ban = new JLabel(iconUnban);
                     ban.setIcon(iconBan);
                     switch (userList.get(i).getAccess()) {
@@ -304,6 +302,33 @@ public class Home extends JFrame {
                     ban.setBounds(260, 170 + (90 * i), ban.getIcon().getIconWidth(), ban.getIcon().getIconHeight());
                     contactPanel.add(ban);
                 }
+            }
+        }
+
+        //Infos Icon
+        ImageIcon iconInfos = new ImageIcon("IMG/info.png");
+        Image imgInfos = iconInfos.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
+        iconInfos = new ImageIcon(imgInfos);
+        for(int i = 0; i<userList.size(); i++){
+            if(userList.get(i).getUserName() != null){
+                JLabel infos = new JLabel(iconInfos);
+                FontMetrics metrics = infos.getFontMetrics(customFont1.deriveFont(25f));
+                int x = metrics.stringWidth(userList.get(i).getUserName()) + 30;
+                infos.setBounds(x, 165 + (90 * i), infos.getIcon().getIconWidth(), infos.getIcon().getIconHeight());
+                int finalI = i;
+                infos.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        InfoUser popup;
+                        try {
+                            popup = new InfoUser(userList.get(finalI), currentUser);
+                        } catch (IOException | FontFormatException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        popup.setVisible(true);
+                    }
+                });
+                contactPanel.add(infos);
             }
         }
 
