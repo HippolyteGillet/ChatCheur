@@ -38,7 +38,6 @@ class Client {
         List<Log> logsModel = logDao.retrieveLogsFromDB();
         //Create a view
         Menu view = new Menu(usersModel, logsModel, messagesModel);
-        System.out.println(usersModel);
         //Create the controller
         ClientController controller = new ClientController(usersModel, logsModel, messagesModel, view);
 

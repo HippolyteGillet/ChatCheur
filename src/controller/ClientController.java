@@ -83,7 +83,7 @@ public class ClientController implements ActionListener {
                 if (user != null) {
                     try {
                         view1.dispose();
-                        view2 = new Home(users, logs, messages);
+                        view2 = new Home(users, logs, messages, view1.getUsername());
                     } catch (IOException | FontFormatException ex) {
                         throw new RuntimeException(ex);
                     }
