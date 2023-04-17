@@ -50,7 +50,7 @@ class Client {
         name = sc.nextLine();
 
 
-        try (Socket socket = new Socket("localhost", 9000)) {
+        try (Socket socket = new Socket("localhost", 8999)) {
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
