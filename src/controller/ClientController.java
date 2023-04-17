@@ -71,26 +71,6 @@ public class ClientController implements ActionListener {
                     System.out.println("Connexion autorisee");
 
                     this.user = user;
-
-                    //On se connecte au serveur
-                    try (Socket socket = new Socket("localhost", 9000)) {
-
-                        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-
-                        // reading from server
-                        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-                        out.println(this.user.getUserName() + " has joined the chat");
-                        out.flush();
-                        //TODO: Avertir avec view que le client a rejoint le chat
-
-                        ThreadToDisplay threadToDisplay = new ThreadToDisplay(in);
-
-                        threadToDisplay.start();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 } else {
                     System.out.println("Connexion refusee, le user est banni");
                 }
@@ -114,6 +94,7 @@ public class ClientController implements ActionListener {
                         throw new RuntimeException(ex);
                     }
                 }
+                break;
         }
     }
 

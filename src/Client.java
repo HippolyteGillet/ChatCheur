@@ -47,9 +47,8 @@ class Client {
 
 
         //---------------------------------------SERVER PART----------------------------------------------
-        Scanner sc = new Scanner(System.in);
-        name = sc.nextLine();
-
+        userModel.setUserName("Stan");
+        name = userModel.getUserName();
 
         try (Socket socket = new Socket("localhost", 9000)) {
 
@@ -72,7 +71,6 @@ class Client {
             while (!"exit".equalsIgnoreCase(line)) {
 
                 // reading from user
-                line = sc.nextLine();
                 switch (line) {
                     case "exit":
                         threadToDisplay.interrupt();
@@ -91,9 +89,6 @@ class Client {
 
 
             }
-
-            // closing the scanner object
-            sc.close();
 
         } catch (IOException e) {
             e.printStackTrace();
