@@ -1,8 +1,10 @@
+package server;
+
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
-// Server class
+// Server.Server class
 class Server {
 
     //Array of all the active clients:

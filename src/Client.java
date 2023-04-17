@@ -2,6 +2,7 @@ import DAO.ConnectionDataBaseSQL;
 import DAO.LogDao;
 import DAO.MessageDao;
 import DAO.UserDao;
+import server.ThreadToDisplay;
 import controller.ClientController;
 import model.Log;
 import model.Message;
@@ -41,12 +42,12 @@ class Client {
         //Create the controller
         ClientController controller = new ClientController(usersModel, logsModel, messagesModel, view);
 
-        //
+        //On ajoute les action listener des boutons
         view.getButton().addActionListener(controller);
-        Scanner sc = new Scanner(System.in);
 
-        //ask for a name:
-        System.out.println("Enter your Username: ");
+
+        //---------------------------------------SERVER PART----------------------------------------------
+        Scanner sc = new Scanner(System.in);
         name = sc.nextLine();
 
 
