@@ -16,7 +16,7 @@ class Server {
 
         try {
 
-            server = new ServerSocket(9000);
+            server = new ServerSocket(8999);
             server.setReuseAddress(true);
 
             // running infinite loop for getting
