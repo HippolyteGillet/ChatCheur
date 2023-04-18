@@ -85,6 +85,8 @@ public class ClientController implements ActionListener {
 
                         this.user = user;
                         this.user.setState(User.State.ONLINE);
+                        //On met a jour BDD
+                        this.userDao.update(this.user);
                         //Création d'un log connection
                         Log logConnection = new Log(user.getId(), Log.TypeLog.CONNECTION);
                         //On ajoute le log dans la BDD
@@ -122,6 +124,9 @@ public class ClientController implements ActionListener {
     public void disconnection() {
         Log logDeconnection = new Log(user.getId(), Log.TypeLog.DISCONNECTION);
         logDao.create(logDeconnection);
+        this.user.setState(User.State.OFFLINE);
+        //On met a jour BDD
+        this.userDao.update(user);
         System.out.println("Utilisateur deconnecte : " + user.getUserName());
         this.user = null;
         gererFenetresDisconnection();
