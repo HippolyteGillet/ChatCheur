@@ -2,6 +2,7 @@ import DAO.ConnectionDataBaseSQL;
 import DAO.LogDao;
 import DAO.MessageDao;
 import DAO.UserDao;
+import server.ThreadToDisplay;
 import controller.ClientController;
 import model.Log;
 import model.Message;
@@ -41,14 +42,16 @@ class Client {
         //Create the controller
         ClientController controller = new ClientController(usersModel, logsModel, messagesModel, view);
 
-        //
+        //On ajoute les action listener des boutons
         view.getButton().addActionListener(controller);
+
+
+        //---------------------------------------SERVER PART----------------------------------------------
+        //userModel.setUserName("Stan");
+        //name = userModel.getUserName();
+
         Scanner sc = new Scanner(System.in);
-
-        //ask for a name:
-        System.out.println("Enter your Username: ");
-        name = sc.nextLine();
-
+        name = userModel.getUserName();
 
         try (Socket socket = new Socket("localhost", 8999)) {
 
@@ -91,12 +94,8 @@ class Client {
 
             }
 
-            // closing the scanner object
-            sc.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 }

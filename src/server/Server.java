@@ -1,3 +1,5 @@
+package server;
+
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -63,7 +65,7 @@ class Server {
         // Constructor
         public ClientHandler(Socket socket)
         {
-           this.clientSocket = socket;
+            this.clientSocket = socket;
 
         }
 

@@ -1,8 +1,12 @@
 package controller;
 
+import DAO.LogDao;
+import DAO.MessageDao;
+import DAO.UserDao;
 import model.Log;
 import model.Message;
 import model.user.User;
+import server.ThreadToDisplay;
 import view.Home;
 import view.Menu;
 
@@ -10,8 +14,13 @@ import javax.swing.text.Style;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.List;
+import java.net.*;
 
 public class ClientController implements ActionListener {
     private final Menu view1;
@@ -20,6 +29,9 @@ public class ClientController implements ActionListener {
     private List<User> users;
     private List<Log> logs;
     private List<Message> messages;
+    private LogDao logDao = new LogDao();
+    private MessageDao messageDao = new MessageDao();
+    private UserDao userDao = new UserDao();
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view) {
         this.view2 = null;
@@ -65,12 +77,17 @@ public class ClientController implements ActionListener {
                     System.out.println("Connexion autorisee");
 
                     this.user = user;
+                    this.user.setState(User.State.ONLINE);
+                    //Création d'un log connection
+                    Log logConnection = new Log(user.getId(), Log.TypeLog.CONNECTION);
+                    //On ajoute le log dans la BDD
+                    logDao.create(logConnection);
                 } else {
                     System.out.println("Connexion refusee, le user est banni");
                 }
             }
         }
-        if (user == null) {
+        if (this.user == null) {
             System.out.println("Aucun utilisateur trouve");
         }
     }
@@ -88,6 +105,7 @@ public class ClientController implements ActionListener {
                         throw new RuntimeException(ex);
                     }
                 }
+                break;
         }
     }
 
