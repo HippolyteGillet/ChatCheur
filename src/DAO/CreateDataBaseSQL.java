@@ -26,7 +26,8 @@ public class CreateDataBaseSQL {
                     "    LAST_CONNECTION_T timestamp    DEFAULT CURRENT_TIMESTAMP," +
                     "    ACCESS            enum ('ACCEPTED','BANNED')," +
                     "    STATE             enum ('ONLINE','OFFLINE','AWAY')," +
-                    "    PRIMARY KEY (ID));");
+                    "    PRIMARY KEY (ID))" +
+                    "ENGINE=InnoDB;");
             //On crée la table log
             statement.executeUpdate("CREATE TABLE chatcheur.log (" +
                     "   ID        int NOT NULL AUTO_INCREMENT," +
@@ -34,7 +35,8 @@ public class CreateDataBaseSQL {
                     "   TIMESTAMP timestamp    DEFAULT CURRENT_TIMESTAMP," +
                     "   TYPELOG   enum ('CONNECTION', 'DISCONNECTION', 'MESSAGE', 'BAN', 'UNBAN', 'SET_ROLE', 'UNKNOWN')," +
                     "   PRIMARY KEY (ID)," +
-                    "   FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID));");
+                    "   FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID))" +
+                    "ENGINE=InnoDB;");
             //On crée la table message
             statement.executeUpdate("CREATE TABLE chatcheur.message (" +
                     "   ID        int NOT NULL AUTO_INCREMENT," +
@@ -42,7 +44,8 @@ public class CreateDataBaseSQL {
                     "   TIMESTAMP timestamp    DEFAULT CURRENT_TIMESTAMP," +
                     "   CONTENT   varchar(255) DEFAULT NULL," +
                     "   PRIMARY KEY (ID)," +
-                    "   FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID));");
+                    "   FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID))" +
+                    "ENGINE=InnoDB;");
 
             //-----------------------DATA-MYSQL--------------------------------------------
             //On insert data dans user
