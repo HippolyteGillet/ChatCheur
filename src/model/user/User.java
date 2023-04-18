@@ -68,10 +68,7 @@ public class User {
 
     public void setUserName(String userName) {
         this.userName = userName;
-        //DAO update:
-        //userDAO.update(this);
-        // OU
-        //userDAO.update(userDAO.find(this.getId()));
+
     }
 
     public String getPassword() {
@@ -80,8 +77,7 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-        //DAO update:
-        //userDAO.update(this);
+
     }
 
     public String getEmail() {
@@ -90,8 +86,7 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-        //DAO update:
-        //userDAO.update(this);
+
     }
 
     public String getFirstName() {
@@ -100,8 +95,7 @@ public class User {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
-        //DAO update:
-        //userDAO.update(this);
+
     }
 
     public String getLastName() {
@@ -110,8 +104,7 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-        //DAO update:
-        //userDAO.update(this);
+
     }
 
     public Permission getPermission() {
@@ -120,8 +113,7 @@ public class User {
 
     public void setPermission(Permission permission) {
         this.permission = permission;
-        //DAO update:
-        //userDAO.update(this);
+
     }
 
     public Access getAccess() {
@@ -138,8 +130,7 @@ public class User {
 
     public void setState(State state) {
         this.state = state;
-        //DAO update:
-        //userDAO.update(this);
+
     }
 
     public LocalDate getLastConnectionTime() {
@@ -148,28 +139,8 @@ public class User {
 
     public void setLastConnectionTime(LocalDate lastConnectionTime) {
         this.lastConnectionTime = lastConnectionTime;
-        //DAO update:
-        //userDAO.update(this);
-    }
 
-    /*
-    public void save(){
-        userDAO.save(this);
     }
-
-    public void update(){
-        userDAO.update(this);
-    }
-
-    public void delete(){
-        userDAO.delete(this);
-    }
-
-    public static User find(int id){
-        return userDAO.find(id);
-    }
-
-    */
 
     public void connect() {
         this.state = State.ONLINE;
@@ -178,24 +149,14 @@ public class User {
 
     public void disconnect() {
         this.state = State.OFFLINE;
-        //DAO update:
-        //userDAO.update(this);
     }
 
     public void away() {
         this.state = State.AWAY;
-        //DAO update:
-        //userDAO.update(this);
     }
 
     public void back() {
         this.state = State.ONLINE;
-        //DAO update:
-        //userDAO.update(this);
-    }
-
-    public void sendMessage(String message) {
-        //TODO
     }
 
     @Override
