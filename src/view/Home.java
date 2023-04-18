@@ -1,18 +1,25 @@
 package view;
 
 import DAO.UserDao;
+import com.mysql.cj.xdevapi.Client;
+import controller.ClientController;
 import model.Log;
 import model.Message;
 import model.user.User;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.time.LocalDateTime;
 
@@ -25,6 +32,7 @@ public class Home extends JFrame {
     private JTextField textField1;
     private JButton sendButton = new JButton("Send");
     int y = 0;
+    private JButton logOut;
 
     public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
         UserDao userDao = new UserDao();
@@ -89,7 +97,7 @@ public class Home extends JFrame {
         scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
         add(scrollPane);
 
-        textField1 = new JTextField("Saisir du texte");
+        JTextField textField1 = new JTextField("Saisir du texte");
         textField1.setHorizontalAlignment(JTextField.CENTER);
         textField1.setBounds(100, 690, 750, 60);
         textField1.setFont(customFont1);
@@ -247,16 +255,12 @@ public class Home extends JFrame {
         ImageIcon iconLogOut = new ImageIcon("IMG/logOut.png");
         Image imgLogOut = iconLogOut.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         iconLogOut = new ImageIcon(imgLogOut);
-        JLabel logOut = new JLabel(iconLogOut);
+        logOut = new JButton(iconLogOut);
+        logOut.setActionCommand("logOut");
+        logOut.setOpaque(false);
+        logOut.setContentAreaFilled(false);
+        logOut.setBorderPainted(false);
         logOut.setBounds(280, 700, iconLogOut.getIconWidth(), iconLogOut.getIconHeight());
-        logOut.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                LogOut popup;
-                popup = new LogOut(Home.this, userList, logList, messageList);
-                popup.setVisible(true);
-            }
-        });
         contactPanel.add(logOut);
 
         //Ban Icon
@@ -366,5 +370,10 @@ public class Home extends JFrame {
     public JTextField getTextField1() {
         return textField1;
     }
+    public void addAllListener(ClientController controller) {
+        this.logOut.addActionListener(controller);
+    }
+
+
 
 }

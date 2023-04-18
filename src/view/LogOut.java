@@ -1,5 +1,6 @@
 package view;
 
+import controller.ClientController;
 import model.Log;
 import model.Message;
 import model.user.User;
@@ -11,7 +12,9 @@ import java.io.IOException;
 import java.util.List;
 
 public class LogOut extends JDialog {
+    private JButton ouiButton;
     Font font;
+
     {
         try {
             font = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(30f);
@@ -20,7 +23,7 @@ public class LogOut extends JDialog {
         }
     }
 
-    public LogOut(JFrame parentFrame, java.util.List<User> userList, java.util.List<Log> logList, List<Message> messageList) {
+    public LogOut(JFrame parentFrame) {
         setBounds(650, 200, 400, 400);
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -51,15 +54,16 @@ public class LogOut extends JDialog {
         getContentPane().add(panel);
 
         // Création des boutons
-        JButton oui = new JButton("");
-        oui.setLocation(125, 160);
-        oui.setBounds(125, 160, 150, 60);
-        oui.setFont(font);
-        oui.setForeground(null);
-        oui.setOpaque(false);
-        oui.setContentAreaFilled(false);
-        oui.setBorderPainted(false);
-        oui.setFocusable(false);
+        ouiButton = new JButton("");
+        ouiButton.setActionCommand("Disconnection");
+        ouiButton.setLocation(125, 160);
+        ouiButton.setBounds(125, 160, 150, 60);
+        ouiButton.setFont(font);
+        ouiButton.setForeground(null);
+        ouiButton.setOpaque(false);
+        ouiButton.setContentAreaFilled(false);
+        ouiButton.setBorderPainted(false);
+        ouiButton.setFocusable(false);
 
         JButton non = new JButton("");
         non.setBounds(125, 250, 150, 60);
@@ -70,21 +74,15 @@ public class LogOut extends JDialog {
         non.setBorderPainted(false);
         non.setFocusable(false);
 
-        oui.addActionListener(e -> {
-            dispose();
-            parentFrame.dispose();
-            Menu logIn;
-            try {
-                logIn = new Menu(userList, logList, messageList);
-            } catch (IOException | FontFormatException ex) {
-                throw new RuntimeException(ex);
-            }
-           logIn.setVisible(true);
-        });
         non.addActionListener(e -> dispose());
 
-        panel.add(oui);
+        panel.add(ouiButton);
         panel.add(non);
 
+    }
+
+
+    public void addAllListener(ClientController controller) {
+        this.ouiButton.addActionListener(controller);
     }
 }
