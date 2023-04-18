@@ -8,9 +8,11 @@ import model.Message;
 import model.user.User;
 import server.ThreadToDisplay;
 import view.Home;
+import view.LogOut;
 import view.Menu;
 import view.NewPassword;
 
+import javax.swing.*;
 import javax.swing.text.Style;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -24,8 +26,9 @@ import java.util.List;
 import java.net.*;
 
 public class ClientController implements ActionListener {
-    private final Menu view1;
+    private Menu view1;
     private Home view2;
+    private LogOut view3;
     private User user;
     private List<User> users;
     private List<Log> logs;
@@ -43,6 +46,7 @@ public class ClientController implements ActionListener {
         this.logs = logs;
         this.messages = messages;
         this.view1 = view;
+        view1.addAllListener(this);
     }
 
     public List<User> getUsers() {
@@ -88,6 +92,8 @@ public class ClientController implements ActionListener {
                         Log logConnection = new Log(user.getId(), Log.TypeLog.CONNECTION);
                         //On ajoute le log dans la BDD
                         logDao.create(logConnection);
+
+                        gererFenetresConnection();
                     } else {
                         System.out.println("Connexion refusee, le user est banni");
                     }
@@ -102,11 +108,77 @@ public class ClientController implements ActionListener {
         }
     }
 
+    public void send(String message) {
+
+        if (message != null && !message.isEmpty() && user != null) {
+            Message messagToSend = new Message(user.getId(), message);
+            Log logToSend = new Log(user.getId(), Log.TypeLog.MESSAGE);
+            //JAVA Part:
+            messages.add(messagToSend);
+            logs.add(logToSend);
+            //SQL Part:
+            try {
+                //////////////!!!!!!!!!!!!!!!!!!!A FAIRE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                //TODO: appeller les gets de MessageDao et LogDao pour ajouter le message et le log dans la BDD
+                MessageDao messageDao = new MessageDao();
+                LogDao logDao = new LogDao();
+                messageDao.create(messagToSend);
+                logDao.create(logToSend);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void gererFenetresConnection() {
+        //On crée fenetre
+        try {
+            //On supprime menu
+            this.view1.dispose();
+            this.view2 = new Home(users, logs, messages, view1.getUsername());
+            //On met la 1ere fenetre a null
+            this.view1 = null;
+            this.view2.addAllListener(this);
+        } catch (IOException | FontFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public void disconnection() {
+        Log logDeconnection = new Log(user.getId(), Log.TypeLog.DISCONNECTION);
+        logDao.create(logDeconnection);
+        System.out.println("Utilisateur deconnecte : " + user.getUserName());
+        this.user = null;
+        gererFenetresDisconnection();
+    }
+
+    public void gererFenetresDisconnection() {
+        //On ferme les autres fenetres
+        view3.dispose();
+        view3 = null;
+        view2.dispose();
+        view2 = null;
+        //On crée la fenetre de base
+        try {
+            view1 = new Menu(users, logs, messages);
+            view1.addAllListener(this);
+        } catch (IOException | FontFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public void gererFenetresLogOut() {
+        view3 = new LogOut(view2);
+        view3.setVisible(true);
+        view3.addAllListener(this);
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "Connexion" -> {
                 connection(view1.getUsername(), view1.getPassword());
+
                 if (user != null) {
                     try {
                         view1.dispose();
@@ -121,6 +193,19 @@ public class ClientController implements ActionListener {
                 user.setPassword(newPassword.getPsswrd());
                 userDao.update(user);
             }
+
+                
+            case "logOut":
+                gererFenetresLogOut();
+                break;
+            case "Disconnection":
+                disconnection();
+                break;
+            case "Send":
+                //TODO: Creeer un button et l'activer dans Home.java
+                send(view2.getTextField1().getText());
+                break;
+
         }
     }
 
