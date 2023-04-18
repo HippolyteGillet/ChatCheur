@@ -1,3 +1,5 @@
+package server;
+
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ class Server {
 
         try {
 
-            server = new ServerSocket(9000);
+            server = new ServerSocket(8999);
             server.setReuseAddress(true);
 
             // running infinite loop for getting
@@ -63,7 +65,7 @@ class Server {
         // Constructor
         public ClientHandler(Socket socket)
         {
-           this.clientSocket = socket;
+            this.clientSocket = socket;
 
         }
 
