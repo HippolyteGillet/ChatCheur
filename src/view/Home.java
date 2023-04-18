@@ -24,18 +24,19 @@ import java.util.Objects;
 import java.time.LocalDateTime;
 
 public class Home extends JFrame {
-    private Color circleColor = Color.GREEN;
-    User currentUser;
-    private Boolean inputReceived;
     private final Font customFont1 = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(30f);
     private final Font customFont2 = Font.createFont(Font.TRUETYPE_FONT, new File("ALBAS.TTF"));
+    private final List<JButton> ban = new ArrayList<>();
+    int y = 0;
+    private User currentUser;
+    private Color circleColor = Color.GREEN;
+    private Boolean inputReceived;
     private JTextField textField1;
     private JButton sendButton = new JButton("Send");
-    int y = 0;
     private JButton logOut;
+    private ImageIcon iconUnban, iconBan;
 
     public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
-        UserDao userDao = new UserDao();
         for (User user : userList) {
             if (user.getUserName().equals(username)) {
                 currentUser = user;
@@ -266,54 +267,41 @@ public class Home extends JFrame {
         contactPanel.add(logOut);
 
         //Ban Icon
-        ImageIcon iconBan = new ImageIcon("IMG/ban-icon.png");
+        iconBan = new ImageIcon("IMG/ban-icon.png");
         Image imgBan = iconBan.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         iconBan = new ImageIcon(imgBan);
 
         //Unban Icon
-        ImageIcon iconUnban = new ImageIcon("IMG/unban-icon.png");
+        iconUnban = new ImageIcon("IMG/unban-icon.png");
         Image imgUnban = iconUnban.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         iconUnban = new ImageIcon(imgUnban);
 
         //Dessine les icones de ban et unban selon les utilisateurs et leur status (moderateur et admin)
         if (!currentUser.getPermission().equals(User.Permission.USER)) {
             int y = 170;
+            List<User> nonCurrentUsers = new ArrayList<>();
             for (User user : userList) {
-                if (user.getUserName() != null && !user.equals(currentUser)) {
-                    JLabel ban = new JLabel(iconUnban);
-                    ban.setIcon(iconBan);
-                    switch (user.getAccess()) {
-                        case ACCEPTED -> ban.setIcon(iconBan);
-                        case BANNED -> ban.setIcon(iconUnban);
+                if (!user.equals(currentUser)) {
+                    nonCurrentUsers.add(user);
+                }
+            }
+            for (int i = 0; i < nonCurrentUsers.size(); i++) {
+                if (nonCurrentUsers.get(i).getUserName() != null) {
+                    this.ban.add(new JButton(iconUnban));
+                    this.ban.get(i).setActionCommand("Ban " + i);
+                    this.ban.get(i).setOpaque(false);
+                    this.ban.get(i).setContentAreaFilled(false);
+                    this.ban.get(i).setBorderPainted(false);
+                    this.ban.get(i).setIcon(iconBan);
+                    switch (nonCurrentUsers.get(i).getAccess()) {
+                        case ACCEPTED -> this.ban.get(i).setIcon(iconBan);
+                        case BANNED -> this.ban.get(i).setIcon(iconUnban);
                     }
-                    ImageIcon finalIconBan = iconBan;
-                    ImageIcon finalIconUnban = iconUnban;
-                    ban.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            //Si l'utilisateur est banni, on le débanni, sinon on le banni
-                            if (user.getAccess().equals(User.Access.BANNED)) {
-                                int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir débannir " + user.getUserName() + " ?", "Confirmer le débannissement", JOptionPane.YES_NO_OPTION);
-                                if (response == JOptionPane.YES_OPTION) {
-                                    ban.setIcon(finalIconBan);
-                                    user.setAccess(User.Access.ACCEPTED);
-                                    userDao.update(user);
-                                }
-                            } else {
-                                int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir bannir " + user.getUserName() + " ?", "Confirmer le bannissement", JOptionPane.YES_NO_OPTION);
-                                if (response == JOptionPane.YES_OPTION) {
-                                    ban.setIcon(finalIconUnban);
-                                    user.setAccess(User.Access.BANNED);
-                                    userDao.update(user);
-                                }
-                            }
-                            repaint();
-                        }
-                    });
-                    ban.setBounds(260, y, ban.getIcon().getIconWidth(), ban.getIcon().getIconHeight());
-                    contactPanel.add(ban);
+                    this.ban.get(i).setBounds(260, y, this.ban.get(i).getIcon().getIconWidth(), this.ban.get(i).getIcon().getIconHeight());
+                    contactPanel.add(this.ban.get(i));
                     y += 90;
                 }
+
             }
         }
 
@@ -321,71 +309,94 @@ public class Home extends JFrame {
         ImageIcon iconInfos = new ImageIcon("IMG/info.png");
         Image imgInfos = iconInfos.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
         iconInfos = new ImageIcon(imgInfos);
-        int y = 165;
-        for(User user : userList){
-            if (user.getUserName() != null && !user.equals(currentUser)) {
-                JLabel infos = new JLabel(iconInfos);
-                FontMetrics metrics = infos.getFontMetrics(customFont1.deriveFont(25f));
-                int x = metrics.stringWidth(user.getUserName()) + 30;
-                infos.setBounds(x, y, infos.getIcon().getIconWidth(), infos.getIcon().getIconHeight());
-                infos.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        InfoUser popup;
-                        try {
-                            popup = new InfoUser(user, currentUser);
-                        } catch (IOException | FontFormatException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                        popup.setVisible(true);
-                    }
-                });
-                contactPanel.add(infos);
-                y += 90;
-            }
-        }
-
-        //Status du currentUser
-        JLabel label = new JLabel();
-        label.setFont(customFont1.deriveFont(25f));
-        label.setForeground(Color.WHITE);
-        int x = (275 - label.getWidth()) / 2;
-        label.setBounds(x, 50, 100, 60);
-        switch (currentUser.getState()) {
-            case ONLINE -> label.setText("Online");
-            case AWAY -> label.setText("Away");
-        }
-        label.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                switch (currentUser.getState()) {
-                    case ONLINE -> {
-                        currentUser.setState(User.State.AWAY);
-                        label.setText("Away");
-                        circleColor = Color.ORANGE;
-                    }
-                    case AWAY -> {
-                        currentUser.setState(User.State.ONLINE);
-                        label.setText("Online");
-                        circleColor = Color.GREEN;
+        for (int i = 0; i < userList.size(); i++) {
+            if (userList.get(i).getUserName() != null) {
+                int y = 165;
+                for (User user : userList) {
+                    if (user.getUserName() != null && !user.equals(currentUser)) {
+                        JLabel infos = new JLabel(iconInfos);
+                        FontMetrics metrics = infos.getFontMetrics(customFont1.deriveFont(25f));
+                        int x = metrics.stringWidth(user.getUserName()) + 30;
+                        infos.setBounds(x, y, infos.getIcon().getIconWidth(), infos.getIcon().getIconHeight());
+                        infos.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                InfoUser popup;
+                                try {
+                                    popup = new InfoUser(user, currentUser);
+                                } catch (IOException | FontFormatException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                                popup.setVisible(true);
+                            }
+                        });
+                        contactPanel.add(infos);
+                        y += 90;
                     }
                 }
-                userDao.update(currentUser);
-                repaint();
-            }
-        });
-        contactPanel.add(label);
 
-        setResizable(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setVisible(true);
+                //Status du currentUser
+                JLabel label = new JLabel();
+                label.setFont(customFont1.deriveFont(25f));
+                label.setForeground(Color.WHITE);
+                int x = (275 - label.getWidth()) / 2;
+                label.setBounds(x, 50, 100, 60);
+                switch (currentUser.getState()) {
+                    case ONLINE -> label.setText("Online");
+                    case AWAY -> label.setText("Away");
+                }
+                label.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        switch (currentUser.getState()) {
+                            case ONLINE -> {
+                                currentUser.setState(User.State.AWAY);
+                                label.setText("Away");
+                                circleColor = Color.ORANGE;
+                            }
+                            case AWAY -> {
+                                currentUser.setState(User.State.ONLINE);
+                                label.setText("Online");
+                                circleColor = Color.GREEN;
+                            }
+                        }
+                        UserDao userDao = new UserDao();
+                        userDao.update(currentUser);
+                        repaint();
+                    }
+                });
+                contactPanel.add(label);
+
+                setResizable(true);
+                setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                setLocationRelativeTo(null);
+                setVisible(true);
+            }
+
+
+        }
+    }
+
+    public JButton getBan(int i) {
+        return ban.get(i);
+    }
+
+    public void setIconBan(int i) {
+        ban.get(i).setIcon(iconBan);
+    }
+
+    public void setIconUnban(int i) {
+        ban.get(i).setIcon(iconUnban);
     }
 
     public JTextField getTextField1() {
         return textField1;
     }
+
     public void addAllListener(ClientController controller) {
         this.logOut.addActionListener(controller);
+        for (JButton jButton : ban) {
+            jButton.addActionListener(controller);
+        }
     }
 }

@@ -17,14 +17,20 @@ import javax.swing.text.Style;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import java.util.ArrayList;
+
 import java.util.List;
 import java.net.*;
 
@@ -32,7 +38,7 @@ public class ClientController implements ActionListener {
     private Menu view1;
     private Home view2;
     private LogOut view3;
-    private User user;
+    private User currentUser;
     private List<User> users;
     private List<Log> logs;
     private List<Message> messages;
@@ -44,7 +50,7 @@ public class ClientController implements ActionListener {
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view) {
         this.view2 = null;
-        this.user = null;
+        this.currentUser = null;
         this.users = users;
         this.logs = logs;
         this.messages = messages;
@@ -91,8 +97,10 @@ public class ClientController implements ActionListener {
                     if (user.getAccess().equals(User.Access.ACCEPTED)) {
                         System.out.println("Connexion autorisee");
 
-                        this.user = user;
-                        this.user.setState(User.State.ONLINE);
+                        this.currentUser = user;
+                        this.currentUser.setState(User.State.ONLINE);
+                        //On met a jour BDD
+                        this.userDao.update(this.currentUser);
                         //Création d'un log connection
                         Log logConnection = new Log(user.getId(), Log.TypeLog.CONNECTION);
                         //On ajoute le log dans la BDD
@@ -108,16 +116,16 @@ public class ClientController implements ActionListener {
                 }
             }
         }
-        if (this.user == null && !userFinded) {
+        if (this.currentUser == null && !userFinded) {
             System.out.println("Aucun utilisateur trouve");
         }
     }
 
     public void send(String message) {
 
-        if (message != null && !message.isEmpty() && user != null) {
-            Message messagToSend = new Message(user.getId(), message);
-            Log logToSend = new Log(user.getId(), Log.TypeLog.MESSAGE);
+        if (message != null && !message.isEmpty() && currentUser != null) {
+            Message messagToSend = new Message(currentUser.getId(), message);
+            Log logToSend = new Log(currentUser.getId(), Log.TypeLog.MESSAGE);
             //JAVA Part:
             messages.add(messagToSend);
             logs.add(logToSend);
@@ -150,10 +158,13 @@ public class ClientController implements ActionListener {
     }
 
     public void disconnection() {
-        Log logDeconnection = new Log(user.getId(), Log.TypeLog.DISCONNECTION);
+        Log logDeconnection = new Log(currentUser.getId(), Log.TypeLog.DISCONNECTION);
         logDao.create(logDeconnection);
-        System.out.println("Utilisateur deconnecte : " + user.getUserName());
-        this.user = null;
+        this.currentUser.setState(User.State.OFFLINE);
+        //On met a jour BDD
+        this.userDao.update(currentUser);
+        System.out.println("Utilisateur deconnecte : " + currentUser.getUserName());
+        this.currentUser = null;
         gererFenetresDisconnection();
     }
 
@@ -178,41 +189,57 @@ public class ClientController implements ActionListener {
         view3.addAllListener(this);
     }
 
+    public void bannissement(int i) {
+        //On cree nouvelle list sans le current user
+        List<User> nonCurrentUsers = new ArrayList<>();
+        for (User user : this.users) {
+            if (!user.equals(this.currentUser)) {
+                nonCurrentUsers.add(user);
+            }
+        }
+        //Si l'utilisateur est banni, on le débanni, sinon on le banni
+        if (nonCurrentUsers.get(i).getAccess().equals(User.Access.BANNED)) {
+            int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir débannir cet utilisateur ?", "Confirmer le débannissement", JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
+                view2.setIconBan(i);
+                users.get(nonCurrentUsers.get(i).getId() - 1).setAccess(User.Access.ACCEPTED);
+                userDao.update(nonCurrentUsers.get(i));
+                Log logBan = new Log(nonCurrentUsers.get(i).getId(), Log.TypeLog.UNBAN);
+                logDao.create(logBan);
+            }
+        } else {
+            int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir bannir cet utilisateur ?", "Confirmer le bannissement", JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
+                view2.setIconUnban(i);
+                users.get(nonCurrentUsers.get(i).getId() - 1).setAccess(User.Access.BANNED);
+                userDao.update(nonCurrentUsers.get(i));
+                Log logBan = new Log(nonCurrentUsers.get(i).getId(), Log.TypeLog.BAN);
+                logDao.create(logBan);
+            }
+        }
+        view2.repaint();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()) {
-            case "Connexion" -> {
-                connection(view1.getUsername(), view1.getPassword());
-
-                if (user != null) {
-                    try {
-                        view1.dispose();
-                        view2 = new Home(users, logs, messages, view1.getUsername());
-                    } catch (IOException | FontFormatException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                }
-            }
+        String[] actionCommand = e.getActionCommand().split(" ");
+        switch (actionCommand[0]) {
+            case "Connexion" -> connection(view1.getUsername(), view1.getPassword());
+            case "logOut" -> gererFenetresLogOut();
+            case "Disconnection" -> disconnection();
+            case "Ban" -> bannissement(Integer.parseInt(actionCommand[1]));
             case "Ok !" -> {
-                user = userDao.findUserName(newPassword.getUserName());
-                user.setPassword(newPassword.getPsswrd());
-                userDao.update(user);
-            }
-
-                
-            case "logOut" -> {
-                gererFenetresLogOut();
-            }
-
-            case "Disconnection" -> {
-                disconnection();
+                currentUser = userDao.findUserName(newPassword.getUserName());
+                currentUser.setPassword(newPassword.getPsswrd());
+                userDao.update(currentUser);
             }
             case "Send" -> {
                 send(view2.getTextField1().getText());
-            }
 
+            }
         }
     }
+
 
     public static String sha256(String input){
         try {
@@ -230,5 +257,6 @@ public class ClientController implements ActionListener {
     }
 
     //Listener pour bouton connection
+
 
 }
