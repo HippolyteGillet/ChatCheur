@@ -8,6 +8,27 @@ import java.io.File;
 import java.io.IOException;
 
 public class NewPassword extends JDialog {
+
+    private String userName;
+
+    private String psswrd;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPsswrd() {
+        return psswrd;
+    }
+
+    public void setPsswrd(String psswrd) {
+        this.psswrd = psswrd;
+    }
+
     public NewPassword() throws IOException, FontFormatException {
         setBounds(420, 150, 600, 600);
         setResizable(false);
@@ -60,6 +81,9 @@ public class NewPassword extends JDialog {
                 }
             }
         });
+        // N
+        setUserName(textField1.getText());
+
         panel.add(textField1);
 
         JTextField textField2 = new JTextField("Nouveau mot de passe");
@@ -114,6 +138,9 @@ public class NewPassword extends JDialog {
                 }
             }
         });
+        // N
+        setPsswrd(textField3.getText());
+
         panel.add(textField3);
 
         JButton button = new JButton("Ok !");

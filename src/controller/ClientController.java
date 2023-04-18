@@ -10,6 +10,7 @@ import server.ThreadToDisplay;
 import view.Home;
 import view.LogOut;
 import view.Menu;
+import view.NewPassword;
 
 import javax.swing.*;
 import javax.swing.text.Style;
@@ -35,6 +36,8 @@ public class ClientController implements ActionListener {
     private LogDao logDao = new LogDao();
     private MessageDao messageDao = new MessageDao();
     private UserDao userDao = new UserDao();
+
+    private NewPassword newPassword;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view) {
         this.view2 = null;
@@ -173,9 +176,25 @@ public class ClientController implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case "Connexion":
+            case "Connexion" -> {
                 connection(view1.getUsername(), view1.getPassword());
-                break;
+
+                if (user != null) {
+                    try {
+                        view1.dispose();
+                        view2 = new Home(users, logs, messages, view1.getUsername());
+                    } catch (IOException | FontFormatException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }
+            case "Ok !" -> {
+                user = userDao.findUserName(newPassword.getUserName());
+                user.setPassword(newPassword.getPsswrd());
+                userDao.update(user);
+            }
+
+                
             case "logOut":
                 gererFenetresLogOut();
                 break;
@@ -186,6 +205,7 @@ public class ClientController implements ActionListener {
                 //TODO: Creeer un button et l'activer dans Home.java
                 send(view2.getTextField1().getText());
                 break;
+
         }
     }
 
