@@ -9,6 +9,7 @@ import model.user.User;
 import server.ThreadToDisplay;
 import view.Home;
 import view.Menu;
+import view.NewPassword;
 
 import javax.swing.text.Style;
 import java.awt.*;
@@ -32,6 +33,8 @@ public class ClientController implements ActionListener {
     private LogDao logDao = new LogDao();
     private MessageDao messageDao = new MessageDao();
     private UserDao userDao = new UserDao();
+
+    private NewPassword newPassword;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view) {
         this.view2 = null;
@@ -102,7 +105,7 @@ public class ClientController implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
-            case "Connexion":
+            case "Connexion" -> {
                 connection(view1.getUsername(), view1.getPassword());
                 if (user != null) {
                     try {
@@ -112,7 +115,12 @@ public class ClientController implements ActionListener {
                         throw new RuntimeException(ex);
                     }
                 }
-                break;
+            }
+            case "Ok !" -> {
+                user = userDao.findUserName(newPassword.getUserName());
+                user.setPassword(newPassword.getPsswrd());
+                userDao.update(user);
+            }
         }
     }
 
