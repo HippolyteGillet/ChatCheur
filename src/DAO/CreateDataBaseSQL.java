@@ -26,15 +26,17 @@ public class CreateDataBaseSQL {
                     "    LAST_CONNECTION_T timestamp    DEFAULT CURRENT_TIMESTAMP," +
                     "    ACCESS            enum ('ACCEPTED','BANNED')," +
                     "    STATE             enum ('ONLINE','OFFLINE','AWAY')," +
-                    "    PRIMARY KEY (ID));");
+                    "    PRIMARY KEY (ID))" +
+                    "ENGINE=InnoDB;");
             //On crée la table log
             statement.executeUpdate("CREATE TABLE chatcheur.log (" +
                     "   ID        int NOT NULL AUTO_INCREMENT," +
                     "   USER_ID   varchar(255) DEFAULT NULL," +
                     "   TIMESTAMP timestamp    DEFAULT CURRENT_TIMESTAMP," +
-                    "   TYPELOG   enum ('CONNECTION','DISCONNECTION','SENT','BAN','STATEUPDATE')," +
+                    "   TYPELOG   enum ('CONNECTION', 'DISCONNECTION', 'MESSAGE', 'BAN', 'UNBAN', 'SET_ROLE', 'UNKNOWN')," +
                     "   PRIMARY KEY (ID)," +
-                    "   FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID));");
+                    "   FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID))" +
+                    "ENGINE=InnoDB;");
             //On crée la table message
             statement.executeUpdate("CREATE TABLE chatcheur.message (" +
                     "   ID        int NOT NULL AUTO_INCREMENT," +
@@ -42,7 +44,8 @@ public class CreateDataBaseSQL {
                     "   TIMESTAMP timestamp    DEFAULT CURRENT_TIMESTAMP," +
                     "   CONTENT   varchar(255) DEFAULT NULL," +
                     "   PRIMARY KEY (ID)," +
-                    "   FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID));");
+                    "   FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID))" +
+                    "ENGINE=InnoDB;");
 
             //-----------------------DATA-MYSQL--------------------------------------------
             //On insert data dans user
@@ -58,7 +61,7 @@ public class CreateDataBaseSQL {
                     "PERMISSION, LAST_CONNECTION_T, ACCESS, STATE) VALUES ('jujulafondue', 'juliette', 'lafond', 'juliettelafond@gmail.com', '123', 'USER', CURRENT_TIMESTAMP," +
                     "   'ACCEPTED', 'OFFLINE')");
             statement.executeUpdate("INSERT INTO chatcheur.user (USER_NAME, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, " +
-                    "PERMISSION, LAST_CONNECTION_T, ACCESS, STATE) VALUES ('jujulafondue', 'juliette', 'lafond', 'juliettelafond@gmail.com', '123456789', 'MODERATOR', CURRENT_TIMESTAMP," +
+                    "PERMISSION, LAST_CONNECTION_T, ACCESS, STATE) VALUES ('nul', 'nul', 'nul', 'nul@gmail.com', '123456789', 'MODERATOR', CURRENT_TIMESTAMP," +
                     "   'ACCEPTED', 'OFFLINE')");
             //On insert data dans message
             statement.executeUpdate("INSERT INTO chatcheur.message (USER_ID, TIMESTAMP, CONTENT) VALUES (2, CURRENT_TIMESTAMP, 'Coucou comment vas-tu ?')");
