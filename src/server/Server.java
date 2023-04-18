@@ -121,8 +121,6 @@ class Server {
                     try {
                         clientSocket.close();
                         clients.remove(this);
-                        //TODO: Faire tous les appels nécessaires pour supprimer le client de la liste des clients connectés
-                        //TODO: deconnexion()
                     }
                     catch (IOException e) {
                         e.printStackTrace();

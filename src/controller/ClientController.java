@@ -24,7 +24,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import java.util.ArrayList;
+
 import java.util.List;
 import java.net.*;
 
@@ -81,8 +87,10 @@ public class ClientController implements ActionListener {
         //On parcourt tous les users
         for (User user : this.users) {
             //On cherche un user avec le nom et le mdp correspondent
-            if (user.getUserName().equals(username) || user.getPassword().equals(psw)) {
-                if (user.getUserName().equals(username) && user.getPassword().equals(psw)) {
+            //chiffrer le mdp en SHA-256
+
+            if (user.getUserName().equals(username)) {
+                if (user.getUserName().equals(username) && user.getPassword().equals(sha256(psw))) {
                     userFinded = true;
                     System.out.println("User trouve : " + username);
                     //On regarde si le user est banni
@@ -231,4 +239,24 @@ public class ClientController implements ActionListener {
             }
         }
     }
+
+
+    public static String sha256(String input){
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashInBytes = md.digest(input.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashInBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    //Listener pour bouton connection
+
+
 }
