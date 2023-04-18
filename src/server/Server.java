@@ -1,10 +1,8 @@
-package server;
-
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
-// Server.Server class
+// Server class
 class Server {
 
     //Array of all the active clients:
@@ -65,7 +63,7 @@ class Server {
         // Constructor
         public ClientHandler(Socket socket)
         {
-           this.clientSocket = socket;
+            this.clientSocket = socket;
 
         }
 
