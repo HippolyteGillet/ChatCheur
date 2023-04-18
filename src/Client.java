@@ -2,7 +2,7 @@ import DAO.ConnectionDataBaseSQL;
 import DAO.LogDao;
 import DAO.MessageDao;
 import DAO.UserDao;
-import server.ThreadToDisplay;
+import server.*;
 import controller.ClientController;
 import model.Log;
 import model.Message;
@@ -47,8 +47,6 @@ class Client {
 
 
         //---------------------------------------SERVER PART----------------------------------------------
-        //userModel.setUserName("Stan");
-        //name = userModel.getUserName();
 
         Scanner sc = new Scanner(System.in);
         name = userModel.getUserName();

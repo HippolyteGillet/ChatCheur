@@ -67,27 +67,34 @@ public class ClientController implements ActionListener {
     }
 
     public void connection(String username, String psw) {
+        boolean userFinded = false;
         //On parcourt tous les users
         for (User user : this.users) {
             //On cherche un user avec le nom et le mdp correspondent
-            if (user.getUserName().equals(username) && user.getPassword().equals(psw)) {
-                System.out.println("User trouve : " + username);
-                //On regarde si le user est banni
-                if (user.getAccess().equals(User.Access.ACCEPTED)) {
-                    System.out.println("Connexion autorisee");
+            if (user.getUserName().equals(username) || user.getPassword().equals(psw)) {
+                if (user.getUserName().equals(username) && user.getPassword().equals(psw)) {
+                    userFinded = true;
+                    System.out.println("User trouve : " + username);
+                    //On regarde si le user est banni
+                    if (user.getAccess().equals(User.Access.ACCEPTED)) {
+                        System.out.println("Connexion autorisee");
 
-                    this.user = user;
-                    this.user.setState(User.State.ONLINE);
-                    //Création d'un log connection
-                    Log logConnection = new Log(user.getId(), Log.TypeLog.CONNECTION);
-                    //On ajoute le log dans la BDD
-                    logDao.create(logConnection);
-                } else {
-                    System.out.println("Connexion refusee, le user est banni");
+                        this.user = user;
+                        this.user.setState(User.State.ONLINE);
+                        //Création d'un log connection
+                        Log logConnection = new Log(user.getId(), Log.TypeLog.CONNECTION);
+                        //On ajoute le log dans la BDD
+                        logDao.create(logConnection);
+                    } else {
+                        System.out.println("Connexion refusee, le user est banni");
+                    }
+                } else if (user.getUserName().equals(username)) {
+                    userFinded = true;
+                    System.out.println("Mdp incorrect");
                 }
             }
         }
-        if (this.user == null) {
+        if (this.user == null && !userFinded) {
             System.out.println("Aucun utilisateur trouve");
         }
     }
