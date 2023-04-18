@@ -195,16 +195,16 @@ public class ClientController implements ActionListener {
             }
 
                 
-            case "logOut":
+            case "logOut" -> {
                 gererFenetresLogOut();
-                break;
-            case "Disconnection":
+            }
+
+            case "Disconnection" -> {
                 disconnection();
-                break;
-            case "Send":
-                //TODO: Creeer un button et l'activer dans Home.java
+            }
+            case "Send" -> {
                 send(view2.getTextField1().getText());
-                break;
+            }
 
         }
     }
