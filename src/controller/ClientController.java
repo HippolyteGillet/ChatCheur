@@ -216,27 +216,18 @@ public class ClientController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String[] actionCommand = e.getActionCommand().split(" ");
         switch (actionCommand[0]) {
-            case "Connexion":
-                connection(view1.getUsername(), view1.getPassword());
-                break;
-            case "logOut":
-                gererFenetresLogOut();
-                break;
-            case "Disconnection":
-                disconnection();
-                break;
-            case "Ban":
-                bannissement(Integer.parseInt(actionCommand[1]));
-                break;
-            case "Ok !":
+            case "Connexion" -> connection(view1.getUsername(), view1.getPassword());
+            case "logOut" -> gererFenetresLogOut();
+            case "Disconnection" -> disconnection();
+            case "Ban" -> bannissement(Integer.parseInt(actionCommand[1]));
+            case "Ok !" -> {
                 currentUser = userDao.findUserName(newPassword.getUserName());
                 currentUser.setPassword(newPassword.getPsswrd());
                 userDao.update(currentUser);
-            break;
-            case "Send":
-                //TODO: Creeer un button et l'activer dans Home.java
+            }
+            case "Send" -> {
                 send(view2.getTextField1().getText());
-                break;
+            }
         }
     }
 
