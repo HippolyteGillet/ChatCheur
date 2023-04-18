@@ -278,8 +278,8 @@ public class Home extends JFrame {
 
         //Dessine les icones de ban et unban selon les utilisateurs et leur status (moderateur et admin)
         if (!currentUser.getPermission().equals(User.Permission.USER)) {
-            for (int i = 0; i < userList.size(); i++) {
-                if (userList.get(i).getUserName() != null) {
+            for (int i = 0; i < userList.size()-1; i++) {
+
                     this.ban.add(new JButton(iconUnban));
                     this.ban.get(i).setActionCommand("Ban " + i);
                     this.ban.get(i).setOpaque(false);
@@ -292,7 +292,7 @@ public class Home extends JFrame {
                     }
                     this.ban.get(i).setBounds(260, 170 + (90 * i), this.ban.get(i).getIcon().getIconWidth(), this.ban.get(i).getIcon().getIconHeight());
                     contactPanel.add(this.ban.get(i));
-                }
+
             }
         }
 
@@ -351,6 +351,7 @@ public class Home extends JFrame {
                                 circleColor = Color.GREEN;
                             }
                         }
+                        UserDao userDao = new UserDao();
                         userDao.update(currentUser);
                         repaint();
                     }
