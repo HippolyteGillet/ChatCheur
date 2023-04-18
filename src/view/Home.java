@@ -22,6 +22,8 @@ public class Home extends JFrame {
     private Boolean inputReceived;
     private final Font customFont1 = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(30f);
     private final Font customFont2 = Font.createFont(Font.TRUETYPE_FONT, new File("ALBAS.TTF"));
+    private JTextField textField1;
+    private JButton sendButton = new JButton("Send");
     int y = 0;
 
     public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
@@ -87,7 +89,7 @@ public class Home extends JFrame {
         scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
         add(scrollPane);
 
-        JTextField textField1 = new JTextField("Saisir du texte");
+        textField1 = new JTextField("Saisir du texte");
         textField1.setHorizontalAlignment(JTextField.CENTER);
         textField1.setBounds(100, 690, 750, 60);
         textField1.setFont(customFont1);
@@ -115,6 +117,9 @@ public class Home extends JFrame {
         textField1.addActionListener(e -> {
             if (!textField1.getText().isEmpty()) {
                 inputReceived = true;
+                //TODO: creer une action qui se nomme "Send" et l'activer:
+                //créer un actionlistener du button entrer:
+
                 messages.add(textField1.getText());
                 textField1.setText(null);
                 if (messages.size() < 12) {
@@ -357,4 +362,9 @@ public class Home extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
+
+    public JTextField getTextField1() {
+        return textField1;
+    }
+
 }
