@@ -10,6 +10,7 @@ import server.ThreadToDisplay;
 import view.Home;
 import view.LogOut;
 import view.Menu;
+import view.NewPassword;
 
 import javax.swing.*;
 import javax.swing.text.Style;
@@ -37,6 +38,8 @@ public class ClientController implements ActionListener {
     private LogDao logDao = new LogDao();
     private MessageDao messageDao = new MessageDao();
     private UserDao userDao = new UserDao();
+
+    private NewPassword newPassword;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view) {
         this.view2 = null;
@@ -217,7 +220,11 @@ public class ClientController implements ActionListener {
             case "Ban":
                 bannissement(Integer.parseInt(actionCommand[1]));
                 break;
-
+            case "Ok !":
+                user = userDao.findUserName(newPassword.getUserName());
+                user.setPassword(newPassword.getPsswrd());
+                userDao.update(user);
+            break;
             case "Send":
                 //TODO: Creeer un button et l'activer dans Home.java
                 send(view2.getTextField1().getText());

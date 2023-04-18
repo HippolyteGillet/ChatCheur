@@ -50,16 +50,16 @@ public class UserDao implements DAO<User> {
         //ConnectionDataBaseSQL.accessDriver();
         User user = new User();
         try {
-            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE id = " + id);
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE ID = " + id);
             //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + id);
             //if (result.first()){}
             while (result.next()) {
-                user = new User(id, result.getString("user_name"), result.getString("password"),
-                        result.getString("email"), result.getString("first_name"),
-                        result.getString("last_name"), User.State.valueOf(result.getString("state")),
+                user = new User(id, result.getString("USER_NAME"), result.getString("PASSWORD"),
+                        result.getString("EMAIL"), result.getString("FIRST_NAME"),
+                        result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
                         LocalDate.now());
-                user.setPermission(User.Permission.valueOf(result.getString("permission")));
-                user.setAccess(User.Access.valueOf(result.getString("access")));
+                user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
+                user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
             }
 
         } catch (SQLException e) {
@@ -144,5 +144,29 @@ public class UserDao implements DAO<User> {
         return users;
     }
 
-    // TODO update() | findPassword() | findUserName
+    public User findUserName(String stringUserName) {
+        //ConnectionDataBaseSQL.accessDriver();
+        User user = new User();
+        try {
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE USER_NAME = '" + stringUserName + "'");
+            //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + id);
+            //if (result.first()){}
+            while (result.next()) {
+                user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
+                        result.getString("EMAIL"), result.getString("FIRST_NAME"),
+                        result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
+                        LocalDate.now());
+                user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
+                user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+
+
+    // TODO findPassword() | findUserName
 }
