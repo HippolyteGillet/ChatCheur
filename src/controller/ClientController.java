@@ -228,6 +228,7 @@ public class ClientController implements ActionListener {
             case "Send" -> {
                 send(view2.getTextField1().getText());
             }
+
         }
     }
 
