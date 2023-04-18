@@ -158,7 +158,7 @@ public class Home extends JFrame {
                 int y1 = 180;
                 g.setFont(customFont1.deriveFont(25f));
                 for (User user : userList) {
-                    if (user.getUserName() != null) {
+                    if (user.getUserName() != null && !user.equals(currentUser)) {
                         if (user.getAccess().equals(User.Access.BANNED)) {
                             g.setColor(new Color(100, 98, 98));
                         } else {
@@ -180,7 +180,7 @@ public class Home extends JFrame {
                 g.setFont(customFont1.deriveFont(15f));
                 int y2 = 205;
                 for (User status : userList) {
-                    if (status.getState() != null) {
+                    if (status.getState() != null && !status.equals(currentUser)) {
                         String statu = "";
                         switch (status.getState()) {
                             case ONLINE -> statu = "Online";
@@ -212,18 +212,20 @@ public class Home extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                for (int i = 0; i < userList.size(); i++) {
-                    if (userList.get(i).getUserName() != null) {
-                        if (userList.get(i).getAccess().equals(User.Access.BANNED)) {
+                int y = 180;
+                for (User user : userList) {
+                    if (user.getUserName() != null && !user.equals(currentUser)) {
+                        if (user.getAccess().equals(User.Access.BANNED)) {
                             g.setColor(new Color(100, 98, 98));
                         } else {
-                            switch (userList.get(i).getState()) {
+                            switch (user.getState()) {
                                 case ONLINE -> g.setColor(Color.GREEN);
                                 case AWAY -> g.setColor(Color.ORANGE);
                                 case OFFLINE -> g.setColor(Color.RED);
                             }
                         }
-                        g.fillOval(310, 180 + (90 * i), 12, 12);
+                        g.fillOval(310, y, 12, 12);
+                        y += 90;
                     }
                 }
             }
@@ -275,41 +277,42 @@ public class Home extends JFrame {
 
         //Dessine les icones de ban et unban selon les utilisateurs et leur status (moderateur et admin)
         if (!currentUser.getPermission().equals(User.Permission.USER)) {
-            for (int i = 0; i < userList.size(); i++) {
-                if (userList.get(i).getUserName() != null) {
+            int y = 170;
+            for (User user : userList) {
+                if (user.getUserName() != null && !user.equals(currentUser)) {
                     JLabel ban = new JLabel(iconUnban);
                     ban.setIcon(iconBan);
-                    switch (userList.get(i).getAccess()) {
+                    switch (user.getAccess()) {
                         case ACCEPTED -> ban.setIcon(iconBan);
                         case BANNED -> ban.setIcon(iconUnban);
                     }
-                    int finalI = i;
                     ImageIcon finalIconBan = iconBan;
                     ImageIcon finalIconUnban = iconUnban;
                     ban.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
                             //Si l'utilisateur est banni, on le débanni, sinon on le banni
-                            if (userList.get(finalI).getAccess().equals(User.Access.BANNED)) {
-                                int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir débannir cet utilisateur ?", "Confirmer le débannissement", JOptionPane.YES_NO_OPTION);
+                            if (user.getAccess().equals(User.Access.BANNED)) {
+                                int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir débannir " + user.getUserName() + " ?", "Confirmer le débannissement", JOptionPane.YES_NO_OPTION);
                                 if (response == JOptionPane.YES_OPTION) {
                                     ban.setIcon(finalIconBan);
-                                    userList.get(finalI).setAccess(User.Access.ACCEPTED);
-                                    userDao.update(userList.get(finalI));
+                                    user.setAccess(User.Access.ACCEPTED);
+                                    userDao.update(user);
                                 }
                             } else {
-                                int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir bannir cet utilisateur ?", "Confirmer le bannissement", JOptionPane.YES_NO_OPTION);
+                                int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir bannir " + user.getUserName() + " ?", "Confirmer le bannissement", JOptionPane.YES_NO_OPTION);
                                 if (response == JOptionPane.YES_OPTION) {
                                     ban.setIcon(finalIconUnban);
-                                    userList.get(finalI).setAccess(User.Access.BANNED);
-                                    userDao.update(userList.get(finalI));
+                                    user.setAccess(User.Access.BANNED);
+                                    userDao.update(user);
                                 }
                             }
                             repaint();
                         }
                     });
-                    ban.setBounds(260, 170 + (90 * i), ban.getIcon().getIconWidth(), ban.getIcon().getIconHeight());
+                    ban.setBounds(260, y, ban.getIcon().getIconWidth(), ban.getIcon().getIconHeight());
                     contactPanel.add(ban);
+                    y += 90;
                 }
             }
         }
@@ -318,19 +321,19 @@ public class Home extends JFrame {
         ImageIcon iconInfos = new ImageIcon("IMG/info.png");
         Image imgInfos = iconInfos.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
         iconInfos = new ImageIcon(imgInfos);
-        for(int i = 0; i<userList.size(); i++){
-            if(userList.get(i).getUserName() != null){
+        int y = 165;
+        for(User user : userList){
+            if (user.getUserName() != null && !user.equals(currentUser)) {
                 JLabel infos = new JLabel(iconInfos);
                 FontMetrics metrics = infos.getFontMetrics(customFont1.deriveFont(25f));
-                int x = metrics.stringWidth(userList.get(i).getUserName()) + 30;
-                infos.setBounds(x, 165 + (90 * i), infos.getIcon().getIconWidth(), infos.getIcon().getIconHeight());
-                int finalI = i;
+                int x = metrics.stringWidth(user.getUserName()) + 30;
+                infos.setBounds(x, y, infos.getIcon().getIconWidth(), infos.getIcon().getIconHeight());
                 infos.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         InfoUser popup;
                         try {
-                            popup = new InfoUser(userList.get(finalI), currentUser);
+                            popup = new InfoUser(user, currentUser);
                         } catch (IOException | FontFormatException ex) {
                             throw new RuntimeException(ex);
                         }
@@ -338,25 +341,37 @@ public class Home extends JFrame {
                     }
                 });
                 contactPanel.add(infos);
+                y += 90;
             }
         }
 
-        JLabel label = new JLabel("Online");
+        //Status du currentUser
+        JLabel label = new JLabel();
         label.setFont(customFont1.deriveFont(25f));
         label.setForeground(Color.WHITE);
         int x = (275 - label.getWidth()) / 2;
         label.setBounds(x, 50, 100, 60);
+        switch (currentUser.getState()) {
+            case ONLINE -> label.setText("Online");
+            case AWAY -> label.setText("Away");
+        }
         label.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (Objects.equals(label.getText(), "Online")) {
-                    label.setText("Away");
-                    circleColor = Color.ORANGE;
-                } else {
-                    label.setText("Online");
-                    circleColor = Color.GREEN;
+                switch (currentUser.getState()) {
+                    case ONLINE -> {
+                        currentUser.setState(User.State.AWAY);
+                        label.setText("Away");
+                        circleColor = Color.ORANGE;
+                    }
+                    case AWAY -> {
+                        currentUser.setState(User.State.ONLINE);
+                        label.setText("Online");
+                        circleColor = Color.GREEN;
+                    }
                 }
-                circlePanel.repaint();
+                userDao.update(currentUser);
+                repaint();
             }
         });
         contactPanel.add(label);
