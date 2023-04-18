@@ -194,7 +194,7 @@ public class ClientController implements ActionListener {
             int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir débannir cet utilisateur ?", "Confirmer le débannissement", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
                 view2.setIconBan(i);
-                users.get(nonCurrentUsers.get(i).getId()-1).setAccess(User.Access.ACCEPTED);
+                users.get(nonCurrentUsers.get(i).getId() - 1).setAccess(User.Access.ACCEPTED);
                 userDao.update(nonCurrentUsers.get(i));
                 Log logBan = new Log(nonCurrentUsers.get(i).getId(), Log.TypeLog.UNBAN);
                 logDao.create(logBan);
@@ -203,7 +203,7 @@ public class ClientController implements ActionListener {
             int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir bannir cet utilisateur ?", "Confirmer le bannissement", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
                 view2.setIconUnban(i);
-                users.get(nonCurrentUsers.get(i).getId()-1).setAccess(User.Access.BANNED);
+                users.get(nonCurrentUsers.get(i).getId() - 1).setAccess(User.Access.BANNED);
                 userDao.update(nonCurrentUsers.get(i));
                 Log logBan = new Log(nonCurrentUsers.get(i).getId(), Log.TypeLog.BAN);
                 logDao.create(logBan);
@@ -227,11 +227,8 @@ public class ClientController implements ActionListener {
             }
             case "Send" -> {
                 send(view2.getTextField1().getText());
-            }
 
+            }
         }
     }
-
-    //Listener pour bouton connection
-
 }
