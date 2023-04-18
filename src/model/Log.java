@@ -11,7 +11,7 @@ public class Log {
 
 
     public enum TypeLog {
-        CONNECTION, DISCONNECTION, MESSAGE, UNKNOWN;
+        CONNECTION, DISCONNECTION, MESSAGE, BAN, UNBAN, SET_ROLE, UNKNOWN;
     }
 
     //Constructeurs

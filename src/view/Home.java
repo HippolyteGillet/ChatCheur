@@ -24,18 +24,19 @@ import java.util.Objects;
 import java.time.LocalDateTime;
 
 public class Home extends JFrame {
-    private Color circleColor = Color.GREEN;
-    User currentUser;
-    private Boolean inputReceived;
     private final Font customFont1 = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(30f);
     private final Font customFont2 = Font.createFont(Font.TRUETYPE_FONT, new File("ALBAS.TTF"));
+    User currentUser;
+    int y = 0;
+    private Color circleColor = Color.GREEN;
+    private Boolean inputReceived;
     private JTextField textField1;
     private JButton sendButton = new JButton("Send");
-    int y = 0;
     private JButton logOut;
+    private final List<JButton> ban = new ArrayList<>();
+    private ImageIcon iconUnban, iconBan;
 
     public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
-        UserDao userDao = new UserDao();
         for (User user : userList) {
             if (user.getUserName().equals(username)) {
                 currentUser = user;
@@ -264,12 +265,12 @@ public class Home extends JFrame {
         contactPanel.add(logOut);
 
         //Ban Icon
-        ImageIcon iconBan = new ImageIcon("IMG/ban-icon.png");
+        iconBan = new ImageIcon("IMG/ban-icon.png");
         Image imgBan = iconBan.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         iconBan = new ImageIcon(imgBan);
 
         //Unban Icon
-        ImageIcon iconUnban = new ImageIcon("IMG/unban-icon.png");
+        iconUnban = new ImageIcon("IMG/unban-icon.png");
         Image imgUnban = iconUnban.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         iconUnban = new ImageIcon(imgUnban);
 
@@ -277,39 +278,18 @@ public class Home extends JFrame {
         if (!currentUser.getPermission().equals(User.Permission.USER)) {
             for (int i = 0; i < userList.size(); i++) {
                 if (userList.get(i).getUserName() != null) {
-                    JLabel ban = new JLabel(iconUnban);
-                    ban.setIcon(iconBan);
+                    this.ban.add(new JButton(iconUnban));
+                    this.ban.get(i).setActionCommand("Ban " + i);
+                    this.ban.get(i).setOpaque(false);
+                    this.ban.get(i).setContentAreaFilled(false);
+                    this.ban.get(i).setBorderPainted(false);
+                    this.ban.get(i).setIcon(iconBan);
                     switch (userList.get(i).getAccess()) {
-                        case ACCEPTED -> ban.setIcon(iconBan);
-                        case BANNED -> ban.setIcon(iconUnban);
+                        case ACCEPTED -> this.ban.get(i).setIcon(iconBan);
+                        case BANNED -> this.ban.get(i).setIcon(iconUnban);
                     }
-                    int finalI = i;
-                    ImageIcon finalIconBan = iconBan;
-                    ImageIcon finalIconUnban = iconUnban;
-                    ban.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            //Si l'utilisateur est banni, on le débanni, sinon on le banni
-                            if (userList.get(finalI).getAccess().equals(User.Access.BANNED)) {
-                                int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir débannir cet utilisateur ?", "Confirmer le débannissement", JOptionPane.YES_NO_OPTION);
-                                if (response == JOptionPane.YES_OPTION) {
-                                    ban.setIcon(finalIconBan);
-                                    userList.get(finalI).setAccess(User.Access.ACCEPTED);
-                                    userDao.update(userList.get(finalI));
-                                }
-                            } else {
-                                int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir bannir cet utilisateur ?", "Confirmer le bannissement", JOptionPane.YES_NO_OPTION);
-                                if (response == JOptionPane.YES_OPTION) {
-                                    ban.setIcon(finalIconUnban);
-                                    userList.get(finalI).setAccess(User.Access.BANNED);
-                                    userDao.update(userList.get(finalI));
-                                }
-                            }
-                            repaint();
-                        }
-                    });
-                    ban.setBounds(260, 170 + (90 * i), ban.getIcon().getIconWidth(), ban.getIcon().getIconHeight());
-                    contactPanel.add(ban);
+                    this.ban.get(i).setBounds(260, 170 + (90 * i), this.ban.get(i).getIcon().getIconWidth(), this.ban.get(i).getIcon().getIconHeight());
+                    contactPanel.add(this.ban.get(i));
                 }
             }
         }
@@ -318,8 +298,8 @@ public class Home extends JFrame {
         ImageIcon iconInfos = new ImageIcon("IMG/info.png");
         Image imgInfos = iconInfos.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
         iconInfos = new ImageIcon(imgInfos);
-        for(int i = 0; i<userList.size(); i++){
-            if(userList.get(i).getUserName() != null){
+        for (int i = 0; i < userList.size(); i++) {
+            if (userList.get(i).getUserName() != null) {
                 JLabel infos = new JLabel(iconInfos);
                 FontMetrics metrics = infos.getFontMetrics(customFont1.deriveFont(25f));
                 int x = metrics.stringWidth(userList.get(i).getUserName()) + 30;
@@ -367,13 +347,28 @@ public class Home extends JFrame {
         setVisible(true);
     }
 
+    public JButton getBan(int i) {
+        return ban.get(i);
+    }
+
+    public void setIconBan(int i) {
+        ban.get(i).setIcon(iconBan);
+    }
+
+    public void setIconUnban(int i) {
+        ban.get(i).setIcon(iconUnban);
+    }
+
     public JTextField getTextField1() {
         return textField1;
     }
+
     public void addAllListener(ClientController controller) {
         this.logOut.addActionListener(controller);
+        for (JButton jButton : ban) {
+            jButton.addActionListener(controller);
+        }
     }
-
 
 
 }

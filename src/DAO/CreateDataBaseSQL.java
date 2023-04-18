@@ -32,7 +32,7 @@ public class CreateDataBaseSQL {
                     "   ID        int NOT NULL AUTO_INCREMENT," +
                     "   USER_ID   varchar(255) DEFAULT NULL," +
                     "   TIMESTAMP timestamp    DEFAULT CURRENT_TIMESTAMP," +
-                    "   TYPELOG   enum ('CONNECTION','DISCONNECTION','SENT','BAN','STATEUPDATE')," +
+                    "   TYPELOG   enum ('CONNECTION', 'DISCONNECTION', 'MESSAGE', 'BAN', 'UNBAN', 'SET_ROLE', 'UNKNOWN')," +
                     "   PRIMARY KEY (ID)," +
                     "   FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID));");
             //On crée la table message
@@ -58,7 +58,7 @@ public class CreateDataBaseSQL {
                     "PERMISSION, LAST_CONNECTION_T, ACCESS, STATE) VALUES ('jujulafondue', 'juliette', 'lafond', 'juliettelafond@gmail.com', '123', 'USER', CURRENT_TIMESTAMP," +
                     "   'ACCEPTED', 'OFFLINE')");
             statement.executeUpdate("INSERT INTO chatcheur.user (USER_NAME, FIRST_NAME, LAST_NAME, EMAIL, PASSWORD, " +
-                    "PERMISSION, LAST_CONNECTION_T, ACCESS, STATE) VALUES ('jujulafondue', 'juliette', 'lafond', 'juliettelafond@gmail.com', '123456789', 'MODERATOR', CURRENT_TIMESTAMP," +
+                    "PERMISSION, LAST_CONNECTION_T, ACCESS, STATE) VALUES ('nul', 'nul', 'nul', 'nul@gmail.com', '123456789', 'MODERATOR', CURRENT_TIMESTAMP," +
                     "   'ACCEPTED', 'OFFLINE')");
             //On insert data dans message
             statement.executeUpdate("INSERT INTO chatcheur.message (USER_ID, TIMESTAMP, CONTENT) VALUES (2, CURRENT_TIMESTAMP, 'Coucou comment vas-tu ?')");

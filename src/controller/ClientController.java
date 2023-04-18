@@ -16,6 +16,8 @@ import javax.swing.text.Style;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -153,9 +155,34 @@ public class ClientController implements ActionListener {
         view3.addAllListener(this);
     }
 
+    public void bannissement(int i) {
+        //Si l'utilisateur est banni, on le débanni, sinon on le banni
+        if (users.get(i).getAccess().equals(User.Access.BANNED)) {
+            int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir débannir cet utilisateur ?", "Confirmer le débannissement", JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
+                view2.setIconBan(i);
+                users.get(i).setAccess(User.Access.ACCEPTED);
+                userDao.update(users.get(i));
+                Log logBan = new Log(user.getId(), Log.TypeLog.UNBAN);
+                logDao.create(logBan);
+            }
+        } else {
+            int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir bannir cet utilisateur ?", "Confirmer le bannissement", JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
+                view2.setIconUnban(i);
+                users.get(i).setAccess(User.Access.BANNED);
+                userDao.update(users.get(i));
+                Log logBan = new Log(user.getId(), Log.TypeLog.BAN);
+                logDao.create(logBan);
+            }
+        }
+        view2.repaint();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()) {
+        String[] actionCommand = e.getActionCommand().split(" ");
+        switch (actionCommand[0]) {
             case "Connexion":
                 connection(view1.getUsername(), view1.getPassword());
                 break;
@@ -165,6 +192,10 @@ public class ClientController implements ActionListener {
             case "Disconnection":
                 disconnection();
                 break;
+            case "Ban":
+                bannissement(Integer.parseInt(actionCommand[1]));
+                break;
+
         }
     }
 
