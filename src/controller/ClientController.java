@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.net.*;
 
@@ -31,7 +32,7 @@ public class ClientController implements ActionListener {
     private Menu view1;
     private Home view2;
     private LogOut view3;
-    private User user;
+    private User currentUser;
     private List<User> users;
     private List<Log> logs;
     private List<Message> messages;
@@ -43,7 +44,7 @@ public class ClientController implements ActionListener {
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view) {
         this.view2 = null;
-        this.user = null;
+        this.currentUser = null;
         this.users = users;
         this.logs = logs;
         this.messages = messages;
@@ -88,10 +89,10 @@ public class ClientController implements ActionListener {
                     if (user.getAccess().equals(User.Access.ACCEPTED)) {
                         System.out.println("Connexion autorisee");
 
-                        this.user = user;
-                        this.user.setState(User.State.ONLINE);
+                        this.currentUser = user;
+                        this.currentUser.setState(User.State.ONLINE);
                         //On met a jour BDD
-                        this.userDao.update(this.user);
+                        this.userDao.update(this.currentUser);
                         //Création d'un log connection
                         Log logConnection = new Log(user.getId(), Log.TypeLog.CONNECTION);
                         //On ajoute le log dans la BDD
@@ -107,16 +108,16 @@ public class ClientController implements ActionListener {
                 }
             }
         }
-        if (this.user == null && !userFinded) {
+        if (this.currentUser == null && !userFinded) {
             System.out.println("Aucun utilisateur trouve");
         }
     }
 
     public void send(String message) {
 
-        if (message != null && !message.isEmpty() && user != null) {
-            Message messagToSend = new Message(user.getId(), message);
-            Log logToSend = new Log(user.getId(), Log.TypeLog.MESSAGE);
+        if (message != null && !message.isEmpty() && currentUser != null) {
+            Message messagToSend = new Message(currentUser.getId(), message);
+            Log logToSend = new Log(currentUser.getId(), Log.TypeLog.MESSAGE);
             //JAVA Part:
             messages.add(messagToSend);
             logs.add(logToSend);
@@ -149,13 +150,13 @@ public class ClientController implements ActionListener {
     }
 
     public void disconnection() {
-        Log logDeconnection = new Log(user.getId(), Log.TypeLog.DISCONNECTION);
+        Log logDeconnection = new Log(currentUser.getId(), Log.TypeLog.DISCONNECTION);
         logDao.create(logDeconnection);
-        this.user.setState(User.State.OFFLINE);
+        this.currentUser.setState(User.State.OFFLINE);
         //On met a jour BDD
-        this.userDao.update(user);
-        System.out.println("Utilisateur deconnecte : " + user.getUserName());
-        this.user = null;
+        this.userDao.update(currentUser);
+        System.out.println("Utilisateur deconnecte : " + currentUser.getUserName());
+        this.currentUser = null;
         gererFenetresDisconnection();
     }
 
@@ -181,23 +182,30 @@ public class ClientController implements ActionListener {
     }
 
     public void bannissement(int i) {
+        //On cree nouvelle list sans le current user
+        List<User> nonCurrentUsers = new ArrayList<>();
+        for (User user : this.users) {
+            if (!user.equals(this.currentUser)) {
+                nonCurrentUsers.add(user);
+            }
+        }
         //Si l'utilisateur est banni, on le débanni, sinon on le banni
-        if (users.get(i).getAccess().equals(User.Access.BANNED)) {
+        if (nonCurrentUsers.get(i).getAccess().equals(User.Access.BANNED)) {
             int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir débannir cet utilisateur ?", "Confirmer le débannissement", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
                 view2.setIconBan(i);
-                users.get(i).setAccess(User.Access.ACCEPTED);
-                userDao.update(users.get(i));
-                Log logBan = new Log(user.getId(), Log.TypeLog.UNBAN);
+                users.get(nonCurrentUsers.get(i).getId()-1).setAccess(User.Access.ACCEPTED);
+                userDao.update(nonCurrentUsers.get(i));
+                Log logBan = new Log(nonCurrentUsers.get(i).getId(), Log.TypeLog.UNBAN);
                 logDao.create(logBan);
             }
         } else {
             int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir bannir cet utilisateur ?", "Confirmer le bannissement", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
                 view2.setIconUnban(i);
-                users.get(i).setAccess(User.Access.BANNED);
-                userDao.update(users.get(i));
-                Log logBan = new Log(user.getId(), Log.TypeLog.BAN);
+                users.get(nonCurrentUsers.get(i).getId()-1).setAccess(User.Access.BANNED);
+                userDao.update(nonCurrentUsers.get(i));
+                Log logBan = new Log(nonCurrentUsers.get(i).getId(), Log.TypeLog.BAN);
                 logDao.create(logBan);
             }
         }
@@ -221,9 +229,9 @@ public class ClientController implements ActionListener {
                 bannissement(Integer.parseInt(actionCommand[1]));
                 break;
             case "Ok !":
-                user = userDao.findUserName(newPassword.getUserName());
-                user.setPassword(newPassword.getPsswrd());
-                userDao.update(user);
+                currentUser = userDao.findUserName(newPassword.getUserName());
+                currentUser.setPassword(newPassword.getPsswrd());
+                userDao.update(currentUser);
             break;
             case "Send":
                 //TODO: Creeer un button et l'activer dans Home.java
