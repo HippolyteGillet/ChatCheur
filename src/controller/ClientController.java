@@ -1,5 +1,7 @@
 package controller;
 
+import DAO.LogDao;
+import DAO.MessageDao;
 import model.Log;
 import model.Message;
 import model.user.User;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class ClientController implements ActionListener {
+    //TODO: add an attribute to have all the DAO
     private final Menu view1;
     private Home view2;
     private User user;
@@ -75,6 +78,28 @@ public class ClientController implements ActionListener {
         }
     }
 
+    public void send(String message) {
+
+        if (message != null && !message.isEmpty() && user != null) {
+            Message messagToSend = new Message(user.getId(), message);
+            Log logToSend = new Log(user.getId(), Log.TypeLog.MESSAGE);
+            //JAVA Part:
+            messages.add(messagToSend);
+            logs.add(logToSend);
+            //SQL Part:
+            try {
+                //////////////!!!!!!!!!!!!!!!!!!!A FAIRE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                //TODO: appeller les gets de MessageDao et LogDao pour ajouter le message et le log dans la BDD
+                MessageDao messageDao = new MessageDao();
+                LogDao logDao = new LogDao();
+                messageDao.create(messagToSend);
+                logDao.create(logToSend);
+            } catch (Exception e) {
+            e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
@@ -88,9 +113,12 @@ public class ClientController implements ActionListener {
                         throw new RuntimeException(ex);
                     }
                 }
+                break;
+            case "Send":
+                //TODO: Creeer un button et l'activer dans Home.java
+                send(view2.getTextField1().getText());
+                break;
         }
     }
-
-    //Listener pour bouton connection
 
 }
