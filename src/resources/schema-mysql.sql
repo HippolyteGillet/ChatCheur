@@ -10,7 +10,7 @@ CREATE TABLE chatcheur.user
     LAST_NAME         varchar(255) DEFAULT NULL,
     EMAIL             varchar(255) DEFAULT NULL,
     PASSWORD          varchar(255) DEFAULT NULL,
-    PERMISSION        enum ('ADMIN','MODERATOR','NORMAL'),
+    PERMISSION        enum ('ADMINISTRATOR','MODERATOR','USER'),
     LAST_CONNECTION_T timestamp    DEFAULT CURRENT_TIMESTAMP,
     ACCESS            enum ('ACCEPTED','BANNED'),
     STATE             enum ('ONLINE','OFFLINE','AWAY'),
@@ -29,8 +29,7 @@ CREATE TABLE chatcheur.message
     USER_ID   varchar(255) DEFAULT NULL,
     TIMESTAMP timestamp    DEFAULT CURRENT_TIMESTAMP,
     CONTENT   varchar(255) DEFAULT NULL,
-    PRIMARY KEY (ID),
-    FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID)
+    PRIMARY KEY (ID)
 );
 
 # Dump of table model.log
@@ -43,6 +42,5 @@ CREATE TABLE chatcheur.log
     USER_ID   varchar(255) DEFAULT NULL,
     TIMESTAMP timestamp    DEFAULT CURRENT_TIMESTAMP,
     TYPELOG   enum ('CONNECTION','DISCONNECTION','SENT','BAN','STATEUPDATE'),
-    PRIMARY KEY (ID),
-    FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID)
+    PRIMARY KEY (ID)
 );

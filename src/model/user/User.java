@@ -42,8 +42,8 @@ public class User {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.access= Access.ACCEPTED;
         this.permission = Permission.USER;
+        this.access = Access.ACCEPTED;
         this.state = state;
         this.lastConnectionTime = lastConnectionTime;
     }

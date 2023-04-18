@@ -38,7 +38,7 @@ class Client {
         List<Message> messagesModel = messageDao.retrieveMessagesFromDB();
         List<Log> logsModel = logDao.retrieveLogsFromDB();
         //Create a view
-        Menu view = new Menu();
+        Menu view = new Menu(usersModel, logsModel, messagesModel);
         //Create the controller
         ClientController controller = new ClientController(usersModel, logsModel, messagesModel, view);
 
@@ -53,7 +53,7 @@ class Client {
         Scanner sc = new Scanner(System.in);
         name = userModel.getUserName();
 
-        try (Socket socket = new Socket("localhost", 9000)) {
+        try (Socket socket = new Socket("localhost", 8999)) {
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
