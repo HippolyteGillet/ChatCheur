@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 public class Home extends JFrame {
     private final Font customFont1 = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(30f);
     private final Font customFont2 = Font.createFont(Font.TRUETYPE_FONT, new File("ALBAS.TTF"));
-    User currentUser;
+    private User currentUser;
     int y = 0;
     private Color circleColor = Color.GREEN;
     private Boolean inputReceived;
@@ -98,7 +98,7 @@ public class Home extends JFrame {
         scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
         add(scrollPane);
 
-        JTextField textField1 = new JTextField("Saisir du texte");
+        textField1 = new JTextField("Saisir du texte");
         textField1.setHorizontalAlignment(JTextField.CENTER);
         textField1.setBounds(100, 690, 750, 60);
         textField1.setFont(customFont1);
@@ -159,7 +159,7 @@ public class Home extends JFrame {
                 int y1 = 180;
                 g.setFont(customFont1.deriveFont(25f));
                 for (User user : userList) {
-                    if (user.getUserName() != null) {
+                    if (user.getUserName() != null && !user.equals(currentUser)) {
                         if (user.getAccess().equals(User.Access.BANNED)) {
                             g.setColor(new Color(100, 98, 98));
                         } else {
@@ -181,7 +181,7 @@ public class Home extends JFrame {
                 g.setFont(customFont1.deriveFont(15f));
                 int y2 = 205;
                 for (User status : userList) {
-                    if (status.getState() != null) {
+                    if (status.getState() != null && !status.equals(currentUser)) {
                         String statu = "";
                         switch (status.getState()) {
                             case ONLINE -> statu = "Online";
@@ -213,18 +213,20 @@ public class Home extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                for (int i = 0; i < userList.size(); i++) {
-                    if (userList.get(i).getUserName() != null) {
-                        if (userList.get(i).getAccess().equals(User.Access.BANNED)) {
+                int y = 180;
+                for (User user : userList) {
+                    if (user.getUserName() != null && !user.equals(currentUser)) {
+                        if (user.getAccess().equals(User.Access.BANNED)) {
                             g.setColor(new Color(100, 98, 98));
                         } else {
-                            switch (userList.get(i).getState()) {
+                            switch (user.getState()) {
                                 case ONLINE -> g.setColor(Color.GREEN);
                                 case AWAY -> g.setColor(Color.ORANGE);
                                 case OFFLINE -> g.setColor(Color.RED);
                             }
                         }
-                        g.fillOval(310, 180 + (90 * i), 12, 12);
+                        g.fillOval(310, y, 12, 12);
+                        y += 90;
                     }
                 }
             }
@@ -300,75 +302,90 @@ public class Home extends JFrame {
         iconInfos = new ImageIcon(imgInfos);
         for (int i = 0; i < userList.size(); i++) {
             if (userList.get(i).getUserName() != null) {
-                JLabel infos = new JLabel(iconInfos);
-                FontMetrics metrics = infos.getFontMetrics(customFont1.deriveFont(25f));
-                int x = metrics.stringWidth(userList.get(i).getUserName()) + 30;
-                infos.setBounds(x, 165 + (90 * i), infos.getIcon().getIconWidth(), infos.getIcon().getIconHeight());
-                int finalI = i;
-                infos.addMouseListener(new MouseAdapter() {
+                int y = 165;
+                for (User user : userList) {
+                    if (user.getUserName() != null && !user.equals(currentUser)) {
+                        JLabel infos = new JLabel(iconInfos);
+                        FontMetrics metrics = infos.getFontMetrics(customFont1.deriveFont(25f));
+                        int x = metrics.stringWidth(user.getUserName()) + 30;
+                        infos.setBounds(x, y, infos.getIcon().getIconWidth(), infos.getIcon().getIconHeight());
+                        infos.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mouseClicked(MouseEvent e) {
+                                InfoUser popup;
+                                try {
+                                    popup = new InfoUser(user, currentUser);
+                                } catch (IOException | FontFormatException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+                                popup.setVisible(true);
+                            }
+                        });
+                        contactPanel.add(infos);
+                        y += 90;
+                    }
+                }
+
+                //Status du currentUser
+                JLabel label = new JLabel();
+                label.setFont(customFont1.deriveFont(25f));
+                label.setForeground(Color.WHITE);
+                int x = (275 - label.getWidth()) / 2;
+                label.setBounds(x, 50, 100, 60);
+                switch (currentUser.getState()) {
+                    case ONLINE -> label.setText("Online");
+                    case AWAY -> label.setText("Away");
+                }
+                label.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        InfoUser popup;
-                        try {
-                            popup = new InfoUser(userList.get(finalI), currentUser);
-                        } catch (IOException | FontFormatException ex) {
-                            throw new RuntimeException(ex);
+                        switch (currentUser.getState()) {
+                            case ONLINE -> {
+                                currentUser.setState(User.State.AWAY);
+                                label.setText("Away");
+                                circleColor = Color.ORANGE;
+                            }
+                            case AWAY -> {
+                                currentUser.setState(User.State.ONLINE);
+                                label.setText("Online");
+                                circleColor = Color.GREEN;
+                            }
                         }
-                        popup.setVisible(true);
+                        userDao.update(currentUser);
+                        repaint();
                     }
                 });
-                contactPanel.add(infos);
+                contactPanel.add(label);
+
+                setResizable(true);
+                setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                setLocationRelativeTo(null);
+                setVisible(true);
             }
+
+
         }
-
-        JLabel label = new JLabel("Online");
-        label.setFont(customFont1.deriveFont(25f));
-        label.setForeground(Color.WHITE);
-        int x = (275 - label.getWidth()) / 2;
-        label.setBounds(x, 50, 100, 60);
-        label.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (Objects.equals(label.getText(), "Online")) {
-                    label.setText("Away");
-                    circleColor = Color.ORANGE;
-                } else {
-                    label.setText("Online");
-                    circleColor = Color.GREEN;
-                }
-                circlePanel.repaint();
-            }
-        });
-        contactPanel.add(label);
-
-        setResizable(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setVisible(true);
     }
-
-    public JButton getBan(int i) {
+    public JButton getBan ( int i){
         return ban.get(i);
     }
 
-    public void setIconBan(int i) {
+    public void setIconBan ( int i){
         ban.get(i).setIcon(iconBan);
     }
 
-    public void setIconUnban(int i) {
+    public void setIconUnban ( int i){
         ban.get(i).setIcon(iconUnban);
     }
 
-    public JTextField getTextField1() {
+    public JTextField getTextField1 () {
         return textField1;
     }
 
-    public void addAllListener(ClientController controller) {
+    public void addAllListener (ClientController controller){
         this.logOut.addActionListener(controller);
         for (JButton jButton : ban) {
             jButton.addActionListener(controller);
         }
     }
-
-
 }
