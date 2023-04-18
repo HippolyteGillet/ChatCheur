@@ -1,5 +1,8 @@
 package controller;
 
+import DAO.LogDao;
+import DAO.MessageDao;
+import DAO.UserDao;
 import model.Log;
 import model.Message;
 import model.user.User;
@@ -26,6 +29,9 @@ public class ClientController implements ActionListener {
     private List<User> users;
     private List<Log> logs;
     private List<Message> messages;
+    private LogDao logDao = new LogDao();
+    private MessageDao messageDao = new MessageDao();
+    private UserDao userDao = new UserDao();
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view) {
         this.view2 = null;
@@ -71,6 +77,11 @@ public class ClientController implements ActionListener {
                     System.out.println("Connexion autorisee");
 
                     this.user = user;
+                    this.user.setState(User.State.ONLINE);
+                    //Création d'un log connection
+                    Log logConnection = new Log(user.getId(), Log.TypeLog.CONNECTION);
+                    //On ajoute le log dans la BDD
+                    logDao.create(logConnection);
                 } else {
                     System.out.println("Connexion refusee, le user est banni");
                 }

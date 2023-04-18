@@ -50,6 +50,7 @@ class Client {
         userModel.setUserName("Stan");
         name = userModel.getUserName();
 
+
         try (Socket socket = new Socket("localhost", 9000)) {
 
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
@@ -57,8 +58,6 @@ class Client {
             // reading from server
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            // sending the name to the server
-            String line = null;
 
             out.println(name + " has joined the chat");
             out.flush();
@@ -68,31 +67,8 @@ class Client {
 
             threadToDisplay.start();
 
-            while (!"exit".equalsIgnoreCase(line)) {
-
-                // reading from user
-                switch (line) {
-                    case "exit":
-                        threadToDisplay.interrupt();
-                        System.out.println("You have left the chat");
-                        out.println(name + " has left the chat :(");
-                        out.flush();
-                        //TODO: Avertir avec view que le client a quitté le chat
-
-                        return;
-
-                    default:
-                        out.println(name + ": " + line);
-                        out.flush();
-                        break;
-                }
-
-
-            }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 }
