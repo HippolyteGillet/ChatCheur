@@ -105,6 +105,28 @@ public class ClientController implements ActionListener {
         }
     }
 
+    public void send(String message) {
+
+        if (message != null && !message.isEmpty() && user != null) {
+            Message messagToSend = new Message(user.getId(), message);
+            Log logToSend = new Log(user.getId(), Log.TypeLog.MESSAGE);
+            //JAVA Part:
+            messages.add(messagToSend);
+            logs.add(logToSend);
+            //SQL Part:
+            try {
+                //////////////!!!!!!!!!!!!!!!!!!!A FAIRE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                //TODO: appeller les gets de MessageDao et LogDao pour ajouter le message et le log dans la BDD
+                MessageDao messageDao = new MessageDao();
+                LogDao logDao = new LogDao();
+                messageDao.create(messagToSend);
+                logDao.create(logToSend);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void gererFenetresConnection() {
         //On crée fenetre
         try {
@@ -159,6 +181,10 @@ public class ClientController implements ActionListener {
                 break;
             case "Disconnection":
                 disconnection();
+                break;
+            case "Send":
+                //TODO: Creeer un button et l'activer dans Home.java
+                send(view2.getTextField1().getText());
                 break;
         }
     }

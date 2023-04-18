@@ -97,7 +97,7 @@ public class Home extends JFrame {
         scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
         add(scrollPane);
 
-        JTextField textField1 = new JTextField("Saisir du texte");
+        textField1 = new JTextField("Saisir du texte");
         textField1.setHorizontalAlignment(JTextField.CENTER);
         textField1.setBounds(100, 690, 750, 60);
         textField1.setFont(customFont1);
@@ -388,7 +388,4 @@ public class Home extends JFrame {
     public void addAllListener(ClientController controller) {
         this.logOut.addActionListener(controller);
     }
-
-
-
 }
