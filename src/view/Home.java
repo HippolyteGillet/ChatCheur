@@ -17,9 +17,11 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.time.LocalDateTime;
 
 public class Home extends JFrame {
     private Color circleColor = Color.GREEN;
@@ -27,9 +29,10 @@ public class Home extends JFrame {
     private Boolean inputReceived;
     private final Font customFont1 = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(30f);
     private final Font customFont2 = Font.createFont(Font.TRUETYPE_FONT, new File("ALBAS.TTF"));
+    private JTextField textField1;
+    private JButton sendButton = new JButton("Send");
     int y = 0;
     private JButton logOut;
-    private LogOut popup;
 
     public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
         UserDao userDao = new UserDao();
@@ -122,6 +125,9 @@ public class Home extends JFrame {
         textField1.addActionListener(e -> {
             if (!textField1.getText().isEmpty()) {
                 inputReceived = true;
+                //TODO: creer une action qui se nomme "Send" et l'activer:
+                //créer un actionlistener du button entrer:
+
                 messages.add(textField1.getText());
                 textField1.setText(null);
                 if (messages.size() < 12) {
@@ -361,11 +367,13 @@ public class Home extends JFrame {
         setVisible(true);
     }
 
-    public JButton getLogOut() {
-        return logOut;
+    public JTextField getTextField1() {
+        return textField1;
     }
-
     public void addAllListener(ClientController controller) {
         this.logOut.addActionListener(controller);
     }
+
+
+
 }
