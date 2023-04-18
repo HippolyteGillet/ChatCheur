@@ -1,20 +1,25 @@
 package view;
 
 import DAO.UserDao;
+import com.mysql.cj.xdevapi.Client;
+import controller.ClientController;
 import model.Log;
 import model.Message;
 import model.user.User;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Objects;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Home extends JFrame {
     private Color circleColor = Color.GREEN;
@@ -23,6 +28,8 @@ public class Home extends JFrame {
     private final Font customFont1 = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(30f);
     private final Font customFont2 = Font.createFont(Font.TRUETYPE_FONT, new File("ALBAS.TTF"));
     int y = 0;
+    private JButton logOut;
+    private LogOut popup;
 
     public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
         UserDao userDao = new UserDao();
@@ -242,16 +249,12 @@ public class Home extends JFrame {
         ImageIcon iconLogOut = new ImageIcon("IMG/logOut.png");
         Image imgLogOut = iconLogOut.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         iconLogOut = new ImageIcon(imgLogOut);
-        JLabel logOut = new JLabel(iconLogOut);
+        logOut = new JButton(iconLogOut);
+        logOut.setActionCommand("logOut");
+        logOut.setOpaque(false);
+        logOut.setContentAreaFilled(false);
+        logOut.setBorderPainted(false);
         logOut.setBounds(280, 700, iconLogOut.getIconWidth(), iconLogOut.getIconHeight());
-        logOut.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                LogOut popup;
-                popup = new LogOut(Home.this, userList, logList, messageList);
-                popup.setVisible(true);
-            }
-        });
         contactPanel.add(logOut);
 
         //Ban Icon
@@ -356,5 +359,13 @@ public class Home extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
+    }
+
+    public JButton getLogOut() {
+        return logOut;
+    }
+
+    public void addAllListener(ClientController controller) {
+        this.logOut.addActionListener(controller);
     }
 }

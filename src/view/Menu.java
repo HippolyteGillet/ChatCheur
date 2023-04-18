@@ -3,6 +3,7 @@ package view;
 import model.Log;
 import model.Message;
 import model.user.User;
+import controller.ClientController;
 
 import javax.swing.*;
 import java.awt.*;
@@ -135,7 +136,6 @@ public class Menu extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
-
     }
 
     public String getUsername() {
@@ -148,5 +148,9 @@ public class Menu extends JFrame {
 
     public JButton getButton() {
         return button;
+    }
+
+    public void addAllListener (ClientController controller) {
+        this.button.addActionListener(controller);
     }
 }

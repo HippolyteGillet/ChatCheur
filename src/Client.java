@@ -7,6 +7,7 @@ import controller.ClientController;
 import model.Log;
 import model.Message;
 import model.user.User;
+import view.Home;
 import view.Menu;
 
 import java.awt.*;
@@ -33,7 +34,7 @@ class Client {
         LogDao logDao = new LogDao();
         MessageDao messageDao = new MessageDao();
         //Create all the model and retrieve the data stored in the database
-        User userModel = new User();
+        User currentUserModel = new User();
         List<User> usersModel = userDao.retrieveUsersFromDB();
         List<Message> messagesModel = messageDao.retrieveMessagesFromDB();
         List<Log> logsModel = logDao.retrieveLogsFromDB();
@@ -42,14 +43,11 @@ class Client {
         //Create the controller
         ClientController controller = new ClientController(usersModel, logsModel, messagesModel, view);
 
-        //On ajoute les action listener des boutons
-        view.getButton().addActionListener(controller);
-
 
         //---------------------------------------SERVER PART----------------------------------------------
 
         Scanner sc = new Scanner(System.in);
-        name = userModel.getUserName();
+        name = currentUserModel.getUserName();
 
         try (Socket socket = new Socket("localhost", 8999)) {
 
