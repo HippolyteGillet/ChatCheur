@@ -34,9 +34,9 @@ public class ClientController implements ActionListener {
     private List<User> users;
     private List<Log> logs;
     private List<Message> messages;
-    private LogDao logDao = new LogDao();
-    private MessageDao messageDao = new MessageDao();
-    private UserDao userDao = new UserDao();
+    private final LogDao logDao = new LogDao();
+    private final MessageDao messageDao = new MessageDao();
+    private final UserDao userDao = new UserDao();
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view) {
         this.view2 = null;
@@ -112,8 +112,20 @@ public class ClientController implements ActionListener {
     }
 
     public void send(String message) {
+        if (!message.equals("Saisir du texte") && !message.isEmpty() && currentUser != null) {
+            view2.setInputReceived(true);
+            view2.getTextField1().setText(null);
+            int y;
+            if (messages.size() < 12) {
+                y = 600;
+            } else {
+                y = 600 + (messages.size() - 12) * 53;
+            }
+            view2.getTextField1().setBounds(100, y + 90, 750, 60);
+            view2.getScrollPane().getVerticalScrollBar().setValue(view2.getScrollPane().getVerticalScrollBar().getMaximum());
+            view2.getConversationPanel().setPreferredSize(new Dimension(950, y + 196));
+            view2.getScrollPane().getViewport().setViewPosition(new Point(0, y));
 
-        if (message != null && !message.isEmpty() && currentUser != null) {
             Message messagToSend = new Message(currentUser.getId(), message);
             Log logToSend = new Log(currentUser.getId(), Log.TypeLog.MESSAGE);
             //JAVA Part:
@@ -210,17 +222,17 @@ public class ClientController implements ActionListener {
         view2.repaint();
     }
 
-    public void mdpOublie(){
+    public void mdpOublie() {
         try {
-                view4 = new NewPassword();
-                view4.addAllListener(this);
-            } catch (IOException | FontFormatException ex) {
-                throw new RuntimeException(ex);
-            }
-            view4.setVisible(true);
+            view4 = new NewPassword();
+            view4.addAllListener(this);
+        } catch (IOException | FontFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+        view4.setVisible(true);
     }
 
-    public void newMdp(){
+    public void newMdp() {
         currentUser = userDao.findUserName(view4.getTextFieldUserName());
         currentUser.setPassword(view4.getTextFieldNewPassword());
         userDao.update(currentUser);
@@ -241,17 +253,14 @@ public class ClientController implements ActionListener {
                 System.out.println("ok");
                 newMdp();
             }
-            case "Send" -> {
-                send(view2.getTextField1().getText());
-
-            }
+            case "send" -> send(view2.getTextField1().getText());
             case "mdpOublie" -> mdpOublie();
 
         }
     }
 
 
-    public static String sha256(String input){
+    public static String sha256(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hashInBytes = md.digest(input.getBytes(StandardCharsets.UTF_8));
@@ -267,6 +276,4 @@ public class ClientController implements ActionListener {
     }
 
     //Listener pour bouton connection
-
-
 }
