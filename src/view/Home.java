@@ -96,6 +96,7 @@ public class Home extends JFrame {
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBounds(350, 0, 950, 800);
         scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
+        scrollPane.setBorder(null);
         add(scrollPane);
 
         textField1 = new JTextField("Saisir du texte");
@@ -146,17 +147,80 @@ public class Home extends JFrame {
         });
         conversationPanel.add(textField1);
 
-        JPanel contactPanel = new JPanel() {
+        JPanel contactPanelHeader = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.setColor(new Color(147, 185, 175));
-                g.fillRect(0, 0, 350, 800);
+                g.fillRect(0, 0, 350, 140);
                 g.setColor(new Color(20, 48, 46));
                 g.fillRoundRect(25, 15, 300, 90, 75, 75);
-                g.fillRoundRect(90, 620, 160, 50, 50, 50);
-                int y = 150;
-                int y1 = 180;
+                g.setFont(customFont1.deriveFont(25f));
+                g.setColor(Color.WHITE);
+                int x = 25 + ((300 - g.getFontMetrics().stringWidth(currentUser.getUserName())) / 2);
+                g.drawString(currentUser.getUserName(), x, 50);
+            }
+        };
+        contactPanelHeader.setLayout(null);
+        contactPanelHeader.setBounds(0, 0, 350, 140);
+        add(contactPanelHeader);
+
+        JPanel currentUserCircle = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor(circleColor);
+                g.fillOval(100, 75, 12, 12);
+            }
+        };
+        currentUserCircle.setBounds(0, 0, 300, 300);
+        currentUserCircle.setOpaque(false);
+        contactPanelHeader.add(currentUserCircle);
+
+        //Status du currentUser
+        JLabel label = new JLabel();
+        label.setFont(customFont1.deriveFont(25f));
+        label.setForeground(Color.WHITE);
+        int x = (275 - label.getWidth()) / 2;
+        label.setBounds(x, 50, 100, 60);
+        switch (currentUser.getState()) {
+            case ONLINE -> label.setText("Online");
+            case AWAY -> label.setText("Away");
+        }
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                switch (currentUser.getState()) {
+                    case ONLINE -> {
+                        currentUser.setState(User.State.AWAY);
+                        label.setText("Away");
+                        circleColor = Color.ORANGE;
+                    }
+                    case AWAY -> {
+                        currentUser.setState(User.State.ONLINE);
+                        label.setText("Online");
+                        circleColor = Color.GREEN;
+                    }
+                }
+                UserDao userDao = new UserDao();
+                userDao.update(currentUser);
+                repaint();
+            }
+        });
+        contactPanelHeader.add(label);
+
+        JPanel contactPanelContent = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor(new Color(147, 185, 175));
+                if (userList.size() > 6) {
+                    g.fillRect(0, 0, 350, 460 + (userList.size() - 6) * 90);
+                } else {
+                    g.fillRect(0, 0, 350, 460);
+                }
+                int y = 0;
+                int y1 = 30;
                 g.setFont(customFont1.deriveFont(25f));
                 for (User user : userList) {
                     if (user.getUserName() != null && !user.equals(currentUser)) {
@@ -172,14 +236,9 @@ public class Home extends JFrame {
                         y1 += 90;
                     }
                 }
-                g.setColor(Color.WHITE);
-                int x = 25 + ((300 - g.getFontMetrics().stringWidth(currentUser.getUserName())) / 2);
-                g.drawString(currentUser.getUserName(), x, 50);
-                g.setFont(customFont2.deriveFont(25f));
-                g.drawString("ChatCheur", 110, 650);
                 g.setColor(new Color(226, 226, 226));
                 g.setFont(customFont1.deriveFont(15f));
-                int y2 = 205;
+                int y2 = 55;
                 for (User status : userList) {
                     if (status.getState() != null && !status.equals(currentUser)) {
                         String statu = "";
@@ -194,26 +253,26 @@ public class Home extends JFrame {
                 }
             }
         };
-        contactPanel.setLayout(null);
-        add(contactPanel);
+        contactPanelContent.setLayout(null);
+        contactPanelContent.setBounds(0, 140, 350, 460);
 
-        JPanel circlePanel = new JPanel() {
+        JScrollPane contactScrollPane = new JScrollPane(contactPanelContent);
+        contactScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        contactScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        contactScrollPane.setBorder(null);
+        contactScrollPane.setBounds(0, 140, 350, 460);
+        if (userList.size() > 6) {
+            contactPanelContent.setPreferredSize(new Dimension(350, 460 + (90 * (userList.size() - 6))));
+        } else {
+            contactPanelContent.setPreferredSize(new Dimension(350, 460));
+        }
+        add(contactScrollPane);
+
+        JPanel usersCirclePanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(circleColor);
-                g.fillOval(100, 75, 12, 12);
-            }
-        };
-        circlePanel.setBounds(0, 0, 300, 300);
-        circlePanel.setOpaque(false);
-        contactPanel.add(circlePanel);
-
-        JPanel userCirclePanel = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                int y = 180;
+                int y = 30;
                 for (User user : userList) {
                     if (user.getUserName() != null && !user.equals(currentUser)) {
                         if (user.getAccess().equals(User.Access.BANNED)) {
@@ -231,40 +290,9 @@ public class Home extends JFrame {
                 }
             }
         };
-        userCirclePanel.setBounds(0, 0, 350, 800);
-        userCirclePanel.setOpaque(false);
-        contactPanel.add(userCirclePanel);
-
-        setTitle("ChatCheur");
-        setSize(1300, 800);
-
-        //Setting Icon
-        ImageIcon iconSettings = new ImageIcon("IMG/Settings.png");
-        Image imgSetting = iconSettings.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-        iconSettings = new ImageIcon(imgSetting);
-        JLabel settings = new JLabel(iconSettings);
-        settings.setBounds(25, 700, iconSettings.getIconWidth(), iconSettings.getIconHeight());
-        contactPanel.add(settings);
-
-        //Stats Icon
-        ImageIcon iconStats = new ImageIcon("IMG/Stats.png");
-        Image imgStats = iconStats.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-        iconStats = new ImageIcon(imgStats);
-        JLabel stats = new JLabel(iconStats);
-        stats.setBounds(90, 700, iconStats.getIconWidth(), iconStats.getIconHeight());
-        contactPanel.add(stats);
-
-        //Log out Icon
-        ImageIcon iconLogOut = new ImageIcon("IMG/logOut.png");
-        Image imgLogOut = iconLogOut.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-        iconLogOut = new ImageIcon(imgLogOut);
-        logOut = new JButton(iconLogOut);
-        logOut.setActionCommand("logOut");
-        logOut.setOpaque(false);
-        logOut.setContentAreaFilled(false);
-        logOut.setBorderPainted(false);
-        logOut.setBounds(280, 700, iconLogOut.getIconWidth(), iconLogOut.getIconHeight());
-        contactPanel.add(logOut);
+        usersCirclePanel.setBounds(0, 0, 350, 800);
+        usersCirclePanel.setOpaque(false);
+        contactPanelContent.add(usersCirclePanel);
 
         //Ban Icon
         iconBan = new ImageIcon("IMG/ban-icon.png");
@@ -278,7 +306,7 @@ public class Home extends JFrame {
 
         //Dessine les icones de ban et unban selon les utilisateurs et leur status (moderateur et admin)
         if (!currentUser.getPermission().equals(User.Permission.USER)) {
-            int y = 170;
+            int y = 20;
             List<User> nonCurrentUsers = new ArrayList<>();
             for (User user : userList) {
                 if (!user.equals(currentUser)) {
@@ -298,10 +326,9 @@ public class Home extends JFrame {
                         case BANNED -> this.ban.get(i).setIcon(iconUnban);
                     }
                     this.ban.get(i).setBounds(260, y, this.ban.get(i).getIcon().getIconWidth(), this.ban.get(i).getIcon().getIconHeight());
-                    contactPanel.add(this.ban.get(i));
+                    contactPanelContent.add(this.ban.get(i));
                     y += 90;
                 }
-
             }
         }
 
@@ -311,13 +338,13 @@ public class Home extends JFrame {
         iconInfos = new ImageIcon(imgInfos);
         for (int i = 0; i < userList.size(); i++) {
             if (userList.get(i).getUserName() != null) {
-                int y = 165;
+                int y = 15;
                 for (User user : userList) {
                     if (user.getUserName() != null && !user.equals(currentUser)) {
                         JLabel infos = new JLabel(iconInfos);
                         FontMetrics metrics = infos.getFontMetrics(customFont1.deriveFont(25f));
-                        int x = metrics.stringWidth(user.getUserName()) + 30;
-                        infos.setBounds(x, y, infos.getIcon().getIconWidth(), infos.getIcon().getIconHeight());
+                        int xU = metrics.stringWidth(user.getUserName()) + 30;
+                        infos.setBounds(xU, y, infos.getIcon().getIconWidth(), infos.getIcon().getIconHeight());
                         infos.addMouseListener(new MouseAdapter() {
                             @Override
                             public void mouseClicked(MouseEvent e) {
@@ -330,48 +357,64 @@ public class Home extends JFrame {
                                 popup.setVisible(true);
                             }
                         });
-                        contactPanel.add(infos);
+                        contactPanelContent.add(infos);
                         y += 90;
                     }
                 }
 
-                //Status du currentUser
-                JLabel label = new JLabel();
-                label.setFont(customFont1.deriveFont(25f));
-                label.setForeground(Color.WHITE);
-                int x = (275 - label.getWidth()) / 2;
-                label.setBounds(x, 50, 100, 60);
-                switch (currentUser.getState()) {
-                    case ONLINE -> label.setText("Online");
-                    case AWAY -> label.setText("Away");
-                }
-                label.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        switch (currentUser.getState()) {
-                            case ONLINE -> {
-                                currentUser.setState(User.State.AWAY);
-                                label.setText("Away");
-                                circleColor = Color.ORANGE;
-                            }
-                            case AWAY -> {
-                                currentUser.setState(User.State.ONLINE);
-                                label.setText("Online");
-                                circleColor = Color.GREEN;
-                            }
-                        }
-                        UserDao userDao = new UserDao();
-                        userDao.update(currentUser);
-                        repaint();
-                    }
-                });
-                contactPanel.add(label);
-
-                setResizable(true);
-                setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                setLocationRelativeTo(null);
-                setVisible(true);
+        JPanel contactPanelFooter = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor(new Color(147, 185, 175));
+                g.fillRect(0, 600, 350, 200);
+                g.setColor(new Color(20, 48, 46));
+                g.fillRoundRect(90, 620, 160, 50, 50, 50);
+                g.setColor(Color.WHITE);
+                g.setFont(customFont2.deriveFont(25f));
+                g.drawString("ChatCheur", 110, 650);
             }
+        };
+        contactPanelFooter.setLayout(null);
+        contactPanelFooter.setBounds(0, 600, 350, 200);
+        add(contactPanelFooter);
+
+        setTitle("ChatCheur");
+        setSize(1300, 800);
+
+        //Setting Icon
+        ImageIcon iconSettings = new ImageIcon("IMG/Settings.png");
+        Image imgSetting = iconSettings.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        iconSettings = new ImageIcon(imgSetting);
+        JLabel settings = new JLabel(iconSettings);
+        settings.setBounds(25, 700, iconSettings.getIconWidth(), iconSettings.getIconHeight());
+        contactPanelFooter.add(settings);
+
+        //Stats Icon
+        ImageIcon iconStats = new ImageIcon("IMG/Stats.png");
+        Image imgStats = iconStats.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        iconStats = new ImageIcon(imgStats);
+        JLabel stats = new JLabel(iconStats);
+        stats.setBounds(90, 700, iconStats.getIconWidth(), iconStats.getIconHeight());
+        contactPanelFooter.add(stats);
+
+        //Log out Icon
+        ImageIcon iconLogOut = new ImageIcon("IMG/logOut.png");
+        Image imgLogOut = iconLogOut.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        iconLogOut = new ImageIcon(imgLogOut);
+        logOut = new JButton(iconLogOut);
+        logOut.setActionCommand("logOut");
+        logOut.setOpaque(false);
+        logOut.setContentAreaFilled(false);
+        logOut.setBorderPainted(false);
+        logOut.setBounds(280, 700, iconLogOut.getIconWidth(), iconLogOut.getIconHeight());
+        contactPanelFooter.add(logOut);
+
+        setResizable(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+    }
 
 
         }
@@ -392,7 +435,6 @@ public class Home extends JFrame {
     public JTextField getTextField1() {
         return textField1;
     }
-
     public void addAllListener(ClientController controller) {
         this.logOut.addActionListener(controller);
         for (JButton jButton : ban) {
