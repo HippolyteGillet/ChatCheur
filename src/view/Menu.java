@@ -17,7 +17,9 @@ import java.util.List;
 
 public class Menu extends JFrame {
     private JPanel panel;
-    private JTextField textField1, textField2;
+
+    private JTextField textField1;
+    private JPasswordField textField2;
     private JButton button, mdpOublie;
     private JLabel label;
 
@@ -78,8 +80,9 @@ public class Menu extends JFrame {
         });
         panel.add(textField1);
 
-        textField2 = new JTextField("Mot de passe");
-        textField2.setHorizontalAlignment(JTextField.CENTER);
+        textField2 = new JPasswordField("Mot de passe");
+        textField2.setEchoChar('\u0000');
+        textField2.setHorizontalAlignment(JPasswordField.CENTER);
         textField2.setBounds(150, 355, 400, 80);
         textField2.setFont(customFont);
         textField2.setForeground(Color.GRAY);
@@ -90,6 +93,7 @@ public class Menu extends JFrame {
             @Override
             public void focusGained(FocusEvent e) {
                 if (textField2.getText().equals("Mot de passe")) {
+                    textField2.setEchoChar('*');
                     textField2.setText("");
                     textField2.setForeground(Color.BLACK);
                 }
@@ -98,6 +102,7 @@ public class Menu extends JFrame {
             @Override
             public void focusLost(FocusEvent e) {
                 if (textField2.getText().isEmpty()) {
+                    textField2.setEchoChar('\u0000');
                     textField2.setForeground(Color.GRAY);
                     textField2.setText("Mot de passe");
                 }
