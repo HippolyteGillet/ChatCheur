@@ -18,7 +18,7 @@ import java.util.List;
 public class Menu extends JFrame {
     private JPanel panel;
     private JTextField textField1, textField2;
-    private JButton button;
+    private JButton button, mdpOublie;
     private JLabel label;
 
     public Menu(List<User> userList, List<Log> logList, List<Message> messageList) throws IOException, FontFormatException {
@@ -114,23 +114,15 @@ public class Menu extends JFrame {
         button.setBorderPainted(false);
         panel.add(button);
 
-        JLabel label = new JLabel("Mot de passe oublié ?");
-        label.setBounds(250, 435, 250, 40);
-        label.setFont(customFont.deriveFont(20f));
-        label.setForeground(Color.WHITE);
-        label.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                NewPassword popup;
-                try {
-                    popup = new NewPassword();
-                } catch (IOException | FontFormatException ex) {
-                    throw new RuntimeException(ex);
-                }
-                popup.setVisible(true);
-            }
-        });
-        panel.add(label);
+        mdpOublie = new JButton("Mot de passe oublié ?");
+        mdpOublie.setOpaque(false);
+        mdpOublie.setContentAreaFilled(false);
+        mdpOublie.setBorderPainted(false);
+        mdpOublie.setActionCommand("mdpOublie");
+        mdpOublie.setBounds(250, 435, 250, 40);
+        mdpOublie.setFont(customFont.deriveFont(20f));
+        mdpOublie.setForeground(Color.WHITE);
+        panel.add(mdpOublie);
 
         setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -152,5 +144,6 @@ public class Menu extends JFrame {
 
     public void addAllListener (ClientController controller) {
         this.button.addActionListener(controller);
+        this.mdpOublie.addActionListener(controller);
     }
 }

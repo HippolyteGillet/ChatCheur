@@ -6,24 +6,16 @@ import DAO.UserDao;
 import model.Log;
 import model.Message;
 import model.user.User;
-import server.ThreadToDisplay;
 import view.Home;
 import view.LogOut;
 import view.Menu;
 import view.NewPassword;
 
 import javax.swing.*;
-import javax.swing.text.Style;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -32,12 +24,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import java.util.List;
-import java.net.*;
 
 public class ClientController implements ActionListener {
     private Menu view1;
     private Home view2;
     private LogOut view3;
+    private NewPassword view4;
     private User currentUser;
     private List<User> users;
     private List<Log> logs;
@@ -45,8 +37,6 @@ public class ClientController implements ActionListener {
     private LogDao logDao = new LogDao();
     private MessageDao messageDao = new MessageDao();
     private UserDao userDao = new UserDao();
-
-    private NewPassword newPassword;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view) {
         this.view2 = null;
@@ -220,6 +210,25 @@ public class ClientController implements ActionListener {
         view2.repaint();
     }
 
+    public void mdpOublie(){
+        try {
+                view4 = new NewPassword();
+                view4.addAllListener(this);
+            } catch (IOException | FontFormatException ex) {
+                throw new RuntimeException(ex);
+            }
+            view4.setVisible(true);
+    }
+
+    public void newMdp(){
+        currentUser = userDao.findUserName(view4.getTextFieldUserName());
+        currentUser.setPassword(view4.getTextFieldNewPassword());
+        userDao.update(currentUser);
+        currentUser = null;
+        view4.dispose();
+        view4 = null;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String[] actionCommand = e.getActionCommand().split(" ");
@@ -228,15 +237,16 @@ public class ClientController implements ActionListener {
             case "logOut" -> gererFenetresLogOut();
             case "Disconnection" -> disconnection();
             case "Ban" -> bannissement(Integer.parseInt(actionCommand[1]));
-            case "Ok !" -> {
-                currentUser = userDao.findUserName(newPassword.getUserName());
-                currentUser.setPassword(newPassword.getPsswrd());
-                userDao.update(currentUser);
+            case "Ok" -> {
+                System.out.println("ok");
+                newMdp();
             }
             case "Send" -> {
                 send(view2.getTextField1().getText());
 
             }
+            case "mdpOublie" -> mdpOublie();
+
         }
     }
 
