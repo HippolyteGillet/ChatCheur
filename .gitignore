@@ -5,6 +5,7 @@ out/
 .idea/
 
 ### connection ###
+src.DAO.ConnectionDataBaseSQL
 src/DAO/ConnectionDataBaseSQL.java
 
 ### Eclipse ###
