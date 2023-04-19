@@ -26,8 +26,7 @@ public class CreateDataBaseSQL {
                     "    LAST_CONNECTION_T timestamp    DEFAULT CURRENT_TIMESTAMP," +
                     "    ACCESS            enum ('ACCEPTED','BANNED')," +
                     "    STATE             enum ('ONLINE','OFFLINE','AWAY')," +
-                    "    PRIMARY KEY (ID))" +
-                    "ENGINE=InnoDB;");
+                    "    PRIMARY KEY (ID))");
             //On crée la table log
             statement.executeUpdate("CREATE TABLE chatcheur.log (" +
                     "   ID        int NOT NULL AUTO_INCREMENT," +

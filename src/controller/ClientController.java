@@ -6,25 +6,22 @@ import DAO.UserDao;
 import model.Log;
 import model.Message;
 import model.user.User;
-import server.ThreadToDisplay;
+import server.ChatcheurThread;
 import view.Home;
 import view.LogOut;
 import view.Menu;
 import view.NewPassword;
 
 import javax.swing.*;
-import javax.swing.text.Style;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
+
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -32,7 +29,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import java.util.List;
-import java.net.*;
 
 public class ClientController implements ActionListener {
     private Menu view1;
@@ -45,10 +41,11 @@ public class ClientController implements ActionListener {
     private LogDao logDao = new LogDao();
     private MessageDao messageDao = new MessageDao();
     private UserDao userDao = new UserDao();
-
+    private PrintWriter out;
+    private BufferedReader in;
     private NewPassword newPassword;
 
-    public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view) {
+    public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view, Socket socket) {
         this.view2 = null;
         this.currentUser = null;
         this.users = users;
@@ -56,6 +53,16 @@ public class ClientController implements ActionListener {
         this.messages = messages;
         this.view1 = view;
         view1.addAllListener(this);
+        try {
+            this.out = new PrintWriter(socket.getOutputStream());
+            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
     }
 
     public List<User> getUsers() {
@@ -218,6 +225,10 @@ public class ClientController implements ActionListener {
             }
         }
         view2.repaint();
+    }
+
+    public void sendToServer() {
+
     }
 
     @Override
