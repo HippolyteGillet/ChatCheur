@@ -110,6 +110,8 @@ public class ClientController implements ActionListener {
         }
         if (this.currentUser == null && !userFinded) {
             System.out.println("Aucun utilisateur trouve");
+            view1.afficherUserUknown();
+
         }
     }
 
