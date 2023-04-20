@@ -1,5 +1,7 @@
 package view;
 
+import controller.ClientController;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
@@ -9,25 +11,11 @@ import java.io.IOException;
 
 public class NewPassword extends JDialog {
 
-    private String userName;
+    private JButton buttonOk;
 
-    private String psswrd;
+    private JTextField textFieldUserName;
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPsswrd() {
-        return psswrd;
-    }
-
-    public void setPsswrd(String psswrd) {
-        this.psswrd = psswrd;
-    }
+    private JTextField textFieldNewPassword;
 
     public NewPassword() throws IOException, FontFormatException {
         setBounds(420, 150, 600, 600);
@@ -56,35 +44,33 @@ public class NewPassword extends JDialog {
         panel.setBackground(new Color(238, 213, 173));
         panel.setLayout(null);
 
-        JTextField textField1 = new JTextField("Utilisateur");
-        textField1.setHorizontalAlignment(JTextField.CENTER);
-        textField1.setBounds(125, 150, 350, 70);
-        textField1.setFont(customFont);
-        textField1.setForeground(new Color(225,225,225));
-        textField1.setCaretColor(new Color(225,225,225));
-        textField1.setBorder(BorderFactory.createLineBorder(new Color(238, 213, 173)));
-        textField1.setOpaque(false);
-        textField1.addFocusListener(new FocusListener() {
+        textFieldUserName = new JTextField("Utilisateur");
+        textFieldUserName.setHorizontalAlignment(JTextField.CENTER);
+        textFieldUserName.setBounds(125, 150, 350, 70);
+        textFieldUserName.setFont(customFont);
+        textFieldUserName.setForeground(new Color(225,225,225));
+        textFieldUserName.setCaretColor(new Color(225,225,225));
+        textFieldUserName.setBorder(BorderFactory.createLineBorder(new Color(238, 213, 173)));
+        textFieldUserName.setOpaque(false);
+        textFieldUserName.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (textField1.getText().equals("Utilisateur")) {
-                    textField1.setText("");
-                    textField1.setForeground(Color.WHITE);
+                if (textFieldUserName.getText().equals("Utilisateur")) {
+                    textFieldUserName.setText("");
+                    textFieldUserName.setForeground(Color.WHITE);
                 }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (textField1.getText().isEmpty()) {
-                    textField1.setForeground(new Color(225,225,225));
-                    textField1.setText("Utilisateur");
+                if (textFieldUserName.getText().isEmpty()) {
+                    textFieldUserName.setForeground(new Color(225,225,225));
+                    textFieldUserName.setText("Utilisateur");
                 }
             }
         });
-        // N
-        setUserName(textField1.getText());
 
-        panel.add(textField1);
+        panel.add(textFieldUserName);
 
         JTextField textField2 = new JTextField("Nouveau mot de passe");
         textField2.setHorizontalAlignment(JTextField.CENTER);
@@ -113,46 +99,56 @@ public class NewPassword extends JDialog {
         });
         panel.add(textField2);
 
-        JTextField textField3 = new JTextField("Confirmer mot de passe");
-        textField3.setHorizontalAlignment(JTextField.CENTER);
-        textField3.setBounds(125, 370, 350, 70);
-        textField3.setFont(customFont);
-        textField3.setForeground(new Color(225,225,225));
-        textField3.setCaretColor(new Color(225,225,225));
-        textField3.setBorder(BorderFactory.createLineBorder(new Color(238, 213, 173)));
-        textField3.setOpaque(false);
-        textField3.addFocusListener(new FocusListener() {
+        textFieldNewPassword = new JTextField("Confirmer mot de passe");
+        textFieldNewPassword.setHorizontalAlignment(JTextField.CENTER);
+        textFieldNewPassword.setBounds(125, 370, 350, 70);
+        textFieldNewPassword.setFont(customFont);
+        textFieldNewPassword.setForeground(new Color(225,225,225));
+        textFieldNewPassword.setCaretColor(new Color(225,225,225));
+        textFieldNewPassword.setBorder(BorderFactory.createLineBorder(new Color(238, 213, 173)));
+        textFieldNewPassword.setOpaque(false);
+        textFieldNewPassword.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (textField3.getText().equals("Confirmer mot de passe")) {
-                    textField3.setText("");
-                    textField3.setForeground(Color.WHITE);
+                if (textFieldNewPassword.getText().equals("Confirmer mot de passe")) {
+                    textFieldNewPassword.setText("");
+                    textFieldNewPassword.setForeground(Color.WHITE);
                 }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (textField3.getText().isEmpty()) {
-                    textField3.setForeground(new Color(225,225,225));
-                    textField3.setText("Confirmer mot de passe");
+                if (textFieldNewPassword.getText().isEmpty()) {
+                    textFieldNewPassword.setForeground(new Color(225,225,225));
+                    textFieldNewPassword.setText("Confirmer mot de passe");
                 }
             }
         });
-        // N
-        setPsswrd(textField3.getText());
 
-        panel.add(textField3);
+        panel.add(textFieldNewPassword);
 
-        JButton button = new JButton("Ok !");
-        button.setBounds(450, 480, 100, 60);
-        button.setFont(customFont.deriveFont(25f));
-        button.setForeground(new Color(225,225,225));
-        button.setBackground(new Color(140,56,6));
-        button.setBorder(BorderFactory.createLineBorder(new Color(238, 213, 173)));
-        button.setFocusPainted(false);
-        button.addActionListener(e -> dispose());
-        panel.add(button);
+        buttonOk = new JButton("Ok !");
+        buttonOk.setActionCommand("Ok");
+        buttonOk.setBounds(450, 480, 100, 60);
+        buttonOk.setFont(customFont.deriveFont(25f));
+        buttonOk.setForeground(new Color(225,225,225));
+        buttonOk.setBackground(new Color(140,56,6));
+        buttonOk.setBorder(BorderFactory.createLineBorder(new Color(238, 213, 173)));
+        buttonOk.setFocusPainted(false);
+        panel.add(buttonOk);
 
         getContentPane().add(panel);
+    }
+
+    public String getTextFieldUserName(){
+        return textFieldUserName.getText();
+    }
+
+    public String getTextFieldNewPassword() {
+        return textFieldNewPassword.getText();
+    }
+
+    public void addAllListener(ClientController clientController){
+        buttonOk.addActionListener(clientController);
     }
 }

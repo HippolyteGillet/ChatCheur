@@ -17,8 +17,10 @@ import java.util.List;
 
 public class Menu extends JFrame {
     private JPanel panel;
-    private JTextField textField1, textField2;
-    private JButton button;
+
+    private JTextField textField1;
+    private JPasswordField textField2;
+    private JButton button, mdpOublie;
     private JLabel label;
 
     public Menu(List<User> userList, List<Log> logList, List<Message> messageList) throws IOException, FontFormatException {
@@ -78,8 +80,9 @@ public class Menu extends JFrame {
         });
         panel.add(textField1);
 
-        textField2 = new JTextField("Mot de passe");
-        textField2.setHorizontalAlignment(JTextField.CENTER);
+        textField2 = new JPasswordField("Mot de passe");
+        textField2.setEchoChar('\u0000');
+        textField2.setHorizontalAlignment(JPasswordField.CENTER);
         textField2.setBounds(150, 355, 400, 80);
         textField2.setFont(customFont);
         textField2.setForeground(Color.GRAY);
@@ -90,6 +93,7 @@ public class Menu extends JFrame {
             @Override
             public void focusGained(FocusEvent e) {
                 if (textField2.getText().equals("Mot de passe")) {
+                    textField2.setEchoChar('*');
                     textField2.setText("");
                     textField2.setForeground(Color.BLACK);
                 }
@@ -98,6 +102,7 @@ public class Menu extends JFrame {
             @Override
             public void focusLost(FocusEvent e) {
                 if (textField2.getText().isEmpty()) {
+                    textField2.setEchoChar('\u0000');
                     textField2.setForeground(Color.GRAY);
                     textField2.setText("Mot de passe");
                 }
@@ -114,23 +119,15 @@ public class Menu extends JFrame {
         button.setBorderPainted(false);
         panel.add(button);
 
-        JLabel label = new JLabel("Mot de passe oublié ?");
-        label.setBounds(250, 435, 250, 40);
-        label.setFont(customFont.deriveFont(20f));
-        label.setForeground(Color.WHITE);
-        label.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                NewPassword popup;
-                try {
-                    popup = new NewPassword();
-                } catch (IOException | FontFormatException ex) {
-                    throw new RuntimeException(ex);
-                }
-                popup.setVisible(true);
-            }
-        });
-        panel.add(label);
+        mdpOublie = new JButton("Mot de passe oublié ?");
+        mdpOublie.setOpaque(false);
+        mdpOublie.setContentAreaFilled(false);
+        mdpOublie.setBorderPainted(false);
+        mdpOublie.setActionCommand("mdpOublie");
+        mdpOublie.setBounds(250, 435, 250, 40);
+        mdpOublie.setFont(customFont.deriveFont(20f));
+        mdpOublie.setForeground(Color.WHITE);
+        panel.add(mdpOublie);
 
         setResizable(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -152,5 +149,6 @@ public class Menu extends JFrame {
 
     public void addAllListener (ClientController controller) {
         this.button.addActionListener(controller);
+        this.mdpOublie.addActionListener(controller);
     }
 }

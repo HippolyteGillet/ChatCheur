@@ -18,8 +18,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
-
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -34,15 +32,15 @@ public class ClientController implements ActionListener {
     private Menu view1;
     private Home view2;
     private LogOut view3;
+    private NewPassword view4;
     private User currentUser;
     private List<User> users;
     private List<Log> logs;
     private List<Message> messages;
-    private LogDao logDao = new LogDao();
-    private MessageDao messageDao = new MessageDao();
-    private UserDao userDao = new UserDao();
+    private final LogDao logDao = new LogDao();
+    private final MessageDao messageDao = new MessageDao();
+    private final UserDao userDao = new UserDao();
     private PrintWriter out;
-    private NewPassword newPassword;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view, Socket socket) {
         this.view2 = null;
@@ -127,8 +125,20 @@ public class ClientController implements ActionListener {
     }
 
     public void send(String message) {
+        if (!message.equals("Saisir du texte") && !message.isEmpty() && currentUser != null) {
+            view2.setInputReceived(true);
+            view2.getTextField1().setText(null);
+            int y;
+            if (messages.size() < 12) {
+                y = 600;
+            } else {
+                y = 600 + (messages.size() - 12) * 53;
+            }
+            view2.getTextField1().setBounds(100, y + 90, 750, 60);
+            view2.getScrollPane().getVerticalScrollBar().setValue(view2.getScrollPane().getVerticalScrollBar().getMaximum());
+            view2.getConversationPanel().setPreferredSize(new Dimension(950, y + 196));
+            view2.getScrollPane().getViewport().setViewPosition(new Point(0, y));
 
-        if (message != null && !message.isEmpty() && currentUser != null) {
             Message messagToSend = new Message(currentUser.getId(), message);
             Log logToSend = new Log(currentUser.getId(), Log.TypeLog.MESSAGE);
             //JAVA Part:
@@ -235,6 +245,25 @@ public class ClientController implements ActionListener {
         out.flush();
     }
 
+    public void mdpOublie() {
+        try {
+            view4 = new NewPassword();
+            view4.addAllListener(this);
+        } catch (IOException | FontFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+        view4.setVisible(true);
+    }
+
+    public void newMdp() {
+        currentUser = userDao.findUserName(view4.getTextFieldUserName());
+        currentUser.setPassword(view4.getTextFieldNewPassword());
+        userDao.update(currentUser);
+        currentUser = null;
+        view4.dispose();
+        view4 = null;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String[] actionCommand = e.getActionCommand().split(" ");
@@ -246,20 +275,20 @@ public class ClientController implements ActionListener {
             case "logOut" -> gererFenetresLogOut();
             case "Disconnection" -> disconnection();
             case "Ban" -> bannissement(Integer.parseInt(actionCommand[1]));
-            case "Ok !" -> {
-                currentUser = userDao.findUserName(newPassword.getUserName());
-                currentUser.setPassword(newPassword.getPsswrd());
-                userDao.update(currentUser);
+            case "Ok" -> {
+                System.out.println("ok");
+                newMdp();
             }
-            case "Send" -> {
+            case "send" -> {
                 send(view2.getTextField1().getText());
                 sendToServerMessage("message envoye");
             }
+            case "mdpOublie" -> mdpOublie();
         }
     }
 
 
-    public static String sha256(String input){
+    public static String sha256(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] hashInBytes = md.digest(input.getBytes(StandardCharsets.UTF_8));
@@ -275,6 +304,4 @@ public class ClientController implements ActionListener {
     }
 
     //Listener pour bouton connection
-
-
 }
