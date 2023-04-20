@@ -27,7 +27,6 @@ class Client {
     public static void main(String[] args) throws IOException, FontFormatException {
         //---------------------------------------SERVER PART----------------------------------------------
         Socket socket = new Socket("localhost", 8999);
-        ChatcheurThread chatcheurThread = new ChatcheurThread(socket);
         //---------------------------------------INITIALISATION------------------------------------
         //Create the connection to the DB
         ConnectionDataBaseSQL.accessDriver();

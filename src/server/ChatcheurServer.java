@@ -8,7 +8,7 @@ import java.util.ArrayList;
 class ChatcheurServer {
 
     //Array of all the active clients:
-    private static ArrayList<PrintWriter> clients = new ArrayList<>();
+    private ArrayList<PrintWriter> clients = new ArrayList<>();
 
     public static void main(String[] args) {
         ChatcheurServer chatcheurServer = new ChatcheurServer();
@@ -38,7 +38,7 @@ class ChatcheurServer {
                 System.out.println("Accepted socket connection from  client ");
 
                 //Lance le thread du client
-                new ChatcheurThread(clientSocket);
+                new ChatcheurThread(clientSocket, chatcheurServer);
                 // This thread will handle the client
                 // separately
             } catch (IOException e) {
