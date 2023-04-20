@@ -166,7 +166,175 @@ public class UserDao implements DAO<User> {
         return user;
     }
 
+    // Functions for statistics
+
+    public ArrayList<User> findNumberUsersOnline(){
+        ArrayList<User> usersOnline = new ArrayList<>();
+        User user = new User();
+
+        try {
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE STATE = 'ONLINE'");
+            while (result.next()){
+                user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
+                        result.getString("EMAIL"), result.getString("FIRST_NAME"),
+                        result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
+                        LocalDate.now());
+                user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
+                user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
+
+                usersOnline.add(user);
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return usersOnline;
+    }
+
+    public ArrayList<User> findNumberUsersAway(){
+        ArrayList<User> usersAway = new ArrayList<>();
+        User user = new User();
+
+        try {
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE STATE = 'AWAY'");
+            while (result.next()){
+                user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
+                        result.getString("EMAIL"), result.getString("FIRST_NAME"),
+                        result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
+                        LocalDate.now());
+                user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
+                user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
+
+                usersAway.add(user);
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return usersAway;
+    }
+
+    public ArrayList<User> findNumberUsersOffline(){
+        ArrayList<User> usersOffline = new ArrayList<>();
+        User user = new User();
+
+        try {
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE STATE = 'OFFLINE'");
+            while (result.next()){
+                user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
+                        result.getString("EMAIL"), result.getString("FIRST_NAME"),
+                        result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
+                        LocalDate.now());
+                user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
+                user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
+
+                usersOffline.add(user);
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return usersOffline;
+    }
+
+    public ArrayList<User> findNumberUser(){
+        ArrayList<User> users = new ArrayList<>();
+        User user = new User();
+
+        try {
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE PERMISSION = 'USER'");
+            while (result.next()){
+                user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
+                        result.getString("EMAIL"), result.getString("FIRST_NAME"),
+                        result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
+                        LocalDate.now());
+                user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
+                user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
+
+                users.add(user);
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
+    public ArrayList<User> findNumberModerator(){
+        ArrayList<User> moderators = new ArrayList<>();
+        User user = new User();
+
+        try {
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE PERMISSION = 'MODERATOR'");
+            while (result.next()){
+                user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
+                        result.getString("EMAIL"), result.getString("FIRST_NAME"),
+                        result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
+                        LocalDate.now());
+                user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
+                user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
+
+                moderators.add(user);
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return moderators;
+    }
+
+    public ArrayList<User> findNumberAdministrator(){
+        ArrayList<User> administrators = new ArrayList<>();
+        User user = new User();
+
+        try {
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE PERMISSION = 'ADMINISTRATOR'");
+            while (result.next()){
+                user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
+                        result.getString("EMAIL"), result.getString("FIRST_NAME"),
+                        result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
+                        LocalDate.now());
+                user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
+                user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
+
+                administrators.add(user);
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return administrators;
+    }
+
+    public ArrayList<User> findNumberBanned(){
+        ArrayList<User> banned = new ArrayList<>();
+        User user = new User();
+
+        try {
+            ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE ACCESS = 'BANNED'");
+            while (result.next()){
+                user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
+                        result.getString("EMAIL"), result.getString("FIRST_NAME"),
+                        result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
+                        LocalDate.now());
+                user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
+                user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
+
+                banned.add(user);
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return banned;
+    }
 
 
-    // TODO findPassword() | findUserName
 }

@@ -32,7 +32,8 @@ public class Home extends JFrame {
     private final JButton logOut;
     private final JButton smileyErrorBtn;
     private final JButton imageErrorBtn;
-    private ImageIcon iconUnban, iconBan;
+    private ImageIcon iconUnban, iconBan, iconStats;
+    private JButton stats;
 
     public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
         for (User user : userList) {
@@ -77,7 +78,7 @@ public class Home extends JFrame {
                         ImageIcon image = new ImageIcon("Smileys/" + messageList.get(i).getContent().substring(1) + ".png");
                         Image smiley = image.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
                         image = new ImageIcon(smiley);
-                        if (image.getImage().getWidth(null) == -1){
+                        if (image.getImage().getWidth(null) == -1) {
                             smileyErrorBtn.doClick();
                         } else {
 
@@ -404,7 +405,6 @@ public class Home extends JFrame {
 
         //Unban Icon
         iconUnban = new ImageIcon("IMG/unban-icon.png");
-
         Image imgUnban = iconUnban.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         iconUnban = new ImageIcon(imgUnban);
 
@@ -489,10 +489,15 @@ public class Home extends JFrame {
         contactPanelFooter.add(settings);
 
         //Stats Icon
-        ImageIcon iconStats = new ImageIcon("IMG/Stats.png");
+        iconStats = new ImageIcon("IMG/Stats.png");
         Image imgStats = iconStats.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         iconStats = new ImageIcon(imgStats);
-        JLabel stats = new JLabel(iconStats);
+
+        stats = new JButton(iconStats);
+        //stats.setActionCommand("Stats");
+        this.stats.setOpaque(false);
+        this.stats.setContentAreaFilled(false);
+        this.stats.setBorderPainted(false);
         stats.setBounds(90, 730, iconStats.getIconWidth(), iconStats.getIconHeight());
         contactPanelFooter.add(stats);
 
@@ -553,6 +558,14 @@ public class Home extends JFrame {
         return conversationPanel;
     }
 
+    public ImageIcon getIconStats() {
+        return iconStats;
+    }
+
+    public void setIconStats(ImageIcon iconStats) {
+        this.iconStats = iconStats;
+    }
+
     public JButton getSendButton() {
         return sendButton;
     }
@@ -565,10 +578,10 @@ public class Home extends JFrame {
         this.sendButton.addActionListener(controller);
         this.smileyErrorBtn.addActionListener(controller);
         this.imageErrorBtn.addActionListener(controller);
+        this.stats.addActionListener(controller);
     }
 
     public Boolean getInputReceived() {
         return inputReceived;
     }
-
 }
