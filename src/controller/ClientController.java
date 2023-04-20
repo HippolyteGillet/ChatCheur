@@ -99,10 +99,12 @@ public class ClientController implements ActionListener {
                         gererFenetresConnection();
                     } else {
                         System.out.println("Connexion refusee, le user est banni");
+                        view1.afficherBannissement();
                     }
                 } else if (user.getUserName().equals(username)) {
                     userFinded = true;
                     System.out.println("Mdp incorrect");
+                    view1.afficherMdpIncorrect();
                 }
             }
         }

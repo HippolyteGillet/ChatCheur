@@ -151,4 +151,13 @@ public class Menu extends JFrame {
         this.button.addActionListener(controller);
         this.mdpOublie.addActionListener(controller);
     }
+
+
+    public void afficherBannissement() {
+        JOptionPane.showMessageDialog(this, "Vous avez été banni du chat", "Bannissement", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void afficherMdpIncorrect() {
+        JOptionPane.showMessageDialog(this, "Mot de passe incorrect", "Erreur", JOptionPane.ERROR_MESSAGE);
+    }
 }
