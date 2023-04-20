@@ -39,6 +39,7 @@ public class MessageDao implements DAO<Message> {
     @Override
     public Message create(Message message) {
         try (Statement statement = this.connect.createStatement()) {
+            statement.executeUpdate("ALTER TABLE message AUTO_INCREMENT = 1;");
             //On crée la requête SQL pour ajouter un message dans la BDD
             statement.executeUpdate("INSERT INTO chatcheur.message (message.USER_ID, message.TIMESTAMP, message.CONTENT) VALUES (" + message.getUser_id() +
                     ",'" + Timestamp.valueOf(message.getLocalDateTime()) + "','" + message.getContent() + "')");
@@ -51,6 +52,8 @@ public class MessageDao implements DAO<Message> {
     @Override
     public Message update(Message message) {
         try (Statement statement = this.connect.createStatement()) {
+            statement.executeUpdate("ALTER TABLE message AUTO_INCREMENT = 1;");
+
             //On crée la requête SQL pour mettre à jour un modele.message dans la BDD
             statement.executeUpdate("UPDATE message SET USER_ID='" + message.getUser_id() +
                     "', TIMESTAMP='" + Timestamp.valueOf(message.getLocalDateTime()) +
@@ -65,6 +68,7 @@ public class MessageDao implements DAO<Message> {
     @Override
     public void delete(int id) {
         try (Statement statement = this.connect.createStatement()) {
+            statement.executeUpdate("ALTER TABLE message AUTO_INCREMENT = 1;");
             statement.executeUpdate("DELETE FROM message WHERE id=" + id);
         } catch (SQLException e) {
             e.printStackTrace();

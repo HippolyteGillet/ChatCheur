@@ -120,15 +120,18 @@ public class ClientController implements ActionListener {
             view2.setInputReceived(true);
             view2.getTextField1().setText(null);
             int y;
-            if (messages.size() < 12) {
-                y = 600;
+            if (messages.size() < 9) {
+                y = 680;
             } else {
-                y = 600 + (messages.size() - 12) * 53;
+                y = 680 + (messages.size() - 8) * 90;
             }
             view2.getTextField1().setBounds(100, y + 90, 750, 60);
             view2.getScrollPane().getVerticalScrollBar().setValue(view2.getScrollPane().getVerticalScrollBar().getMaximum());
-            view2.getConversationPanel().setPreferredSize(new Dimension(950, y + 196));
+            view2.getConversationPanel().setPreferredSize(new Dimension(950, y + 170));
             view2.getScrollPane().getViewport().setViewPosition(new Point(0, y));
+            view2.getSendButton().setBounds(800, y + 105, 30, 30);
+            view2.getConversationPanel().repaint();
+            view2.getScrollPane().repaint();
 
             Message messagToSend = new Message(currentUser.getId(), message);
             Log logToSend = new Log(currentUser.getId(), Log.TypeLog.MESSAGE);
@@ -245,12 +248,24 @@ public class ClientController implements ActionListener {
         view4 = null;
     }
 
+    public void contenuIntrouvable() {
+        MessageDao messageDao = new MessageDao();
+        messageDao.update(messages.get(messages.size() - 1));
+        messageDao.delete(messages.get(messages.size() - 1).getId());
+        messages.remove(messages.size() - 1);
+        JOptionPane.showMessageDialog(view1, "Image introuvable, veuillez charger votre image sous le bon nom dans le fichier imageEnvoyees", "Erreur de chargement d'image", JOptionPane.ERROR_MESSAGE);
+        view2.getTextField1().setText("");
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String[] actionCommand = e.getActionCommand().split(" ");
         switch (actionCommand[0]) {
             case "Connexion" -> connection(view1.getUsername(), view1.getPassword());
-            case "logOut" -> gererFenetresLogOut();
+            case "logOut" -> {
+                System.out.println("la deconnexion");
+                gererFenetresLogOut();
+            }
             case "Disconnection" -> disconnection();
             case "Ban" -> bannissement(Integer.parseInt(actionCommand[1]));
             case "Ok" -> {
@@ -259,10 +274,14 @@ public class ClientController implements ActionListener {
             }
             case "send" -> send(view2.getTextField1().getText());
             case "mdpOublie" -> mdpOublie();
-
+            case "SmileyIntrouvable" -> {
+                contenuIntrouvable();
+            }
+            case "ImageIntrouvable" -> {
+                contenuIntrouvable();
+            }
         }
     }
-
 
     public static String sha256(String input) {
         try {
@@ -278,6 +297,5 @@ public class ClientController implements ActionListener {
         }
 
     }
-
     //Listener pour bouton connection
 }
