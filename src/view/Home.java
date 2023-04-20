@@ -398,6 +398,16 @@ public class Home extends JFrame {
             setLocationRelativeTo(null);
             setVisible(true);
         }
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                currentUser.setState(User.State.AWAY);
+                UserDao userDao = new UserDao();
+                userDao.update(currentUser);
+                dispose(); // Fermer la fenêtre
+            }
+        });
+
     }
 
     public JButton getBan(int i) {
