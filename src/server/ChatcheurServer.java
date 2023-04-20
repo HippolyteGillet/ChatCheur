@@ -65,9 +65,11 @@ class ChatcheurServer {
         out.flush();
     }
 
-    synchronized public void sendAllMessage(String message) {
+    synchronized public void sendAllMessage(String message, PrintWriter currentUser) {
         for (PrintWriter client : clients) {
-            sendMessage(message, client);
+            if (client != currentUser) {
+                sendMessage(message, client);
+            }
         }
     }
 

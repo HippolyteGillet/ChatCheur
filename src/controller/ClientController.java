@@ -42,7 +42,6 @@ public class ClientController implements ActionListener {
     private MessageDao messageDao = new MessageDao();
     private UserDao userDao = new UserDao();
     private PrintWriter out;
-    private BufferedReader in;
     private NewPassword newPassword;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view, Socket socket) {
@@ -55,7 +54,6 @@ public class ClientController implements ActionListener {
         view1.addAllListener(this);
         try {
             this.out = new PrintWriter(socket.getOutputStream());
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -232,6 +230,11 @@ public class ClientController implements ActionListener {
         out.flush();
     }
 
+    public void sendToServerMessage(String message) {
+        out.println("Message: " + message);
+        out.flush();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String[] actionCommand = e.getActionCommand().split(" ");
@@ -250,7 +253,7 @@ public class ClientController implements ActionListener {
             }
             case "Send" -> {
                 send(view2.getTextField1().getText());
-
+                sendToServerMessage("message envoye");
             }
         }
     }

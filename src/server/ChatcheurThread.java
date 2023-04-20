@@ -48,8 +48,11 @@ public class ChatcheurThread implements Runnable {
         if (!threadRunning) {
             System.out.println("Server already stopped");
         }
-        if (clientCommand[0].equals("Connection:")) {
-            chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
+        else if (clientCommand[0].equals("Connection:")) {
+            chatcheurServer.sendAllMessage(tableauToMessage(clientCommand), this.out);
+        }
+        else if (clientCommand[0].equals("Message:")) {
+            chatcheurServer.sendAllMessage(tableauToMessage(clientCommand), this.out);
         }
 
     }
@@ -57,7 +60,7 @@ public class ChatcheurThread implements Runnable {
     public String tableauToMessage(String [] words) {
         String string = "";
         for (String message : words) {
-            string += message;
+            string += " " + message;
         }
         return string;
     }
