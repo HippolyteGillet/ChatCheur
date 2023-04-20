@@ -6,8 +6,7 @@ import DAO.UserDao;
 import model.Log;
 import model.Message;
 import model.user.User;
-import view.Home;
-import view.LogOut;
+import view.*;
 import view.Menu;
 import view.NewPassword;
 
@@ -21,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -30,6 +30,7 @@ public class ClientController implements ActionListener {
     private Home view2;
     private LogOut view3;
     private NewPassword view4;
+    private Stats view5;
     private User currentUser;
     private List<User> users;
     private List<Log> logs;
@@ -248,6 +249,76 @@ public class ClientController implements ActionListener {
         view4 = null;
     }
 
+    public void pageStats(){
+        /*try {
+            view5 = new Stats();
+            view5.addAllListener(this);
+        } catch (IOException | FontFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+        view5.setVisible(true);*/
+    }
+
+    public ArrayList<User> getUsersOnline(){
+        return userDao.findNumberUsersOnline();
+    }
+
+    public ArrayList<User> getUsersAway(){
+        return userDao.findNumberUsersAway();
+    }
+
+    public ArrayList<User> getUsersOffline(){
+        return userDao.findNumberUsersOffline();
+    }
+
+    public ArrayList<User> getTypeUser(){return userDao.findNumberUser();}
+
+    public ArrayList<User> getTypeModerator(){return userDao.findNumberModerator();}
+
+    public ArrayList<User> getTypeAdministrator(){return userDao.findNumberAdministrator();}
+
+    public ArrayList<User> getNumberBanned(){return userDao.findNumberBanned();}
+
+    public ArrayList<Integer> getNumberMessagesPerHour(){
+
+        ArrayList<Integer> finalList = new ArrayList<>();
+        LocalDateTime timeNow = LocalDateTime.now();
+        LocalDateTime firstHour = LocalDateTime.of(timeNow.getYear(), timeNow.getMonth(), timeNow.getDayOfMonth(), 0, 0);
+        LocalDateTime secondHour = firstHour.plusHours(1);
+
+        for (int i = 0; i < 24; i++) {
+            finalList.add(messageDao.retrieveMessagesEachHour(firstHour, secondHour));
+            firstHour = firstHour.plusHours(1);
+            secondHour = secondHour.plusHours(1);
+        }
+        return finalList;
+    }
+
+    public ArrayList<Integer> getNumberConnectionsPerHour(){
+        ArrayList<Integer> finalList = new ArrayList<>();
+        LocalDateTime timeNow = LocalDateTime.now();
+        LocalDateTime firstHour = LocalDateTime.of(timeNow.getYear(), timeNow.getMonth(), timeNow.getDayOfMonth(), 0, 0);
+        LocalDateTime secondHour = firstHour.plusHours(1);
+
+        for (int i = 0; i < 24; i++) {
+            finalList.add(logDao.findConnectionsPerHour(firstHour, secondHour));
+            firstHour = firstHour.plusHours(1);
+            secondHour = secondHour.plusHours(1);
+        }
+        return finalList;
+
+    }
+
+    public ArrayList<User> getTopUsers(){
+        ArrayList<User> topUsers = new ArrayList<>();
+
+        for (Integer i : messageDao.findTopUsers()){
+            topUsers.add(userDao.find(i));
+        }
+
+        return topUsers;
+    }
+
     public void contenuIntrouvable() {
         MessageDao messageDao = new MessageDao();
         messageDao.update(messages.get(messages.size() - 1));
@@ -262,10 +333,7 @@ public class ClientController implements ActionListener {
         String[] actionCommand = e.getActionCommand().split(" ");
         switch (actionCommand[0]) {
             case "Connexion" -> connection(view1.getUsername(), view1.getPassword());
-            case "logOut" -> {
-                System.out.println("la deconnexion");
-                gererFenetresLogOut();
-            }
+            case "logOut" -> gererFenetresLogOut();
             case "Disconnection" -> disconnection();
             case "Ban" -> bannissement(Integer.parseInt(actionCommand[1]));
             case "Ok" -> {
@@ -274,6 +342,11 @@ public class ClientController implements ActionListener {
             }
             case "send" -> send(view2.getTextField1().getText());
             case "mdpOublie" -> mdpOublie();
+            case "Stats" -> {
+                System.out.println("Stats OK");
+                pageStats();
+            }
+
             case "SmileyIntrouvable" -> {
                 contenuIntrouvable();
             }

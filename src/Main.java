@@ -1,5 +1,9 @@
 import DAO.*;
 import model.*;
+import view.Stats;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class Main {
     public static void main(String[] args) {
@@ -33,27 +37,8 @@ public class Main {
             }
         }*/
         MessageDao messageDao = new MessageDao();
-        //UserDAO userDAO = new UserDAO();
-        //User user = new User(userDAO.newIdUser(), "userName", "password", "email", "firstName", "lastName", User.State.ONLINE, LocalDate.now());
+        UserDao userDao = new UserDao();
+        LogDao logDao = new LogDao();
 
-        // Test create() OK
-        //userDAO.create(user);
-
-        // Test newIdUser() OK
-        //System.out.println(userDAO.newIdUser());
-
-        // Test find() OK
-        //System.out.println(userDAO.find(1));
-
-        // Test delete() OK
-        //userDAO.delete(userDAO.find(1));
-
-        // Test update() OK
-        //user.setUserName("new_username");
-        //userDAO.update(user);
-        //System.out.println(user);
-
-        // Test allClose() OK
-        //userDAO.allClose();
     }
 }
