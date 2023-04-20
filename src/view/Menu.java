@@ -160,4 +160,8 @@ public class Menu extends JFrame {
     public void afficherMdpIncorrect() {
         JOptionPane.showMessageDialog(this, "Mot de passe incorrect", "Erreur", JOptionPane.ERROR_MESSAGE);
     }
+
+    public void afficherUserUknown(){
+        JOptionPane.showMessageDialog(this, "Utilisateur introuvable", "Erreur", JOptionPane.ERROR_MESSAGE);
+    }
 }
