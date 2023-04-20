@@ -18,6 +18,7 @@ public class Message {
     }
 
     public Message(int user_id, String content) {
+        this.id = -1;
         this.user_id = user_id;
         localDateTime = now();
         this.content = content;
