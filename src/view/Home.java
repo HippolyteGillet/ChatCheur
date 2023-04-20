@@ -1,5 +1,6 @@
 package view;
 
+import DAO.MessageDao;
 import DAO.UserDao;
 import controller.ClientController;
 import model.Log;
@@ -52,33 +53,59 @@ public class Home extends JFrame {
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     if(messageList.get(i).getContent().substring(0, 1).equals("/")) {
                         //image
-                        ImageIcon image = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1));
+                        ImageIcon image = null;
+                        try {
+                            image = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1));
+                            if (image.getImage().getWidth(null) == -1) {
+                                throw new Exception();
+                            }else {
+                                int imageIconWidth = image.getIconWidth();
+                                int imageIconHeight = image.getIconHeight();
 
-                        int imageIconWidth = image.getIconWidth();
-                        int imageIconHeight = image.getIconHeight();
+                                int x = 900 - imageIconWidth - 20;
 
-                        int x = 900 - imageIconWidth - 20;
-                        //int x2 = 50;
-                        int width = imageIconWidth + 30;
-                        int height = imageIconHeight + 10;
-                        g.drawImage(image.getImage(), x+30, y  - (imageIconHeight)+35 , null);
-                        y-= imageIconHeight +20;
+                                g.drawImage(image.getImage(), x+30, y  - (imageIconHeight)+35 , null);
+                                y-= imageIconHeight +20;
+                            }
+                        } catch (Exception e) {
+                            MessageDao messageDao = new MessageDao();
+                            messageDao.delete(messageList.get(i).getId());
+                            messageList.remove(i);
+                            JOptionPane.showMessageDialog(this, "Image introuvable, veuillez charger votre image sous le bon nom dans le fichier imageEnvoyees", "Erreur de chargement d'image", JOptionPane.ERROR_MESSAGE);
+                            textField1.setText("");
+
+                        }
+
+
 
                     } else if (messageList.get(i).getContent().substring(0, 1).equals("$")){
                         ImageIcon image = null;
                         try {
                             image = new ImageIcon("Smileys/" + messageList.get(i).getContent().substring(1)+ ".png");
-                            Image smiley = image.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-                            image = new ImageIcon(smiley);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        int imageIconWidth = image.getIconWidth();
-                        int imageIconHeight = image.getIconHeight();
 
-                        int x = 900 - imageIconWidth - 20;
-                        g.drawImage(image.getImage(), x+30, y  - (imageIconHeight)+35 , null);
-                        y-= imageIconHeight +20;
+                            Image smiley = image.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+                            if (image.getImage().getWidth(null) == -1) {
+                                throw new Exception();
+                            } else {
+                                image = new ImageIcon(smiley);
+                                int imageIconWidth = image.getIconWidth();
+                                int imageIconHeight = image.getIconHeight();
+
+                                int x = 900 - imageIconWidth - 20;
+                                g.drawImage(image.getImage(), x+30, y  - (imageIconHeight)+35 , null);
+                                y-= imageIconHeight +20;
+                            }
+                        } catch (Exception e) {
+
+                            MessageDao messageDao = new MessageDao();
+                            messageDao.delete(messageList.get(i).getId());
+                            messageList.remove(i);
+
+                            JOptionPane.showMessageDialog(this, "Smiley introuvable, essayer une autre reaction", "Erreur de Smiley", JOptionPane.ERROR_MESSAGE);
+
+                            textField1.setText("");
+                        }
+
                     }else{
                     FontMetrics metrics = g.getFontMetrics(customFont1);
                     int textWidth = metrics.stringWidth(messageList.get(i).getContent());
