@@ -64,7 +64,22 @@ public class Home extends JFrame {
                         g.drawImage(image.getImage(), x+30, y  - (imageIconHeight)+35 , null);
                         y-= imageIconHeight +20;
 
-                    } else {
+                    } else if (messageList.get(i).getContent().substring(0, 1).equals("$")){
+                        ImageIcon image = null;
+                        try {
+                            image = new ImageIcon("Smileys/" + messageList.get(i).getContent().substring(1)+ ".png");
+                            Image smiley = image.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+                            image = new ImageIcon(smiley);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        int imageIconWidth = image.getIconWidth();
+                        int imageIconHeight = image.getIconHeight();
+
+                        int x = 900 - imageIconWidth - 20;
+                        g.drawImage(image.getImage(), x+30, y  - (imageIconHeight)+35 , null);
+                        y-= imageIconHeight +20;
+                    }else{
                     FontMetrics metrics = g.getFontMetrics(customFont1);
                     int textWidth = metrics.stringWidth(messageList.get(i).getContent());
                     int textHeight = metrics.getHeight();
