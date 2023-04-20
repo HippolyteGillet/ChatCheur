@@ -50,6 +50,21 @@ public class Home extends JFrame {
                 g.setColor(Color.WHITE);
                 g.fillRoundRect(100, y + 90, 750, 60, 50, 50);
                 for (int i = messageList.size() - 1; i >= 0; i--) {
+                    if(messageList.get(i).getContent().substring(0, 1).equals("/")) {
+                        //image
+                        ImageIcon image = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1));
+
+                        int imageIconWidth = image.getIconWidth();
+                        int imageIconHeight = image.getIconHeight();
+
+                        int x = 900 - imageIconWidth - 20;
+                        //int x2 = 50;
+                        int width = imageIconWidth + 30;
+                        int height = imageIconHeight + 10;
+                        g.drawImage(image.getImage(), x+30, y  - (imageIconHeight)+35 , null);
+                        y-= imageIconHeight +20;
+
+                    } else {
                     FontMetrics metrics = g.getFontMetrics(customFont1);
                     int textWidth = metrics.stringWidth(messageList.get(i).getContent());
                     int textHeight = metrics.getHeight();
@@ -76,6 +91,7 @@ public class Home extends JFrame {
                         g.drawString(formattedTime, x + 15, y + textHeight - 45);
                     }
                     y -= 53;
+                }
                 }
             }
         };
