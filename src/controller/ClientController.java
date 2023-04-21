@@ -7,15 +7,16 @@ import model.Log;
 import model.Message;
 import model.user.User;
 import view.*;
+import server.ChatcheurThread;
 import view.Menu;
-import view.NewPassword;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -26,6 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientController implements ActionListener {
+    private final LogDao logDao = new LogDao();
+    private final MessageDao messageDao = new MessageDao();
+    private final UserDao userDao = new UserDao();
     private Menu view1;
     private Home view2;
     private LogOut view3;
@@ -35,18 +39,38 @@ public class ClientController implements ActionListener {
     private List<User> users;
     private List<Log> logs;
     private List<Message> messages;
-    private final LogDao logDao = new LogDao();
-    private final MessageDao messageDao = new MessageDao();
-    private final UserDao userDao = new UserDao();
+    private PrintWriter out;
 
-    public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view) {
-        this.view2 = null;
+    public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view, Socket socket) {
         this.currentUser = null;
         this.users = users;
         this.logs = logs;
         this.messages = messages;
         this.view1 = view;
+        this.view2 = null;
+        this.view3 = null;
+        this.view4 = null;
         view1.addAllListener(this);
+        try {
+            this.out = new PrintWriter(socket.getOutputStream(), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String sha256(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashInBytes = md.digest(input.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashInBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public List<User> getUsers() {
@@ -173,7 +197,6 @@ public class ClientController implements ActionListener {
         this.currentUser.setState(User.State.OFFLINE);
         //On met a jour BDD
         this.userDao.update(currentUser);
-        System.out.println("Utilisateur deconnecte : " + currentUser.getUserName());
         this.currentUser = null;
         gererFenetresDisconnection();
     }
@@ -230,6 +253,24 @@ public class ClientController implements ActionListener {
         view2.repaint();
     }
 
+    //-----------------------------------ENVOIE SERVEUR-----------------------------------------
+    public void sendToServerConnection() {
+        this.out.println("Connection: " + currentUser.getUserName() + " connected to server");
+    }
+
+    public void sendToServerMessage(String message) {
+        try {
+            this.out.println("Message de " + this.currentUser.getUserName() + " : " + message);
+        } catch (Exception e) {
+            System.out.println("ERROR, Exception occured on sending");
+        }
+    }
+
+    public void sendToServerDisconnection() {
+        this.out.println("Disconnection: " + currentUser.getUserName() + " disconnected from server");
+    }
+
+    //-------------------------------------PASSWORD-------------------------------------------
     public void mdpOublie() {
         try {
             view4 = new NewPassword();
@@ -249,7 +290,8 @@ public class ClientController implements ActionListener {
         view4 = null;
     }
 
-    public void pageStats(){
+    //-----------------------------------STATS------------------------------------------------
+    public void pageStats() {
         try {
             view5 = new Stats();
             view5.addAllListener(this);
@@ -259,27 +301,35 @@ public class ClientController implements ActionListener {
         view5.setVisible(true);
     }
 
-    public ArrayList<User> getUsersOnline(){
+    public ArrayList<User> getUsersOnline() {
         return userDao.findNumberUsersOnline();
     }
 
-    public ArrayList<User> getUsersAway(){
+    public ArrayList<User> getUsersAway() {
         return userDao.findNumberUsersAway();
     }
 
-    public ArrayList<User> getUsersOffline(){
+    public ArrayList<User> getUsersOffline() {
         return userDao.findNumberUsersOffline();
     }
 
-    public ArrayList<User> getTypeUser(){return userDao.findNumberUser();}
+    public ArrayList<User> getTypeUser() {
+        return userDao.findNumberUser();
+    }
 
-    public ArrayList<User> getTypeModerator(){return userDao.findNumberModerator();}
+    public ArrayList<User> getTypeModerator() {
+        return userDao.findNumberModerator();
+    }
 
-    public ArrayList<User> getTypeAdministrator(){return userDao.findNumberAdministrator();}
+    public ArrayList<User> getTypeAdministrator() {
+        return userDao.findNumberAdministrator();
+    }
 
-    public ArrayList<User> getNumberBanned(){return userDao.findNumberBanned();}
+    public ArrayList<User> getNumberBanned() {
+        return userDao.findNumberBanned();
+    }
 
-    public ArrayList<Integer> getNumberMessagesPerHour(){
+    public ArrayList<Integer> getNumberMessagesPerHour() {
 
         ArrayList<Integer> finalList = new ArrayList<>();
         LocalDateTime timeNow = LocalDateTime.now();
@@ -294,7 +344,7 @@ public class ClientController implements ActionListener {
         return finalList;
     }
 
-    public ArrayList<Integer> getNumberConnectionsPerHour(){
+    public ArrayList<Integer> getNumberConnectionsPerHour() {
         ArrayList<Integer> finalList = new ArrayList<>();
         LocalDateTime timeNow = LocalDateTime.now();
         LocalDateTime firstHour = LocalDateTime.of(timeNow.getYear(), timeNow.getMonth(), timeNow.getDayOfMonth(), 0, 0);
@@ -309,10 +359,10 @@ public class ClientController implements ActionListener {
 
     }
 
-    public ArrayList<User> getTopUsers(){
+    public ArrayList<User> getTopUsers() {
         ArrayList<User> topUsers = new ArrayList<>();
 
-        for (Integer i : messageDao.findTopUsers()){
+        for (Integer i : messageDao.findTopUsers()) {
             topUsers.add(userDao.find(i));
         }
 
@@ -328,47 +378,36 @@ public class ClientController implements ActionListener {
         view2.getTextField1().setText("");
     }
 
+    //------------------------------LISTENERS------------------------------------------
     @Override
     public void actionPerformed(ActionEvent e) {
         String[] actionCommand = e.getActionCommand().split(" ");
         switch (actionCommand[0]) {
-            case "Connexion" -> connection(view1.getUsername(), view1.getPassword());
-            case "logOut" -> gererFenetresLogOut();
-            case "Disconnection" -> disconnection();
-            case "Ban" -> bannissement(Integer.parseInt(actionCommand[1]));
-            case "Ok" -> {
-                System.out.println("ok");
-                newMdp();
+            case "Connexion" -> {
+                connection(view1.getUsername(), view1.getPassword());
+                sendToServerConnection();
             }
-            case "send" -> send(view2.getTextField1().getText());
+            case "logOut" -> gererFenetresLogOut();
+            case "Disconnection" -> {
+                sendToServerDisconnection();
+                disconnection();
+            }
+            case "Ban" -> bannissement(Integer.parseInt(actionCommand[1]));
+            case "Ok" -> newMdp();
+            case "send" -> {
+                //On envoie le message aux autres clients
+                //Bien laisser avant send() car sinon message null
+                sendToServerMessage(view2.getTextField1().getText());
+                //Fonction pour envoyer message à la BDD
+                send(view2.getTextField1().getText());
+            }
             case "mdpOublie" -> mdpOublie();
             case "Stats" -> {
                 System.out.println("Stats OK");
                 pageStats();
             }
-
-            case "SmileyIntrouvable" -> {
-                contenuIntrouvable();
-            }
-            case "ImageIntrouvable" -> {
-                contenuIntrouvable();
-            }
+            case "SmileyIntrouvable", "ImageIntrouvable" -> contenuIntrouvable();
         }
-    }
-
-    public static String sha256(String input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hashInBytes = md.digest(input.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashInBytes) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-
     }
     //Listener pour bouton connection
 }
