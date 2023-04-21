@@ -250,13 +250,13 @@ public class ClientController implements ActionListener {
     }
 
     public void pageStats(){
-        /*try {
+        try {
             view5 = new Stats();
             view5.addAllListener(this);
         } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
         }
-        view5.setVisible(true);*/
+        view5.setVisible(true);
     }
 
     public ArrayList<User> getUsersOnline(){
