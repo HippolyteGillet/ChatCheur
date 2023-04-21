@@ -51,6 +51,7 @@ public class ChatcheurThread implements Runnable {
         switch (clientCommand[0]) {
             case "Connection:" -> {
                 this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
+                this.chatcheurServer.connection(clientCommand);
             }
             case "Message" -> {
                 this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));

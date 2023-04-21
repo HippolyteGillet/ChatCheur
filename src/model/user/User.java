@@ -1,6 +1,6 @@
 package model.user;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class User {
 
@@ -14,7 +14,7 @@ public class User {
     private Permission permission;
     private Access access;
     private State state;
-    private LocalDate lastConnectionTime;
+    private LocalDateTime lastConnectionTime;
 
     public enum Access {
         BANNED,
@@ -35,7 +35,7 @@ public class User {
     public User() {
     }
 
-    public User(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDate lastConnectionTime) {
+    public User(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDateTime lastConnectionTime) {
         this.id = id;
         this.userName = userName;
         this.password = password;
@@ -133,18 +133,18 @@ public class User {
 
     }
 
-    public LocalDate getLastConnectionTime() {
+    public LocalDateTime getLastConnectionTime() {
         return lastConnectionTime;
     }
 
-    public void setLastConnectionTime(LocalDate lastConnectionTime) {
+    public void setLastConnectionTime(LocalDateTime lastConnectionTime) {
         this.lastConnectionTime = lastConnectionTime;
 
     }
 
     public void connect() {
         this.state = State.ONLINE;
-        this.lastConnectionTime = LocalDate.now();
+        this.lastConnectionTime = LocalDateTime.now();
     }
 
     public void disconnect() {
@@ -164,5 +164,14 @@ public class User {
         return "User{" + "id=" + id + ", userName=" + userName + ", password=" + password + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName + ", permission=" + permission + ", status=" + access + ", state=" + state + ", lastConnectionTime=" + lastConnectionTime + '}';
     }
 
-
+    public static User convertionMessageIntoUser(String[] user) {
+        String[] realUser = new String[100];
+        for (int i = 0; i < user.length-5; i++) {
+            String temp = user[i + 5].split("=")[1];
+            realUser[i] = temp.substring(0,temp.length()-1);
+        }
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXXXXx");
+        //LocalDateTime localDateTime = LocalDateTime.parse(realUser[9], formatter);
+        return new User(Integer.parseInt(realUser[0]), realUser[1], realUser[2], realUser[3], realUser[4], realUser[5], User.State.valueOf(realUser[8]), LocalDateTime.now());
+    }
 }
