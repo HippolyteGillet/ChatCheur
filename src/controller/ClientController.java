@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientController implements ActionListener {
+    private final LogDao logDao = new LogDao();
+    private final MessageDao messageDao = new MessageDao();
+    private final UserDao userDao = new UserDao();
     private Menu view1;
     private Home view2;
     private LogOut view3;
@@ -36,9 +39,6 @@ public class ClientController implements ActionListener {
     private List<User> users;
     private List<Log> logs;
     private List<Message> messages;
-    private final LogDao logDao = new LogDao();
-    private final MessageDao messageDao = new MessageDao();
-    private final UserDao userDao = new UserDao();
     private PrintWriter out;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view, Socket socket) {
@@ -56,6 +56,21 @@ public class ClientController implements ActionListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String sha256(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashInBytes = md.digest(input.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashInBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public List<User> getUsers() {
@@ -278,8 +293,6 @@ public class ClientController implements ActionListener {
     //-----------------------------------STATS------------------------------------------------
     public void pageStats() {
         try {
-    public void pageStats(){
-        try {
             view5 = new Stats();
             view5.addAllListener(this);
         } catch (IOException | FontFormatException ex) {
@@ -288,27 +301,35 @@ public class ClientController implements ActionListener {
         view5.setVisible(true);
     }
 
-    public ArrayList<User> getUsersOnline(){
+    public ArrayList<User> getUsersOnline() {
         return userDao.findNumberUsersOnline();
     }
 
-    public ArrayList<User> getUsersAway(){
+    public ArrayList<User> getUsersAway() {
         return userDao.findNumberUsersAway();
     }
 
-    public ArrayList<User> getUsersOffline(){
+    public ArrayList<User> getUsersOffline() {
         return userDao.findNumberUsersOffline();
     }
 
-    public ArrayList<User> getTypeUser(){return userDao.findNumberUser();}
+    public ArrayList<User> getTypeUser() {
+        return userDao.findNumberUser();
+    }
 
-    public ArrayList<User> getTypeModerator(){return userDao.findNumberModerator();}
+    public ArrayList<User> getTypeModerator() {
+        return userDao.findNumberModerator();
+    }
 
-    public ArrayList<User> getTypeAdministrator(){return userDao.findNumberAdministrator();}
+    public ArrayList<User> getTypeAdministrator() {
+        return userDao.findNumberAdministrator();
+    }
 
-    public ArrayList<User> getNumberBanned(){return userDao.findNumberBanned();}
+    public ArrayList<User> getNumberBanned() {
+        return userDao.findNumberBanned();
+    }
 
-    public ArrayList<Integer> getNumberMessagesPerHour(){
+    public ArrayList<Integer> getNumberMessagesPerHour() {
 
         ArrayList<Integer> finalList = new ArrayList<>();
         LocalDateTime timeNow = LocalDateTime.now();
@@ -323,7 +344,7 @@ public class ClientController implements ActionListener {
         return finalList;
     }
 
-    public ArrayList<Integer> getNumberConnectionsPerHour(){
+    public ArrayList<Integer> getNumberConnectionsPerHour() {
         ArrayList<Integer> finalList = new ArrayList<>();
         LocalDateTime timeNow = LocalDateTime.now();
         LocalDateTime firstHour = LocalDateTime.of(timeNow.getYear(), timeNow.getMonth(), timeNow.getDayOfMonth(), 0, 0);
@@ -338,10 +359,10 @@ public class ClientController implements ActionListener {
 
     }
 
-    public ArrayList<User> getTopUsers(){
+    public ArrayList<User> getTopUsers() {
         ArrayList<User> topUsers = new ArrayList<>();
 
-        for (Integer i : messageDao.findTopUsers()){
+        for (Integer i : messageDao.findTopUsers()) {
             topUsers.add(userDao.find(i));
         }
 
@@ -380,7 +401,6 @@ public class ClientController implements ActionListener {
                 //Fonction pour envoyer message à la BDD
                 send(view2.getTextField1().getText());
             }
-            case "send" -> send(view2.getTextField1().getText());
             case "mdpOublie" -> mdpOublie();
             case "Stats" -> {
                 System.out.println("Stats OK");
@@ -388,21 +408,6 @@ public class ClientController implements ActionListener {
             }
             case "SmileyIntrouvable", "ImageIntrouvable" -> contenuIntrouvable();
         }
-    }
-
-    public static String sha256(String input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hashInBytes = md.digest(input.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashInBytes) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-
     }
     //Listener pour bouton connection
 }
