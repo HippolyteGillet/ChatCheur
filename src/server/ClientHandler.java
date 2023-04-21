@@ -1,12 +1,16 @@
 package server;
 
+import controller.ClientController;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class ThreadToDisplay extends Thread{
-    BufferedReader in;
+public class ClientHandler extends Thread{
+    private BufferedReader in;
+    private ClientController controller;
 
-    public ThreadToDisplay(BufferedReader in) {
+    public ClientHandler(BufferedReader in, ClientController c) {
+        this.controller = c;
         this.in = in;
     }
 

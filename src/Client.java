@@ -12,7 +12,6 @@ import view.Menu;
 import java.awt.*;
 import java.io.*;
 import java.net.*;
-import java.util.*;
 import java.util.List;
 
 // Client class
@@ -25,10 +24,6 @@ class Client {
     }
 
     public static void main(String[] args) throws IOException, FontFormatException {
-        //---------------------------------------SERVER PART----------------------------------------------
-        Socket socket = new Socket("localhost", 8999);
-        ThreadToDisplay threadToDisplay = new ThreadToDisplay(new BufferedReader(new InputStreamReader(socket.getInputStream())));
-        threadToDisplay.start();
         //---------------------------------------INITIALISATION------------------------------------
         //Create the connection to the DB
         ConnectionDataBaseSQL.accessDriver();
@@ -45,7 +40,10 @@ class Client {
         //Create a view
         Menu view = new Menu(usersModel, logsModel, messagesModel);
 
-        //Create the controller
-        new ClientController(usersModel, logsModel, messagesModel, view, socket);
+        //---------------------------------------SERVER PART----------------------------------------------
+        Socket socket = new Socket("localhost", 8999);
+        ClientHandler threadToDisplay = new ClientHandler(new BufferedReader(new InputStreamReader(socket.getInputStream())),
+                new ClientController(usersModel, logsModel, messagesModel, view, socket));
+        threadToDisplay.start();
     }
 }
