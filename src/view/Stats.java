@@ -26,8 +26,8 @@ public class Stats extends JDialog{
     private CategoryPlot categoryPlot;
     private PiePlot piePlot;
     private ChartPanel chartPanel;
-    //private JPanel panel = new JPanel(new GridLayout(2,1));
 
+    private ImageIcon iconTop;
     public Stats() throws IOException, FontFormatException {
         setBounds(400, 80, 700, 700);
         setResizable(false);
@@ -35,7 +35,7 @@ public class Stats extends JDialog{
 
         Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(25f);
         // Création du JPanel et ajout à la JDialog
-        JPanel panel = new JPanel(new GridLayout(2,1)) {
+        JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -51,23 +51,37 @@ public class Stats extends JDialog{
         showPieChartType(panel);
         showChartMessage(panel);
         showChartConnection(panel);
-        //showTopUser();
 
-        /*buttonOk = new JButton("Ok !");
-        buttonOk.setActionCommand("Ok2");
-        buttonOk.setBounds(450, 480, 100, 60);
-        buttonOk.setFont(customFont.deriveFont(25f));
-        buttonOk.setForeground(new Color(225, 225, 225));
-        buttonOk.setBackground(new Color(140, 56, 6));
-        buttonOk.setBorder(BorderFactory.createLineBorder(new Color(238, 213, 173)));
-        buttonOk.setFocusPainted(false);
-        panel.add(buttonOk);*/
+        iconTop = new ImageIcon("IMG/podium.png");
+        Image imgTop = iconTop.getImage().getScaledInstance(530, 330, Image.SCALE_SMOOTH);
+        iconTop = new ImageIcon(imgTop);
+        JLabel topUser = new JLabel(iconTop);
+        topUser.setBounds(80, 1620, iconTop.getIconWidth(), iconTop.getIconHeight());
+        panel.add(topUser);
+
+        JLabel top1 = new JLabel("Top 1");
+        top1.setFont(customFont.deriveFont(25f));
+        top1.setForeground(Color.WHITE);
+        top1.setBounds(50 + topUser.getWidth() / 2, 1570, 100, 60);
+        panel.add(top1);
+
+        JLabel top2 = new JLabel("Top 2");
+        top2.setFont(customFont.deriveFont(25f));
+        top2.setForeground(Color.WHITE);
+        top2.setBounds(145, 1640, 100, 60);
+        panel.add(top2);
+
+        JLabel top3 = new JLabel("Top 3");
+        top3.setFont(customFont.deriveFont(25f));
+        top3.setForeground(Color.WHITE);
+        top3.setBounds(topUser.getWidth() - 50, 1685, 100, 60);
+        panel.add(top3);
 
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBounds(0, 0, 700, 700);
-        panel.setPreferredSize(new Dimension(700, 1850));
+        panel.setPreferredSize(new Dimension(700, 2000));
         getContentPane().add(scrollPane);
 
     }
@@ -189,41 +203,7 @@ public class Stats extends JDialog{
 
         //put the chart into a panel
         chartPanel = new ChartPanel(chart);
-        chartPanel.setBounds(50, 1120, 500, 360);
-        panel.add(chartPanel);
-        panel.validate();
-
-    }
-
-    private void showTopUser(JPanel panel) {
-        barDataset = new DefaultCategoryDataset();
-        barDataset .addValue(2,"Top 4","");
-        barDataset .addValue(4,"Top 2","");
-        barDataset .addValue(6,"Top 1","");
-        barDataset .addValue(3,"Top 3","");
-        barDataset .addValue(1,"Top 5","");
-
-        //create chart
-        chart = ChartFactory.createBarChart(
-                "TOP USERS",
-                "",
-                "Number of Connections",
-                barDataset ,
-                PlotOrientation.VERTICAL,
-                false, true, false);
-        categoryPlot = chart.getCategoryPlot();
-
-        //change bar background
-        categoryPlot.setBackgroundPaint(Color.WHITE);
-        BarRenderer renderer = (BarRenderer) categoryPlot.getRenderer();
-        renderer.setSeriesPaint(1, new Color(0,0,99));
-        renderer.setSeriesPaint(2, new Color(106,0,0));
-        renderer.setSeriesPaint(3, new Color(0,200,0));
-        renderer.setSeriesPaint(4, Color.BLACK);
-        renderer.setSeriesPaint(5, Color.GRAY);
-        //put the chart into a panel
-        chartPanel = new ChartPanel(chart);
-        chartPanel.setBounds(50, 1490, 500, 360);
+        chartPanel.setBounds(50, 1120, 600, 360);
         panel.add(chartPanel);
         panel.validate();
 
