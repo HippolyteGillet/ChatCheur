@@ -494,10 +494,10 @@ public class Home extends JFrame {
         iconStats = new ImageIcon(imgStats);
 
         stats = new JButton(iconStats);
-        //stats.setActionCommand("Stats");
-        this.stats.setOpaque(false);
-        this.stats.setContentAreaFilled(false);
-        this.stats.setBorderPainted(false);
+        stats.setActionCommand("Stats");
+        stats.setOpaque(false);
+        stats.setContentAreaFilled(false);
+        stats.setBorderPainted(false);
         stats.setBounds(90, 730, iconStats.getIconWidth(), iconStats.getIconHeight());
         contactPanelFooter.add(stats);
 
