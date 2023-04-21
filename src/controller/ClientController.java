@@ -8,6 +8,7 @@ import model.Message;
 import model.user.User;
 import view.*;
 import server.ChatcheurThread;
+import view.Menu;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,6 +36,9 @@ public class ClientController implements ActionListener {
     private List<User> users;
     private List<Log> logs;
     private List<Message> messages;
+    private final UserDao userDao = new UserDao();
+    private final LogDao logDao = new LogDao();
+    private final MessageDao messageDao = new MessageDao();
     private PrintWriter out;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view, Socket socket) {
