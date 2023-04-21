@@ -3,10 +3,10 @@ package server;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class ThreadToDisplay extends Thread{
+public class ClientHandler extends Thread{
     BufferedReader in;
 
-    public ThreadToDisplay(BufferedReader in) {
+    public ClientHandler(BufferedReader in) {
         this.in = in;
     }
 
