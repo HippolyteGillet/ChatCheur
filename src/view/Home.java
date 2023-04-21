@@ -430,7 +430,7 @@ public class Home extends JFrame {
 
     public void addAllListener(ClientController controller) {
         this.logOut.addActionListener(controller);
-        for (JButton jButton : ban) {
+        for (JButton jButton : this.ban) {
             jButton.addActionListener(controller);
         }
         this.sendButton.addActionListener(controller);

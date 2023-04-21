@@ -4,13 +4,13 @@ import java.io.*;
 import java.net.*;
 
 public class ChatcheurThread implements Runnable {
+    private final boolean threadRunning = true;
     private Thread thread;
     private ChatcheurServer chatcheurServer;
     private Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
     private int numClient = 0;
-    private boolean threadRunning = true;
 
     public ChatcheurThread(Socket s, ChatcheurServer chatcheurServer) {
         this.clientSocket = s;
@@ -35,29 +35,34 @@ public class ChatcheurThread implements Runnable {
         try {
             while (threadRunning) {
                 readCommand();
-                System.out.println(in.readLine());
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                System.out.println("Le client no " + numClient + " s'est deconnecte");
+                chatcheurServer.deleteClient(numClient);
+                clientSocket.close();
+            } catch (IOException ignored) {
+
+            }
         }
     }
 
     public void readCommand() throws IOException {
-        String[] clientCommand = in.readLine().split(" ");
+        String[] clientCommand = this.in.readLine().split(" ");
 
         if (!threadRunning) {
-            System.out.println("Server already stopped");
-        }
-        else if (clientCommand[0].equals("Connection:")) {
-            chatcheurServer.sendAllMessage(tableauToMessage(clientCommand), this.out);
-        }
-        else if (clientCommand[0].equals("Message:")) {
-            chatcheurServer.sendAllMessage(tableauToMessage(clientCommand), this.out);
+            System.out.println("Client not running anymore");
+        } else if (clientCommand[0].equals("Connection:")) {
+            chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
+        } else if (clientCommand[0].equals("Message")) {
+            chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
         }
 
     }
 
-    public String tableauToMessage(String [] words) {
+    public String tableauToMessage(String[] words) {
         String string = "";
         for (String message : words) {
             string += " " + message;

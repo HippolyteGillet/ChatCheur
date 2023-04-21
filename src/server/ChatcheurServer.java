@@ -18,7 +18,6 @@ class ChatcheurServer {
         try {
             serverSocket = new ServerSocket(portNumber);
             System.out.println("New Server has started listening on port: " + portNumber);
-            serverSocket.setReuseAddress(true);
         } catch (IOException e) {
             System.out.println("Cannot listen on port: " + portNumber + ", Exception: " + e);
             System.exit(1);
@@ -60,18 +59,22 @@ class ChatcheurServer {
     }
 
     synchronized public void sendMessage(String message, PrintWriter client) {
-        PrintWriter out = new PrintWriter(client, true);
-        out.println(message);
-        out.flush();
-    }
-
-    synchronized public void sendAllMessage(String message, PrintWriter currentUser) {
-        for (PrintWriter client : clients) {
-            if (client != currentUser) {
-                sendMessage(message, client);
-            }
+        PrintWriter out = (PrintWriter) client;
+        if (out != null) {
+            out.print(message);
+            out.flush();
         }
     }
+
+    synchronized public void sendAllMessage(String message) {
+        PrintWriter out;
+        for (PrintWriter client : clients) {
+            out = client;
+            sendMessage(message, out);
+        }
+    }
+
+
 
     synchronized public int nbclients() {
         return clients.size();

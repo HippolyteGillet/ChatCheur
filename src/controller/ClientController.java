@@ -29,6 +29,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientController implements ActionListener {
+    private final LogDao logDao = new LogDao();
+    private final MessageDao messageDao = new MessageDao();
+    private final UserDao userDao = new UserDao();
     private Menu view1;
     private Home view2;
     private LogOut view3;
@@ -37,9 +40,6 @@ public class ClientController implements ActionListener {
     private List<User> users;
     private List<Log> logs;
     private List<Message> messages;
-    private final LogDao logDao = new LogDao();
-    private final MessageDao messageDao = new MessageDao();
-    private final UserDao userDao = new UserDao();
     private PrintWriter out;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view, Socket socket) {
@@ -49,12 +49,29 @@ public class ClientController implements ActionListener {
         this.logs = logs;
         this.messages = messages;
         this.view1 = view;
+        this.view3 = null;
+        this.view4 = null;
         view1.addAllListener(this);
         try {
             this.out = new PrintWriter(socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String sha256(String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashInBytes = md.digest(input.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashInBytes) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public User getCurrentUser() {
@@ -236,13 +253,20 @@ public class ClientController implements ActionListener {
     }
 
     public void sendToServerConnection() {
-        out.println("Connection: " + currentUser.getUserName() + " connected to server");
-        out.flush();
+        this.out.println("Connection: " + currentUser.getUserName() + " connected to server");
+        System.out.println("Connection envoyee au serveur");
+        this.out.flush();
     }
 
     public void sendToServerMessage(String message) {
-        out.println("Message: " + message);
-        out.flush();
+        try {
+            this.out.println("Message de " + this.currentUser.getUserName() + " : " + message);
+            System.out.println("Message envoye : " + message);
+            System.out.println(this.out);
+            this.out.flush();
+        } catch (Exception e) {
+            System.out.println("ERROR, Exception occured on sending");
+        }
     }
 
     public void mdpOublie() {
@@ -280,27 +304,14 @@ public class ClientController implements ActionListener {
                 newMdp();
             }
             case "send" -> {
+                //On envoie le message aux autres clients
+                //Bien laisser avant send() car sinon message null
+                sendToServerMessage(view2.getTextField1().getText());
+                //Fonction pour envoyer message à la BDD
                 send(view2.getTextField1().getText());
-                sendToServerMessage("message envoye");
             }
             case "mdpOublie" -> mdpOublie();
         }
-    }
-
-
-    public static String sha256(String input) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] hashInBytes = md.digest(input.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : hashInBytes) {
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 
     //Listener pour bouton connection
