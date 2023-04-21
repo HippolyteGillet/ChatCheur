@@ -33,16 +33,15 @@ public class CreateDataBaseSQL {
                     "   USER_ID   varchar(255) DEFAULT NULL," +
                     "   TIMESTAMP timestamp    DEFAULT CURRENT_TIMESTAMP," +
                     "   TYPELOG   enum ('CONNECTION', 'DISCONNECTION', 'MESSAGE', 'BAN', 'UNBAN', 'SET_ROLE', 'UNKNOWN')," +
-                    "   PRIMARY KEY (ID)," +
-                    "   FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID));");
+                    "   PRIMARY KEY (ID));");
             //On crée la table message
             statement.executeUpdate("CREATE TABLE chatcheur.message (" +
                     "   ID        int NOT NULL AUTO_INCREMENT," +
                     "   USER_ID   varchar(255) DEFAULT NULL," +
                     "   TIMESTAMP timestamp    DEFAULT CURRENT_TIMESTAMP," +
                     "   CONTENT   varchar(255) DEFAULT NULL," +
-                    "   PRIMARY KEY (ID)," +
-                    "   FOREIGN KEY (USER_ID) REFERENCES chatcheur.user (ID));");
+                    "   PRIMARY KEY (ID))");
+            statement.executeUpdate("ALTER TABLE chatcheur.message AUTO_INCREMENT = 1;");
 
             //-----------------------DATA-MYSQL--------------------------------------------
             //On insert data dans user
