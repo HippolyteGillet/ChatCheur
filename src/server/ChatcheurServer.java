@@ -1,12 +1,24 @@
 package server;
 
+import DAO.LogDao;
+import DAO.MessageDao;
+import DAO.UserDao;
+import model.Log;
+import model.user.User;
+
 import java.io.*;
 import java.net.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 // Server class
 class ChatcheurServer {
 
+    private final UserDao userDao = new UserDao();
+    private final LogDao logDao = new LogDao();
+    private final MessageDao messageDao = new MessageDao();
     //Array of all the active clients:
     private ArrayList<PrintWriter> clients = new ArrayList<>();
 
@@ -75,5 +87,14 @@ class ChatcheurServer {
         return clients.size();
     }
 
+    synchronized public void connection(String[] user) {
+        User userTemp = User.convertionMessageIntoUser(user);
+        //On met a jour BDD
+        this.userDao.update(userTemp);
+        //Création d'un log connection
+        Log logConnection = new Log(userTemp.getId(), Log.TypeLog.CONNECTION);
+        //On ajoute le log dans la BDD
+        logDao.create(logConnection);
+    }
 
 }

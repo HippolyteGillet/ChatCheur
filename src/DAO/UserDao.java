@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class UserDao implements DAO<User> {
                 user = new User(id, result.getString("USER_NAME"), result.getString("PASSWORD"),
                         result.getString("EMAIL"), result.getString("FIRST_NAME"),
                         result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
-                        LocalDate.now());
+                        LocalDateTime.now());
                 user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
                 user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
             }
@@ -155,7 +156,7 @@ public class UserDao implements DAO<User> {
                 user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
                         result.getString("EMAIL"), result.getString("FIRST_NAME"),
                         result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
-                        LocalDate.now());
+                        LocalDateTime.now());
                 user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
                 user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
             }
@@ -178,7 +179,7 @@ public class UserDao implements DAO<User> {
                 user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
                         result.getString("EMAIL"), result.getString("FIRST_NAME"),
                         result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
-                        LocalDate.now());
+                        LocalDateTime.now());
                 user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
                 user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
 
@@ -202,7 +203,7 @@ public class UserDao implements DAO<User> {
                 user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
                         result.getString("EMAIL"), result.getString("FIRST_NAME"),
                         result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
-                        LocalDate.now());
+                        LocalDateTime.now());
                 user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
                 user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
 
@@ -226,7 +227,7 @@ public class UserDao implements DAO<User> {
                 user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
                         result.getString("EMAIL"), result.getString("FIRST_NAME"),
                         result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
-                        LocalDate.now());
+                        LocalDateTime.now());
                 user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
                 user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
 
@@ -250,7 +251,7 @@ public class UserDao implements DAO<User> {
                 user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
                         result.getString("EMAIL"), result.getString("FIRST_NAME"),
                         result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
-                        LocalDate.now());
+                        LocalDateTime.now());
                 user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
                 user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
 
@@ -274,7 +275,7 @@ public class UserDao implements DAO<User> {
                 user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
                         result.getString("EMAIL"), result.getString("FIRST_NAME"),
                         result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
-                        LocalDate.now());
+                        LocalDateTime.now());
                 user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
                 user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
 
@@ -298,7 +299,7 @@ public class UserDao implements DAO<User> {
                 user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
                         result.getString("EMAIL"), result.getString("FIRST_NAME"),
                         result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
-                        LocalDate.now());
+                        LocalDateTime.now());
                 user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
                 user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
 
@@ -322,7 +323,7 @@ public class UserDao implements DAO<User> {
                 user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
                         result.getString("EMAIL"), result.getString("FIRST_NAME"),
                         result.getString("LAST_NAME"), User.State.valueOf(result.getString("STATE")),
-                        LocalDate.now());
+                        LocalDateTime.now());
                 user.setPermission(User.Permission.valueOf(result.getString("PERMISSION")));
                 user.setAccess(User.Access.valueOf(result.getString("ACCESS")));
 
