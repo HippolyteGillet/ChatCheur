@@ -52,7 +52,7 @@ public class ClientController implements ActionListener {
         this.view4 = null;
         view1.addAllListener(this);
         try {
-            this.out = new PrintWriter(socket.getOutputStream());
+            this.out = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -97,6 +97,44 @@ public class ClientController implements ActionListener {
         this.messages = messages;
     }
 
+    public void send(String message) {
+        if (!message.equals("Saisir du texte") && !message.isEmpty() && currentUser != null) {
+            view2.setInputReceived(true);
+            view2.getTextField1().setText(null);
+            int y;
+            if (messages.size() < 9) {
+                y = 680;
+            } else {
+                y = 680 + (messages.size() - 8) * 90;
+            }
+            view2.getTextField1().setBounds(100, y + 90, 750, 60);
+            view2.getScrollPane().getVerticalScrollBar().setValue(view2.getScrollPane().getVerticalScrollBar().getMaximum());
+            view2.getConversationPanel().setPreferredSize(new Dimension(950, y + 170));
+            view2.getScrollPane().getViewport().setViewPosition(new Point(0, y));
+            view2.getSendButton().setBounds(800, y + 105, 30, 30);
+            view2.getConversationPanel().repaint();
+            view2.getScrollPane().repaint();
+
+            Message messagToSend = new Message(currentUser.getId(), message);
+            Log logToSend = new Log(currentUser.getId(), Log.TypeLog.MESSAGE);
+            //JAVA Part:
+            messages.add(messagToSend);
+            logs.add(logToSend);
+            //SQL Part:
+            try {
+                //////////////!!!!!!!!!!!!!!!!!!!A FAIRE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                //TODO: appeller les gets de MessageDao et LogDao pour ajouter le message et le log dans la BDD
+                MessageDao messageDao = new MessageDao();
+                LogDao logDao = new LogDao();
+                messageDao.create(messagToSend);
+                logDao.create(logToSend);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //------------------------------CONNECTION/DISCONNECTION----------------------------------
     public void connection(String username, String psw) {
         boolean userFinded = false;
         //On parcourt tous les users
@@ -140,43 +178,6 @@ public class ClientController implements ActionListener {
         }
     }
 
-    public void send(String message) {
-        if (!message.equals("Saisir du texte") && !message.isEmpty() && currentUser != null) {
-            view2.setInputReceived(true);
-            view2.getTextField1().setText(null);
-            int y;
-            if (messages.size() < 9) {
-                y = 680;
-            } else {
-                y = 680 + (messages.size() - 8) * 90;
-            }
-            view2.getTextField1().setBounds(100, y + 90, 750, 60);
-            view2.getScrollPane().getVerticalScrollBar().setValue(view2.getScrollPane().getVerticalScrollBar().getMaximum());
-            view2.getConversationPanel().setPreferredSize(new Dimension(950, y + 170));
-            view2.getScrollPane().getViewport().setViewPosition(new Point(0, y));
-            view2.getSendButton().setBounds(800, y + 105, 30, 30);
-            view2.getConversationPanel().repaint();
-            view2.getScrollPane().repaint();
-
-            Message messagToSend = new Message(currentUser.getId(), message);
-            Log logToSend = new Log(currentUser.getId(), Log.TypeLog.MESSAGE);
-            //JAVA Part:
-            messages.add(messagToSend);
-            logs.add(logToSend);
-            //SQL Part:
-            try {
-                //////////////!!!!!!!!!!!!!!!!!!!A FAIRE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                //TODO: appeller les gets de MessageDao et LogDao pour ajouter le message et le log dans la BDD
-                MessageDao messageDao = new MessageDao();
-                LogDao logDao = new LogDao();
-                messageDao.create(messagToSend);
-                logDao.create(logToSend);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public void gererFenetresConnection() {
         //On crée fenetre
         try {
@@ -197,7 +198,6 @@ public class ClientController implements ActionListener {
         this.currentUser.setState(User.State.OFFLINE);
         //On met a jour BDD
         this.userDao.update(currentUser);
-        System.out.println("Utilisateur deconnecte : " + currentUser.getUserName());
         this.currentUser = null;
         gererFenetresDisconnection();
     }
@@ -254,23 +254,24 @@ public class ClientController implements ActionListener {
         view2.repaint();
     }
 
+    //-----------------------------------ENVOIE SERVEUR-----------------------------------------
     public void sendToServerConnection() {
         this.out.println("Connection: " + currentUser.getUserName() + " connected to server");
-        System.out.println("Connection envoyee au serveur");
-        this.out.flush();
     }
 
     public void sendToServerMessage(String message) {
         try {
             this.out.println("Message de " + this.currentUser.getUserName() + " : " + message);
-            System.out.println("Message envoye : " + message);
-            System.out.println(this.out);
-            this.out.flush();
         } catch (Exception e) {
             System.out.println("ERROR, Exception occured on sending");
         }
     }
 
+    public void sendToServerDisconnection() {
+        this.out.println("Disconnection: " + currentUser.getUserName() + " disconnected from server");
+    }
+
+    //-------------------------------------PASSWORD-------------------------------------------
     public void mdpOublie() {
         try {
             view4 = new NewPassword();
@@ -290,6 +291,7 @@ public class ClientController implements ActionListener {
         view4 = null;
     }
 
+    //-----------------------------------STATS------------------------------------------------
     public void pageStats() {
         /*try {
             view5 = new Stats();
@@ -377,6 +379,7 @@ public class ClientController implements ActionListener {
         view2.getTextField1().setText("");
     }
 
+    //------------------------------LISTENERS------------------------------------------
     @Override
     public void actionPerformed(ActionEvent e) {
         String[] actionCommand = e.getActionCommand().split(" ");
@@ -386,7 +389,10 @@ public class ClientController implements ActionListener {
                 sendToServerConnection();
             }
             case "logOut" -> gererFenetresLogOut();
-            case "Disconnection" -> disconnection();
+            case "Disconnection" -> {
+                sendToServerDisconnection();
+                disconnection();
+            }
             case "Ban" -> bannissement(Integer.parseInt(actionCommand[1]));
             case "Ok" -> newMdp();
             case "send" -> {
@@ -401,8 +407,7 @@ public class ClientController implements ActionListener {
                 System.out.println("Stats OK");
                 pageStats();
             }
-            case "SmileyIntrouvable" -> contenuIntrouvable();
-            case "ImageIntrouvable" -> contenuIntrouvable();
+            case "SmileyIntrouvable", "ImageIntrouvable" -> contenuIntrouvable();
         }
     }
 

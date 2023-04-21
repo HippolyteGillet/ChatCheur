@@ -4,21 +4,21 @@ import java.io.*;
 import java.net.*;
 
 public class ChatcheurThread implements Runnable {
-    private final boolean threadRunning = true;
-    private Thread thread;
-    private ChatcheurServer chatcheurServer;
-    private Socket clientSocket;
+    private boolean threadRunning = true;
+    private final ChatcheurServer chatcheurServer;
+    private final Socket clientSocket;
     private PrintWriter out;
     private BufferedReader in;
     private int numClient = 0;
+    private Thread thread;
 
     public ChatcheurThread(Socket s, ChatcheurServer chatcheurServer) {
         this.clientSocket = s;
         this.chatcheurServer = chatcheurServer;
         try {
             this.in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            this.out = new PrintWriter(clientSocket.getOutputStream());
-            this.numClient = chatcheurServer.addClient(this.out);
+            this.out = new PrintWriter(clientSocket.getOutputStream(), true);
+            this.numClient = chatcheurServer.addClient(out);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -39,33 +39,34 @@ public class ChatcheurThread implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            try {
-                System.out.println("Le client no " + numClient + " s'est deconnecte");
-                chatcheurServer.deleteClient(numClient);
-                clientSocket.close();
-            } catch (IOException ignored) {
+            System.out.println("Le client no " + this.numClient + " s'est deconnecte");
+            this.chatcheurServer.deleteClient(this.numClient);
 
-            }
         }
     }
 
     public void readCommand() throws IOException {
         String[] clientCommand = this.in.readLine().split(" ");
 
-        if (!threadRunning) {
-            System.out.println("Client not running anymore");
-        } else if (clientCommand[0].equals("Connection:")) {
-            chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
-        } else if (clientCommand[0].equals("Message")) {
-            chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
+        switch (clientCommand[0]) {
+            case "Connection:" -> {
+                this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
+            }
+            case "Message" -> {
+                this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
+            }
+            case "Disconnection:" -> {
+                this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
+                this.threadRunning = false;
+            }
+            default -> System.out.println("default");
         }
-
     }
 
     public String tableauToMessage(String[] words) {
         String string = "";
         for (String message : words) {
-            string += " " + message;
+            string += message + " ";
         }
         return string;
     }

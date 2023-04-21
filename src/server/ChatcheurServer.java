@@ -61,22 +61,19 @@ class ChatcheurServer {
     synchronized public void sendMessage(String message, PrintWriter client) {
         PrintWriter out = (PrintWriter) client;
         if (out != null) {
-            out.print(message);
-            out.flush();
+            out.println(message);
         }
     }
 
     synchronized public void sendAllMessage(String message) {
-        PrintWriter out;
         for (PrintWriter client : clients) {
-            out = client;
-            sendMessage(message, out);
+            client.println(message);
         }
     }
-
-
 
     synchronized public int nbclients() {
         return clients.size();
     }
+
+
 }
