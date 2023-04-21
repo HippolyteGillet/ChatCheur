@@ -295,6 +295,7 @@ public class ClientController implements ActionListener {
         try {
             view5 = new Stats();
             view5.addAllListener(this);
+
         } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
         }
