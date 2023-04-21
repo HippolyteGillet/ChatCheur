@@ -1,6 +1,7 @@
 package DAO;
 
 import model.Log;
+import model.Message;
 import model.user.User;
 
 import java.sql.Connection;
@@ -8,6 +9,7 @@ import java.sql.Statement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -86,6 +88,23 @@ public class LogDao implements DAO<Log> {
                     logs.add(find(id));
                 }
             } while (rs.next());
+            //On ferme les connections
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return logs;
+    }
+
+    public Integer findConnectionsPerHour(LocalDateTime beginHour, LocalDateTime endHour) {
+        int logs = 0;
+        try (Statement statement = this.connect.createStatement()) {
+
+            //On crée la requête SQL pour trouver le log en fonction de l'id dans la BDD
+            ResultSet rs = statement.executeQuery("SELECT COUNT(*) AS nombreLog FROM log WHERE log.TIMESTAMP BETWEEN '" + beginHour+ "' AND '" + endHour + "'");
+            while (rs.next()) {
+                logs = rs.getInt("nombreLog");
+            }
             //On ferme les connections
             rs.close();
         } catch (SQLException e) {

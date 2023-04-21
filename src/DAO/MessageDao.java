@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class MessageDao implements DAO<Message> {
     @Override
     public Message create(Message message) {
         try (Statement statement = this.connect.createStatement()) {
+            statement.executeUpdate("ALTER TABLE message AUTO_INCREMENT = 1;");
             //On crée la requête SQL pour ajouter un message dans la BDD
             statement.executeUpdate("INSERT INTO chatcheur.message (message.USER_ID, message.TIMESTAMP, message.CONTENT) VALUES (" + message.getUser_id() +
                     ",'" + Timestamp.valueOf(message.getLocalDateTime()) + "','" + message.getContent() + "')");
@@ -51,6 +53,8 @@ public class MessageDao implements DAO<Message> {
     @Override
     public Message update(Message message) {
         try (Statement statement = this.connect.createStatement()) {
+            statement.executeUpdate("ALTER TABLE message AUTO_INCREMENT = 1;");
+
             //On crée la requête SQL pour mettre à jour un modele.message dans la BDD
             statement.executeUpdate("UPDATE message SET USER_ID='" + message.getUser_id() +
                     "', TIMESTAMP='" + Timestamp.valueOf(message.getLocalDateTime()) +
@@ -65,6 +69,7 @@ public class MessageDao implements DAO<Message> {
     @Override
     public void delete(int id) {
         try (Statement statement = this.connect.createStatement()) {
+            statement.executeUpdate("ALTER TABLE message AUTO_INCREMENT = 1;");
             statement.executeUpdate("DELETE FROM message WHERE id=" + id);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -89,4 +94,40 @@ public class MessageDao implements DAO<Message> {
         }
         return messages;
     }
+
+    public Integer retrieveMessagesEachHour(LocalDateTime beginHour, LocalDateTime endHour) {
+        ArrayList<Message> messages = new ArrayList<>();
+        int id = 0;
+        try {
+            ResultSet rs = this.connect.createStatement().executeQuery("SELECT * FROM message WHERE message.TIMESTAMP BETWEEN '" + beginHour+ "' AND '" + endHour + "'");
+            while (rs.next()) {
+                id++;
+                if (find(id) != null) {
+                    messages.add(find(id));
+                }
+            }
+            //On ferme les connections
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return messages.size();
+    }
+
+    public ArrayList<Integer> findTopUsers(){
+        ArrayList<Integer> idTopUsers = new ArrayList<>();
+        int id = 0;
+        try {
+            ResultSet rs = this.connect.createStatement().executeQuery("SELECT USER_ID, COUNT(*) AS count FROM message GROUP BY USER_ID ORDER BY count DESC LIMIT 3");
+            while (rs.next()) {
+                id = rs.getInt("USER_ID");
+                idTopUsers.add(id);
+            }
+
+        }catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return idTopUsers;
+    }
+
 }

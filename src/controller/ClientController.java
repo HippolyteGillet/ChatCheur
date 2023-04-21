@@ -6,17 +6,13 @@ import DAO.UserDao;
 import model.Log;
 import model.Message;
 import model.user.User;
+import view.*;
 import server.ChatcheurThread;
-import view.Home;
-import view.LogOut;
-import view.Menu;
-import view.NewPassword;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -24,18 +20,17 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.util.List;
 
 public class ClientController implements ActionListener {
-    private final LogDao logDao = new LogDao();
-    private final MessageDao messageDao = new MessageDao();
-    private final UserDao userDao = new UserDao();
     private Menu view1;
     private Home view2;
     private LogOut view3;
     private NewPassword view4;
+    private Stats view5;
     private User currentUser;
     private List<User> users;
     private List<Log> logs;
@@ -43,12 +38,12 @@ public class ClientController implements ActionListener {
     private PrintWriter out;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view, Socket socket) {
-        this.view2 = null;
         this.currentUser = null;
         this.users = users;
         this.logs = logs;
         this.messages = messages;
         this.view1 = view;
+        this.view2 = null;
         this.view3 = null;
         this.view4 = null;
         view1.addAllListener(this);
@@ -72,10 +67,6 @@ public class ClientController implements ActionListener {
             throw new RuntimeException(e);
         }
 
-    }
-
-    public User getCurrentUser() {
-        return currentUser;
     }
 
     public List<User> getUsers() {
@@ -129,15 +120,19 @@ public class ClientController implements ActionListener {
                         gererFenetresConnection();
                     } else {
                         System.out.println("Connexion refusee, le user est banni");
+                        view1.afficherBannissement();
                     }
                 } else if (user.getUserName().equals(username)) {
                     userFinded = true;
                     System.out.println("Mdp incorrect");
+                    view1.afficherMdpIncorrect();
                 }
             }
         }
         if (this.currentUser == null && !userFinded) {
             System.out.println("Aucun utilisateur trouve");
+            view1.afficherUserUknown();
+
         }
     }
 
@@ -146,15 +141,18 @@ public class ClientController implements ActionListener {
             view2.setInputReceived(true);
             view2.getTextField1().setText(null);
             int y;
-            if (messages.size() < 12) {
-                y = 600;
+            if (messages.size() < 9) {
+                y = 680;
             } else {
-                y = 600 + (messages.size() - 12) * 53;
+                y = 680 + (messages.size() - 8) * 90;
             }
             view2.getTextField1().setBounds(100, y + 90, 750, 60);
             view2.getScrollPane().getVerticalScrollBar().setValue(view2.getScrollPane().getVerticalScrollBar().getMaximum());
-            view2.getConversationPanel().setPreferredSize(new Dimension(950, y + 196));
+            view2.getConversationPanel().setPreferredSize(new Dimension(950, y + 170));
             view2.getScrollPane().getViewport().setViewPosition(new Point(0, y));
+            view2.getSendButton().setBounds(800, y + 105, 30, 30);
+            view2.getConversationPanel().repaint();
+            view2.getScrollPane().repaint();
 
             Message messagToSend = new Message(currentUser.getId(), message);
             Log logToSend = new Log(currentUser.getId(), Log.TypeLog.MESSAGE);
@@ -288,6 +286,93 @@ public class ClientController implements ActionListener {
         view4 = null;
     }
 
+    public void pageStats() {
+        /*try {
+            view5 = new Stats();
+            view5.addAllListener(this);
+        } catch (IOException | FontFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+        view5.setVisible(true);*/
+    }
+
+    public ArrayList<User> getUsersOnline() {
+        return userDao.findNumberUsersOnline();
+    }
+
+    public ArrayList<User> getUsersAway() {
+        return userDao.findNumberUsersAway();
+    }
+
+    public ArrayList<User> getUsersOffline() {
+        return userDao.findNumberUsersOffline();
+    }
+
+    public ArrayList<User> getTypeUser() {
+        return userDao.findNumberUser();
+    }
+
+    public ArrayList<User> getTypeModerator() {
+        return userDao.findNumberModerator();
+    }
+
+    public ArrayList<User> getTypeAdministrator() {
+        return userDao.findNumberAdministrator();
+    }
+
+    public ArrayList<User> getNumberBanned() {
+        return userDao.findNumberBanned();
+    }
+
+    public ArrayList<Integer> getNumberMessagesPerHour() {
+
+        ArrayList<Integer> finalList = new ArrayList<>();
+        LocalDateTime timeNow = LocalDateTime.now();
+        LocalDateTime firstHour = LocalDateTime.of(timeNow.getYear(), timeNow.getMonth(), timeNow.getDayOfMonth(), 0, 0);
+        LocalDateTime secondHour = firstHour.plusHours(1);
+
+        for (int i = 0; i < 24; i++) {
+            finalList.add(messageDao.retrieveMessagesEachHour(firstHour, secondHour));
+            firstHour = firstHour.plusHours(1);
+            secondHour = secondHour.plusHours(1);
+        }
+        return finalList;
+    }
+
+    public ArrayList<Integer> getNumberConnectionsPerHour() {
+        ArrayList<Integer> finalList = new ArrayList<>();
+        LocalDateTime timeNow = LocalDateTime.now();
+        LocalDateTime firstHour = LocalDateTime.of(timeNow.getYear(), timeNow.getMonth(), timeNow.getDayOfMonth(), 0, 0);
+        LocalDateTime secondHour = firstHour.plusHours(1);
+
+        for (int i = 0; i < 24; i++) {
+            finalList.add(logDao.findConnectionsPerHour(firstHour, secondHour));
+            firstHour = firstHour.plusHours(1);
+            secondHour = secondHour.plusHours(1);
+        }
+        return finalList;
+
+    }
+
+    public ArrayList<User> getTopUsers() {
+        ArrayList<User> topUsers = new ArrayList<>();
+
+        for (Integer i : messageDao.findTopUsers()) {
+            topUsers.add(userDao.find(i));
+        }
+
+        return topUsers;
+    }
+
+    public void contenuIntrouvable() {
+        MessageDao messageDao = new MessageDao();
+        messageDao.update(messages.get(messages.size() - 1));
+        messageDao.delete(messages.get(messages.size() - 1).getId());
+        messages.remove(messages.size() - 1);
+        JOptionPane.showMessageDialog(view1, "Image introuvable, veuillez charger votre image sous le bon nom dans le fichier imageEnvoyees", "Erreur de chargement d'image", JOptionPane.ERROR_MESSAGE);
+        view2.getTextField1().setText("");
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String[] actionCommand = e.getActionCommand().split(" ");
@@ -299,10 +384,7 @@ public class ClientController implements ActionListener {
             case "logOut" -> gererFenetresLogOut();
             case "Disconnection" -> disconnection();
             case "Ban" -> bannissement(Integer.parseInt(actionCommand[1]));
-            case "Ok" -> {
-                System.out.println("ok");
-                newMdp();
-            }
+            case "Ok" -> newMdp();
             case "send" -> {
                 //On envoie le message aux autres clients
                 //Bien laisser avant send() car sinon message null
@@ -311,6 +393,12 @@ public class ClientController implements ActionListener {
                 send(view2.getTextField1().getText());
             }
             case "mdpOublie" -> mdpOublie();
+            case "Stats" -> {
+                System.out.println("Stats OK");
+                pageStats();
+            }
+            case "SmileyIntrouvable" -> contenuIntrouvable();
+            case "ImageIntrouvable" -> contenuIntrouvable();
         }
     }
 

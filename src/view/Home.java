@@ -1,5 +1,6 @@
 package view;
 
+import DAO.MessageDao;
 import DAO.UserDao;
 import controller.ClientController;
 import model.Log;
@@ -28,8 +29,11 @@ public class Home extends JFrame {
     private final JButton sendButton;
     private final JScrollPane convScrollPane;
     private final JPanel conversationPanel;
-    private JButton logOut;
-    private ImageIcon iconUnban, iconBan;
+    private final JButton logOut;
+    private final JButton smileyErrorBtn;
+    private final JButton imageErrorBtn;
+    private ImageIcon iconUnban, iconBan, iconStats;
+    private JButton stats;
 
     public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
         for (User user : userList) {
@@ -38,64 +42,166 @@ public class Home extends JFrame {
             }
         }
         inputReceived = false;
+        imageErrorBtn = new JButton("ImageIntrouvable");
+        smileyErrorBtn = new JButton("SmileyIntrouvable");
+        smileyErrorBtn.setActionCommand("SmileyIntrouvable");
+        imageErrorBtn.setActionCommand("ImageIntrouvable");
+
         conversationPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                if (messageList.size() < 12) {
-                    y = 600;
+                if (messageList.size() < 9) {
+                    y = 680;
                 } else {
-                    y = 600 + (messageList.size() - 12) * 53;
+                    y = 680 + (messageList.size() - 9) * 90;
                 }
                 g.setColor(Color.WHITE);
                 g.fillRoundRect(100, y + 90, 750, 60, 50, 50);
                 for (int i = messageList.size() - 1; i >= 0; i--) {
-                    FontMetrics metrics = g.getFontMetrics(customFont1);
-                    int textWidth = metrics.stringWidth(messageList.get(i).getContent());
-                    int textHeight = metrics.getHeight();
+                    if (messageList.get(i).getContent().substring(0, 1).equals("/")) {
+                        //image
+                        ImageIcon image = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1));
+                        if (image.getImage().getWidth(null) == -1) {
+                            imageErrorBtn.doClick();
+                        } else {
+                            int imageIconWidth = image.getIconWidth();
+                            int imageIconHeight = image.getIconHeight();
 
-                    int x = 900 - textWidth - 20;
-                    //int x2 = 50;
-                    int width = textWidth + 30;
-                    int height = textHeight + 10;
+                            int x = 900 - imageIconWidth - 20;
 
-                    if (!messageList.isEmpty()) {
-                        g.setColor(new Color(183, 90, 25));
-                        g.fillRoundRect(x, y, width, height, 50, 50);
+                            g.drawImage(image.getImage(), x + 30, y - (imageIconHeight) + 35, null);
+                            y -= imageIconHeight + 20;
+                        }
 
-                        g.setColor(Color.WHITE);
-                        g.setFont(customFont1);
-                        g.drawString(messageList.get(i).getContent(), x + 15, y - 5 + textHeight);
+                    } else if (messageList.get(i).getContent().substring(0, 1).equals("$")) {
+                        ImageIcon image = new ImageIcon("Smileys/" + messageList.get(i).getContent().substring(1) + ".png");
+                        Image smiley = image.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+                        image = new ImageIcon(smiley);
+                        if (image.getImage().getWidth(null) == -1) {
+                            smileyErrorBtn.doClick();
+                        } else {
 
-                        //Affiche l'heure d'envoi du message et à modifier pour afficher la bonne heure avec la class message
-                        LocalDateTime time = LocalDateTime.now();
-                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm"); // Format d'affichage pour l'heure
-                        String formattedTime = time.format(formatter);
-                        g.setFont(customFont1.deriveFont(15f));
-                        g.setColor(new Color(100, 98, 98));
-                        g.drawString(formattedTime, x + 15, y + textHeight - 45);
+                            int imageIconWidth = image.getIconWidth();
+                            int imageIconHeight = image.getIconHeight();
+
+                            int x = 900 - imageIconWidth - 20;
+                            g.drawImage(image.getImage(), x + 30, y - (imageIconHeight) + 35, null);
+                            y -= imageIconHeight + 20;
+                        }
+
+
+                    } else {
+                        FontMetrics metrics = g.getFontMetrics(customFont1);
+                        int textWidth = metrics.stringWidth(messageList.get(i).getContent());
+                        int textHeight = metrics.getHeight();
+                        int x, xTime, yTime;
+                        if (messageList.get(i).getUser_id() != currentUser.getId()) {
+                            x = 75;
+                            xTime = 17;
+                            yTime = y + 5;
+                            g.setColor(new Color(140, 56, 6));
+                        } else {
+                            x = 900 - textWidth - 20;
+                            xTime = x + 15;
+                            yTime = y + textHeight - 45;
+                            g.setColor(new Color(183, 90, 25));
+                        }
+                        int width = textWidth + 30;
+                        int height = textHeight + 10;
+
+                        if (!messageList.isEmpty()) {
+                            LocalDateTime time = messageList.get(i).getLocalDateTime();
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm"); // Format d'affichage pour l'heure
+                            String formattedTime = time.format(formatter);
+                            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Format d'affichage pour la date
+                            String formattedDate = time.format(formatter2);
+
+                            g.fillRoundRect(x, y, width, height, 50, 50);
+                            g.setColor(Color.WHITE);
+                            g.setFont(customFont1);
+                            g.drawString(messageList.get(i).getContent(), x + 15, y - 5 + textHeight);
+                            for (User user : userList) {
+                                if (messageList.get(i).getUser_id() == user.getId() && user != currentUser) {
+                                    int letterWidth = metrics.stringWidth(user.getUserName().substring(0, 1).toUpperCase());
+                                    int letterHeight = metrics.getHeight();
+                                    if (i != 0) {
+                                        LocalDateTime previousTime = messageList.get(i - 1).getLocalDateTime();
+                                        String formattedPreviousTime = previousTime.format(formatter);
+                                        if (!formattedPreviousTime.equals(formattedTime) || messageList.get(i - 1).getUser_id() != messageList.get(i).getUser_id()) {
+                                            g.setColor(Color.BLACK);
+                                            g.fillOval(10, y + 10, 50, 50);
+                                            g.setFont(customFont1.deriveFont(25f));
+                                            g.setColor(Color.WHITE);
+                                            //Affiche la première lettre du nom de l'utilisateur
+                                            g.drawString(user.getUserName().substring(0, 1).toUpperCase(), 36 - letterWidth / 2, y + 64 - letterHeight / 2);
+
+                                            //Affiche le nom de l'utilisateur
+                                            g.setFont(customFont1.deriveFont(20f));
+                                            g.setColor(new Color(100, 98, 98));
+                                            g.drawString(user.getUserName(), x + 15, y + textHeight - 46);
+                                        }
+                                    } else {
+                                        g.setColor(Color.BLACK);
+                                        g.fillOval(10, y + 10, 50, 50);
+                                        g.setFont(customFont1.deriveFont(25f));
+                                        g.setColor(Color.WHITE);
+                                        g.drawString(user.getUserName().substring(0, 1).toUpperCase(), 36 - letterWidth / 2, y + 64 - letterHeight / 2);
+
+                                        //Affiche le nom de l'utilisateur
+                                        g.setFont(customFont1.deriveFont(20f));
+                                        g.setColor(new Color(100, 98, 98));
+                                        g.drawString(user.getUserName(), x + 15, y + textHeight - 46);
+                                    }
+                                }
+                            }
+                            //Affiche l'heure d'envoi du message
+                            if (i != 0) {
+                                LocalDateTime previousTime = messageList.get(i - 1).getLocalDateTime();
+                                String formattedPreviousTime = previousTime.format(formatter);
+                                if (formattedTime.equals(formattedPreviousTime) && messageList.get(i - 1).getUser_id() == messageList.get(i).getUser_id()) {
+                                    y -= 53;
+                                } else {
+                                    g.setFont(customFont1.deriveFont(12f));
+                                    g.setColor(new Color(100, 98, 98));
+                                    g.drawString(formattedTime, xTime, yTime);
+                                    y -= 90;
+                                    if (!formattedDate.equals(previousTime.format(formatter2))) {
+                                        g.setFont(customFont1.deriveFont(18f));
+                                        g.drawString(formattedDate, 425, y + 30);
+                                        y -= 50;
+                                    }
+                                }
+                            } else {
+                                g.setFont(customFont1.deriveFont(12f));
+                                g.setColor(new Color(100, 98, 98));
+                                g.drawString(formattedTime, xTime, yTime);
+                                g.setFont(customFont1.deriveFont(18f));
+                                g.drawString(formattedDate, 425, y - 30);
+                                y -= 90;
+                            }
+                        }
                     }
-                    y -= 53;
                 }
             }
         };
         conversationPanel.setBackground(new Color(238, 213, 173));
         conversationPanel.setLayout(null);
 
-        convScrollPane = new JScrollPane(conversationPanel);
-        convScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        convScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        convScrollPane.setBounds(350, 0, 950, 800);
-        convScrollPane.getVerticalScrollBar().setValue(convScrollPane.getVerticalScrollBar().getMaximum());
-        convScrollPane.setBorder(null);
-        add(convScrollPane);
+        int yScroll;
+        if (messageList.size() < 9) {
+            yScroll = 680;
+        } else {
+            yScroll = 680 + (messageList.size() - 9) * 90;
+        }
 
         //Send Icon
         ImageIcon iconSend = new ImageIcon("IMG/send.png");
         Image imgSend = iconSend.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         iconSend = new ImageIcon(imgSend);
+
         sendButton = new JButton(iconSend);
-        sendButton.setBounds(800, 705, 30, 30);
+        sendButton.setBounds(800, yScroll + 105, 30, 30);
         sendButton.setBorder(null);
         sendButton.setOpaque(false);
         sendButton.setContentAreaFilled(false);
@@ -118,6 +224,7 @@ public class Home extends JFrame {
                     textField1.setForeground(Color.BLACK);
                 }
             }
+
             @Override
             public void focusLost(FocusEvent e) {
                 if (textField1.getText().isEmpty()) {
@@ -132,6 +239,17 @@ public class Home extends JFrame {
             }
         });
         conversationPanel.add(textField1);
+
+        convScrollPane = new JScrollPane(conversationPanel);
+        textField1.setBounds(100, yScroll + 90, 750, 60);
+        convScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        convScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        convScrollPane.setBounds(350, 0, 950, 800);
+        convScrollPane.getVerticalScrollBar().setValue(convScrollPane.getVerticalScrollBar().getMaximum());
+        conversationPanel.setPreferredSize(new Dimension(950, yScroll + 170));
+        convScrollPane.getViewport().setViewPosition(new Point(0, yScroll));
+        convScrollPane.setBorder(null);
+        add(convScrollPane);
 
         JPanel contactPanelHeader = new JPanel() {
             @Override
@@ -201,9 +319,9 @@ public class Home extends JFrame {
                 super.paintComponent(g);
                 g.setColor(new Color(147, 185, 175));
                 if (userList.size() > 6) {
-                    g.fillRect(0, 0, 350, 460 + (userList.size() - 6) * 90);
+                    g.fillRect(0, 0, 350, 490 + (userList.size() - 6) * 90);
                 } else {
-                    g.fillRect(0, 0, 350, 460);
+                    g.fillRect(0, 0, 350, 490);
                 }
                 int y = 0;
                 int y1 = 30;
@@ -240,17 +358,17 @@ public class Home extends JFrame {
             }
         };
         contactPanelContent.setLayout(null);
-        contactPanelContent.setBounds(0, 140, 350, 460);
+        contactPanelContent.setBounds(0, 170, 350, 490);
 
         JScrollPane contactScrollPane = new JScrollPane(contactPanelContent);
         contactScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         contactScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         contactScrollPane.setBorder(null);
-        contactScrollPane.setBounds(0, 140, 350, 460);
+        contactScrollPane.setBounds(0, 140, 350, 490);
         if (userList.size() > 6) {
-            contactPanelContent.setPreferredSize(new Dimension(350, 460 + (90 * (userList.size() - 6))));
+            contactPanelContent.setPreferredSize(new Dimension(350, 490 + (80 * (userList.size() - 6))));
         } else {
-            contactPanelContent.setPreferredSize(new Dimension(350, 460));
+            contactPanelContent.setPreferredSize(new Dimension(350, 490));
         }
         add(contactScrollPane);
 
@@ -344,60 +462,72 @@ public class Home extends JFrame {
                 contactPanelContent.add(infos);
                 y += 90;
             }
-
-            JPanel contactPanelFooter = new JPanel() {
-                @Override
-                protected void paintComponent(Graphics g) {
-                    super.paintComponent(g);
-                    g.setColor(new Color(147, 185, 175));
-                    g.fillRect(0, 600, 350, 200);
-                    g.setColor(new Color(20, 48, 46));
-                    g.fillRoundRect(90, 620, 160, 50, 50, 50);
-                    g.setColor(Color.WHITE);
-                    g.setFont(customFont2.deriveFont(25f));
-                    g.drawString("ChatCheur", 110, 650);
-                }
-            };
-            contactPanelFooter.setLayout(null);
-            contactPanelFooter.setBounds(0, 600, 350, 200);
-            add(contactPanelFooter);
-
-            setTitle("ChatCheur");
-            setSize(1300, 800);
-
-            //Setting Icon
-            ImageIcon iconSettings = new ImageIcon("IMG/Settings.png");
-            Image imgSetting = iconSettings.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-            iconSettings = new ImageIcon(imgSetting);
-            JLabel settings = new JLabel(iconSettings);
-            settings.setBounds(25, 700, iconSettings.getIconWidth(), iconSettings.getIconHeight());
-            contactPanelFooter.add(settings);
-
-            //Stats Icon
-            ImageIcon iconStats = new ImageIcon("IMG/Stats.png");
-            Image imgStats = iconStats.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-            iconStats = new ImageIcon(imgStats);
-            JLabel stats = new JLabel(iconStats);
-            stats.setBounds(90, 700, iconStats.getIconWidth(), iconStats.getIconHeight());
-            contactPanelFooter.add(stats);
-
-            //Log out Icon
-            ImageIcon iconLogOut = new ImageIcon("IMG/logOut.png");
-            Image imgLogOut = iconLogOut.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-            iconLogOut = new ImageIcon(imgLogOut);
-            logOut = new JButton(iconLogOut);
-            logOut.setActionCommand("logOut");
-            logOut.setOpaque(false);
-            logOut.setContentAreaFilled(false);
-            logOut.setBorderPainted(false);
-            logOut.setBounds(280, 700, iconLogOut.getIconWidth(), iconLogOut.getIconHeight());
-            contactPanelFooter.add(logOut);
-
-            setResizable(true);
-            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            setLocationRelativeTo(null);
-            setVisible(true);
         }
+        JPanel contactPanelFooter = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                g.setColor(new Color(147, 185, 175));
+                g.fillRect(0, 630, 350, 170);
+                g.setColor(new Color(20, 48, 46));
+                g.fillRoundRect(90, 650, 160, 50, 50, 50);
+                g.setColor(Color.WHITE);
+                g.setFont(customFont2.deriveFont(25f));
+                g.drawString("ChatCheur", 110, 680);
+            }
+        };
+        contactPanelFooter.setLayout(null);
+        contactPanelFooter.setBounds(0, 630, 350, 170);
+        add(contactPanelFooter);
+
+        //Setting Icon
+        ImageIcon iconSettings = new ImageIcon("IMG/Settings.png");
+        Image imgSetting = iconSettings.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        iconSettings = new ImageIcon(imgSetting);
+        JLabel settings = new JLabel(iconSettings);
+        settings.setBounds(25, 730, iconSettings.getIconWidth(), iconSettings.getIconHeight());
+        contactPanelFooter.add(settings);
+
+        //Stats Icon
+        iconStats = new ImageIcon("IMG/Stats.png");
+        Image imgStats = iconStats.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        iconStats = new ImageIcon(imgStats);
+
+        stats = new JButton(iconStats);
+        //stats.setActionCommand("Stats");
+        this.stats.setOpaque(false);
+        this.stats.setContentAreaFilled(false);
+        this.stats.setBorderPainted(false);
+        stats.setBounds(90, 730, iconStats.getIconWidth(), iconStats.getIconHeight());
+        contactPanelFooter.add(stats);
+
+        //Log out Icon
+        ImageIcon iconLogOut = new ImageIcon("IMG/logOut.png");
+        Image imgLogOut = iconLogOut.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        iconLogOut = new ImageIcon(imgLogOut);
+        logOut = new JButton(iconLogOut);
+        logOut.setActionCommand("logOut");
+        logOut.setOpaque(false);
+        logOut.setContentAreaFilled(false);
+        logOut.setBorderPainted(false);
+        logOut.setBounds(280, 730, iconLogOut.getIconWidth(), iconLogOut.getIconHeight());
+        contactPanelFooter.add(logOut);
+
+        setTitle("ChatCheur");
+        setSize(1300, 829);
+        setResizable(false);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        setVisible(true);
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                currentUser.setState(User.State.AWAY);
+                UserDao userDao = new UserDao();
+                userDao.update(currentUser);
+                dispose(); // Fermer la fenêtre
+            }
+        });
     }
 
     public JButton getBan(int i) {
@@ -428,12 +558,27 @@ public class Home extends JFrame {
         return conversationPanel;
     }
 
+    public ImageIcon getIconStats() {
+        return iconStats;
+    }
+
+    public void setIconStats(ImageIcon iconStats) {
+        this.iconStats = iconStats;
+    }
+
+    public JButton getSendButton() {
+        return sendButton;
+    }
+
     public void addAllListener(ClientController controller) {
         this.logOut.addActionListener(controller);
         for (JButton jButton : this.ban) {
             jButton.addActionListener(controller);
         }
         this.sendButton.addActionListener(controller);
+        this.smileyErrorBtn.addActionListener(controller);
+        this.imageErrorBtn.addActionListener(controller);
+        this.stats.addActionListener(controller);
     }
 
     public Boolean getInputReceived() {
