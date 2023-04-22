@@ -7,6 +7,7 @@ import controller.ClientController;
 
 import java.io.*;
 import java.net.*;
+import java.util.IllegalFormatCodePointException;
 
 public class ChatcheurThread implements Runnable {
     private final ChatcheurServer chatcheurServer;
@@ -44,8 +45,10 @@ public class ChatcheurThread implements Runnable {
             while (threadRunning) {
                 readCommand();
             }
+        } catch (SocketException e) {
+            threadRunning = false;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } finally {
             System.out.println("Le client no " + this.numClient + " s'est deconnecte");
             this.chatcheurServer.deleteClient(this.numClient);
@@ -56,12 +59,8 @@ public class ChatcheurThread implements Runnable {
         String[] clientCommand = this.in.readLine().split(" ");
 
         switch (clientCommand[0]) {
-            case "Connection:" -> this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
-            case "Message" -> this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
-            case "Disconnection:" -> {
-                this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
-                this.threadRunning = false;
-            }
+            case "Connection:", "Disconnection:", "Message" ->
+                    this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
             default -> System.out.println("default");
         }
     }

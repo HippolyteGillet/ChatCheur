@@ -18,7 +18,7 @@ public class ClientHandler extends Thread {
 
     public void run() {
         try {
-            while (!Thread.currentThread().isInterrupted()) {
+            while (!this.isInterrupted()) {
                 readCommand();
             }
         } catch (IOException e) {
