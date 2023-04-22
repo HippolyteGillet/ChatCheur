@@ -53,12 +53,15 @@ public class User {
             //La fin est différente pour les messages avec espaces
             if (i > 3) {
                 realMessage[3] += " " + message[i+4];
-            } else {
+            } else if (i == 3) {
+                realMessage[i] = message[i + 4].split("=")[1];
+
+            }else{
                 //Les valeurs à récupérer sont à partir de la case 4
                 //On sépare le string avec le '='
                 String temp = message[i + 4].split("=")[1];
                 //On enlève la virgule de fin
-                realMessage[i] = temp.substring(0, temp.length() - 1);
+                realMessage[i] = temp.substring(0, temp.length()-1);
             }
 
         }

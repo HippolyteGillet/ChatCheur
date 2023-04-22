@@ -54,7 +54,7 @@ public class Home extends JFrame {
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     if (messageList.get(i).getContent().charAt(0) == '/') {
                         //image
-                        ImageIcon image = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1));
+                        ImageIcon image = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1) + ".png");
                         if (image.getImage().getWidth(null) == -1) {
                             imageErrorBtn.setActionCommand("ImageIntrouvable");
                             imageErrorBtn.doClick();
