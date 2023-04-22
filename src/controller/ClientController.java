@@ -167,17 +167,6 @@ public class ClientController implements ActionListener {
             //JAVA Part:
             messages.add(messagToSend);
             logs.add(logToSend);
-            //SQL Part:
-            try {
-                //////////////!!!!!!!!!!!!!!!!!!!A FAIRE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                //TODO: appeller les gets de MessageDao et LogDao pour ajouter le message et le log dans la BDD
-                MessageDao messageDao = new MessageDao();
-                LogDao logDao = new LogDao();
-                messageDao.create(messagToSend);
-                logDao.create(logToSend);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
 
