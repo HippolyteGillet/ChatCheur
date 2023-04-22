@@ -87,14 +87,4 @@ class ChatcheurServer {
         return clients.size();
     }
 
-    synchronized public void connection(String[] user) {
-        User userTemp = User.convertionMessageIntoUser(user);
-        //On met a jour BDD
-        this.userDao.update(userTemp);
-        //Création d'un log connection
-        Log logConnection = new Log(userTemp.getId(), Log.TypeLog.CONNECTION);
-        //On ajoute le log dans la BDD
-        logDao.create(logConnection);
-    }
-
 }

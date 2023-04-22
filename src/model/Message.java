@@ -72,6 +72,6 @@ public class Message {
 
     @Override
     public String toString() {
-        return "Id : " + this.id + "| User_id : " + this.user_id + " | TimeStamp : " + this.localDateTime + " | Content : " + this.content;
+        return "Message{" + "id=" + this.id + ", User_id=" + this.user_id + ", TimeStamp=" + this.localDateTime + ", Content=" + this.content;
     }
 }

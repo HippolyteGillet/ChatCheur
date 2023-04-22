@@ -9,9 +9,9 @@ import java.io.*;
 import java.net.*;
 
 public class ChatcheurThread implements Runnable {
-    private boolean threadRunning = true;
     private final ChatcheurServer chatcheurServer;
     private final Socket clientSocket;
+    private boolean threadRunning = true;
     private PrintWriter out;
     private BufferedReader in;
     private int numClient = 0;
@@ -57,20 +57,8 @@ public class ChatcheurThread implements Runnable {
         String[] clientCommand = this.in.readLine().split(" ");
 
         switch (clientCommand[0]) {
-            case "Connection:" -> {
-                this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
-                this.chatcheurServer.connection(clientCommand);
-            }
-            case "Message" -> {
-                this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
-                /*try {
-
-                    messageDao.create(clientCommand[4]);
-                    logDao.create(logToSend);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }*/
-            }
+            case "Connection:" -> this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
+            case "Message" -> this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
             case "Disconnection:" -> {
                 this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
                 this.threadRunning = false;
