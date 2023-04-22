@@ -17,8 +17,8 @@ public class Message {
         this.content = "unknown";
     }
 
-    public Message(int user_id, String content) {
-        this.id = -1;
+    public Message(int user_id, String content, int id) {
+        this.id = id;
         this.user_id = user_id;
         localDateTime = now();
         this.content = content;

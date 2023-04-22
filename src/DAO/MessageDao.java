@@ -99,7 +99,7 @@ public class MessageDao implements DAO<Message> {
         ArrayList<Message> messages = new ArrayList<>();
         int id = 0;
         try {
-            ResultSet rs = this.connect.createStatement().executeQuery("SELECT * FROM message WHERE message.TIMESTAMP BETWEEN '" + beginHour+ "' AND '" + endHour + "'");
+            ResultSet rs = this.connect.createStatement().executeQuery("SELECT * FROM message WHERE message.TIMESTAMP BETWEEN '" + beginHour + "' AND '" + endHour + "'");
             while (rs.next()) {
                 id++;
                 if (find(id) != null) {
@@ -114,7 +114,7 @@ public class MessageDao implements DAO<Message> {
         return messages.size();
     }
 
-    public ArrayList<Integer> findTopUsers(){
+    public ArrayList<Integer> findTopUsers() {
         ArrayList<Integer> idTopUsers = new ArrayList<>();
         int id = 0;
         try {
@@ -124,10 +124,25 @@ public class MessageDao implements DAO<Message> {
                 idTopUsers.add(id);
             }
 
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return idTopUsers;
     }
 
+    //Méthode pour compter le nombre de messages dans la BDD
+    public int getLastID() {
+        int count = 0;
+        try {
+            ResultSet rs = this.connect.createStatement().executeQuery("SELECT COUNT(*) AS count FROM message");
+            if (rs.next()) {
+                count = rs.getInt("count");
+            }
+            //On ferme les connections
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
 }
