@@ -1,5 +1,10 @@
 package server;
 
+import DAO.LogDao;
+import DAO.MessageDao;
+import DAO.UserDao;
+import controller.ClientController;
+
 import java.io.*;
 import java.net.*;
 
@@ -11,6 +16,9 @@ public class ChatcheurThread implements Runnable {
     private BufferedReader in;
     private int numClient = 0;
     private Thread thread;
+    private LogDao logDao = new LogDao();
+    private MessageDao messageDao = new MessageDao();
+    private UserDao userDao = new UserDao();
 
     public ChatcheurThread(Socket s, ChatcheurServer chatcheurServer) {
         this.clientSocket = s;
@@ -55,6 +63,13 @@ public class ChatcheurThread implements Runnable {
             }
             case "Message" -> {
                 this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
+                /*try {
+
+                    messageDao.create(clientCommand[4]);
+                    logDao.create(logToSend);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }*/
             }
             case "Disconnection:" -> {
                 this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
