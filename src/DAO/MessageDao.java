@@ -20,7 +20,7 @@ public class MessageDao implements DAO<Message> {
     public Message find(int id) {
         try (Statement statement = this.connect.createStatement()) {
             //On crée la requête SQL pour trouver le log en fonction de l'id dans la BDD
-            ResultSet rs = statement.executeQuery("SELECT * FROM message WHERE id=" + id);
+            ResultSet rs = statement.executeQuery("SELECT * FROM message WHERE ID =" + id);
             if (rs.next()) {
                 //On récupère les informations nécessaires
                 int user_id = rs.getInt("USER_ID");
@@ -96,22 +96,18 @@ public class MessageDao implements DAO<Message> {
     }
 
     public Integer retrieveMessagesEachHour(LocalDateTime beginHour, LocalDateTime endHour) {
-        ArrayList<Message> messages = new ArrayList<>();
-        int id = 0;
+        int i = 0;
         try {
             ResultSet rs = this.connect.createStatement().executeQuery("SELECT * FROM message WHERE message.TIMESTAMP BETWEEN '" + beginHour + "' AND '" + endHour + "'");
             while (rs.next()) {
-                id++;
-                if (find(id) != null) {
-                    messages.add(find(id));
-                }
+                i++;
             }
             //On ferme les connections
             rs.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return messages.size();
+        return i;
     }
 
     public ArrayList<Integer> findTopUsers() {

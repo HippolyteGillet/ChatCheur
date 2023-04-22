@@ -297,13 +297,17 @@ public class ClientController implements ActionListener {
     //-----------------------------------STATS------------------------------------------------
     public void pageStats() {
         try {
-            view5 = new Stats();
-            view5.addAllListener(this);
+            view5 = new Stats(getTypeUser(), getTypeModerator(), getTypeAdministrator(),
+                    getUsersOnline(), getUsersAway(), getUsersOffline(),
+                    getNumberBanned(), getNumberMessagesPerHour(), getNumberConnectionsPerHour(), getTopUsers());
+            //view5.addAllListener(this);
+
 
         } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
         }
         view5.setVisible(true);
+
     }
 
     public ArrayList<User> getUsersOnline() {
@@ -338,7 +342,7 @@ public class ClientController implements ActionListener {
 
         ArrayList<Integer> finalList = new ArrayList<>();
         LocalDateTime timeNow = LocalDateTime.now();
-        LocalDateTime firstHour = LocalDateTime.of(timeNow.getYear(), timeNow.getMonth(), timeNow.getDayOfMonth(), 0, 0);
+        LocalDateTime firstHour = LocalDateTime.of(timeNow.getYear(), timeNow.getMonth(), timeNow.getDayOfMonth() - 2, 0, 0);
         LocalDateTime secondHour = firstHour.plusHours(1);
 
         for (int i = 0; i < 24; i++) {
@@ -421,7 +425,6 @@ public class ClientController implements ActionListener {
 
             //Gère les stats
             case "Stats" -> {
-                System.out.println("Stats OK");
                 pageStats();
             }
 
