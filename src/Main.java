@@ -39,6 +39,5 @@ public class Main {
         MessageDao messageDao = new MessageDao();
         UserDao userDao = new UserDao();
         LogDao logDao = new LogDao();
-
     }
 }

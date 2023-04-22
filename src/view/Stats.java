@@ -6,7 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
+import model.user.User;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -18,17 +20,31 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
 public class Stats extends JDialog{
-    //private JButton buttonOk;
 
+    //private JButton buttonOk;
     private DefaultPieDataset pieDataset;
     private DefaultCategoryDataset barDataset;
     private JFreeChart chart;
     private CategoryPlot categoryPlot;
     private PiePlot piePlot;
     private ChartPanel chartPanel;
-
     private ImageIcon iconTop;
-    public Stats() throws IOException, FontFormatException {
+
+    /*private ArrayList<User> usersOnline;
+    private ArrayList<User> usersAway;
+    private ArrayList<User> usersOffline;
+    private ArrayList<User> typeUser;
+    private ArrayList<User> typeModerator;
+    private ArrayList<User> typeAdministrator;
+    private ArrayList<User> banned;
+    private ArrayList<Integer> messagesPerHour;
+    private ArrayList<Integer> connectionsPerHour;
+    private ArrayList<User> topUsers;*/
+
+    public Stats(ArrayList<User> typeUser, ArrayList<User> typeModerator, ArrayList<User> typeAdministrator,
+                 ArrayList<User> usersOnline, ArrayList<User> usersAway, ArrayList<User> usersOffline,
+                 ArrayList<User> banned, ArrayList<Integer> messagesPerHour, ArrayList<Integer> connectionsPerHour,
+                 ArrayList<User> topUsers) throws IOException, FontFormatException {
         setBounds(400, 80, 700, 700);
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -43,58 +59,18 @@ public class Stats extends JDialog{
                 g.setFont(customFont.deriveFont(30f));
             }
         };
-        panel.setBackground(new Color(238, 213, 173));
+        //panel.setBackground(new Color(238, 213, 173));
+        panel.setBackground(new Color(147, 185, 175));
         panel.setLayout(null);
         panel.setVisible(true);
 
-        showPieChartStatut(panel);
-        showPieChartType(panel);
-        showChartMessage(panel);
-        showChartConnection(panel);
+        //----------------------Graph 1--------------------------
+        //showPieChartStatut(panel);
 
-        iconTop = new ImageIcon("IMG/podium.png");
-        Image imgTop = iconTop.getImage().getScaledInstance(530, 330, Image.SCALE_SMOOTH);
-        iconTop = new ImageIcon(imgTop);
-        JLabel topUser = new JLabel(iconTop);
-        topUser.setBounds(80, 1620, iconTop.getIconWidth(), iconTop.getIconHeight());
-        panel.add(topUser);
-
-        JLabel top1 = new JLabel("Top 1");
-        top1.setFont(customFont.deriveFont(25f));
-        top1.setForeground(Color.WHITE);
-        top1.setBounds(50 + topUser.getWidth() / 2, 1570, 100, 60);
-        panel.add(top1);
-
-        JLabel top2 = new JLabel("Top 2");
-        top2.setFont(customFont.deriveFont(25f));
-        top2.setForeground(Color.WHITE);
-        top2.setBounds(145, 1640, 100, 60);
-        panel.add(top2);
-
-        JLabel top3 = new JLabel("Top 3");
-        top3.setFont(customFont.deriveFont(25f));
-        top3.setForeground(Color.WHITE);
-        top3.setBounds(topUser.getWidth() - 50, 1685, 100, 60);
-        panel.add(top3);
-
-        JScrollPane scrollPane = new JScrollPane(panel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setBounds(0, 0, 700, 700);
-        panel.setPreferredSize(new Dimension(700, 2000));
-        getContentPane().add(scrollPane);
-
-    }
-
-    public void addAllListener(ClientController clientController) {
-        //buttonOk.addActionListener(clientController);
-    }
-
-    public void showPieChartStatut(JPanel panel){
         pieDataset = new DefaultPieDataset();
-        pieDataset.setValue("ADMIN", 4);
-        pieDataset.setValue("USER", 9);
-        pieDataset.setValue("MODERATOR", 10);
+        pieDataset.setValue("ADMIN", typeAdministrator.size());
+        pieDataset.setValue("USER", typeUser.size());
+        pieDataset.setValue("MODERATOR", typeModerator.size());
         //create chart
         chart = ChartFactory.createPieChart3D(
                 "USERS BY STATUS",pieDataset,
@@ -105,11 +81,12 @@ public class Stats extends JDialog{
         piePlot = (PiePlot) chart.getPlot();
 
         //change pieChart background color
-        piePlot.setBackgroundPaint(new Color(147, 185, 175));
+        piePlot.setBackgroundPaint(new Color(234, 213, 178));
         //change blocks background pieChart
-        piePlot.setSectionPaint("ADMIN",new Color( 220,76,76));
-        piePlot.setSectionPaint("USER",new Color( 119,76,220));
-        piePlot.setSectionPaint("MODERATOR",new Color( 242,184,50));
+        piePlot.setSectionPaint("USER",new Color(Color.WHITE.getRGB()));
+        piePlot.setSectionPaint("MODERATOR",new Color(Color.GRAY.getRGB()));
+        piePlot.setSectionPaint("ADMIN",new Color( 27,47,46));
+
 
         chartPanel = new ChartPanel(chart);
         //panel1.removeAll();
@@ -118,14 +95,15 @@ public class Stats extends JDialog{
         chartPanel.setBounds(50,10, 600, 360);
         panel.add(chartPanel);
         //chartPanel.setVisible(true);
-    }
 
-    public void showPieChartType(JPanel panel){
+        //----------------------Graph 2--------------------------
+        //showPieChartType(panel);
+
         pieDataset = new DefaultPieDataset();
-        pieDataset.setValue("ONLINE", 4);
-        pieDataset.setValue("OFFLINE", 9);
-        pieDataset.setValue("BAN", 1);
-        pieDataset.setValue("AWAY", 10);
+        pieDataset.setValue("ONLINE", usersOnline.size());
+        pieDataset.setValue("AWAY", usersAway.size());
+        pieDataset.setValue("OFFLINE", usersOffline.size());
+        pieDataset.setValue("BAN", banned.size());
 
         //create chart
         chart = ChartFactory.createPieChart3D(
@@ -137,31 +115,34 @@ public class Stats extends JDialog{
         piePlot = (PiePlot) chart.getPlot();
 
         //change pieChart background color
-        piePlot.setBackgroundPaint(new Color(147, 185, 175));
+        piePlot.setBackgroundPaint(new Color(234, 213, 178));
         //change blocks background pieChart
-        piePlot.setSectionPaint("ONLINE",new Color( 220,76,76));
-        piePlot.setSectionPaint("OFFLINE",new Color( 119,76,220));
-        piePlot.setSectionPaint("BAN",new Color( 242,184,50));
-        piePlot.setSectionPaint("AWAY",new Color( 50,242,191));
+        piePlot.setSectionPaint("ONLINE",new Color(Color.WHITE.getRGB()));
+        piePlot.setSectionPaint("AWAY",new Color(130, 61, 24));
+        piePlot.setSectionPaint("OFFLINE",new Color( 27,47,46));
+        piePlot.setSectionPaint("BAN",new Color(Color.GRAY.getRGB()));
 
         chartPanel= new ChartPanel(chart);
         //chartPanel.setPreferredSize(new Dimension(20, 8));
         chartPanel.getPreferredSize();
         //panel1.removeAll();
-        chartPanel.setBounds(50, 380, 600, 360);
+        chartPanel.setBounds(50, 400, 600, 360);
         panel.add(chartPanel);
         chartPanel.validate();
-    }
 
-    private void showChartMessage(JPanel panel) {
+        //----------------------Graph 3--------------------------
+        //showChartMessage(panel);
+
         barDataset = new DefaultCategoryDataset();
-        barDataset .addValue(1,"","4");
-        barDataset .addValue(2,"","6");
+
+        for (int i = 0; i < 24; i++) {
+            barDataset .addValue(messagesPerHour.get(i), "",(i+1) + "");
+        }
 
         //create chart
         chart = ChartFactory.createBarChart(
                 "NUMBER OF MESSAGES SENT BY TIME",
-                "Time",
+                "Time (by hour)",
                 "Number of Messages Sent",
                 barDataset ,
                 PlotOrientation.VERTICAL,
@@ -171,25 +152,27 @@ public class Stats extends JDialog{
         //change bar color
         categoryPlot.setBackgroundPaint(new Color(238, 213, 173));
         BarRenderer renderer = (BarRenderer) categoryPlot.getRenderer();
-        renderer.setSeriesPaint(0, new Color(140,56,6));
+        renderer.setSeriesPaint(0, new Color( 27,47,46));
 
         //put the chart into a panel
         chartPanel = new ChartPanel(chart);
-        chartPanel.setBounds(50, 750, 600, 360);
+        chartPanel.setBounds(50, 790, 600, 360);
         panel.add(chartPanel);
         panel.validate();
 
-    }
+        //----------------------Graph 4--------------------------
+        //showChartConnection(panel);
 
-    private void showChartConnection(JPanel panel) {
         barDataset = new DefaultCategoryDataset();
-        barDataset .addValue(8,"","4");
-        barDataset .addValue(5,"","6");
+
+        for (int i = 0; i < 24; i++) {
+            barDataset .addValue(connectionsPerHour.get(i), "",(i+1) + "");
+        }
 
         //create chart
         chart = ChartFactory.createBarChart(
                 "NUMBER OF CONNECTIONS BY TIME",
-                "Time",
+                "Time (by hour)",
                 "Number of Connections",
                 barDataset ,
                 PlotOrientation.VERTICAL,
@@ -198,40 +181,62 @@ public class Stats extends JDialog{
 
         //change bar background
         categoryPlot.setBackgroundPaint(new Color(238, 213, 173));
-        BarRenderer renderer = (BarRenderer) categoryPlot.getRenderer();
-        renderer.setSeriesPaint(0, new Color(106,151,99));
+        renderer = (BarRenderer) categoryPlot.getRenderer();
+        renderer.setSeriesPaint(0, new Color( 27,47,46));
 
         //put the chart into a panel
         chartPanel = new ChartPanel(chart);
-        chartPanel.setBounds(50, 1120, 600, 360);
+        chartPanel.setBounds(50, 1180, 600, 360);
         panel.add(chartPanel);
         panel.validate();
 
+        //--------------------Top Users------------------------
+
+        JLabel topTitle = new JLabel("Top Users");
+        topTitle.setFont(customFont.deriveFont(Font.BOLD, 25f));
+        topTitle.setForeground(Color.BLACK);
+        topTitle.setBounds(200, 1560, 300, 60);
+        topTitle.setHorizontalAlignment(JLabel.CENTER);
+        panel.add(topTitle);
+
+        iconTop = new ImageIcon("IMG/podium.png");
+        Image imgTop = iconTop.getImage().getScaledInstance(530, 330, Image.SCALE_SMOOTH);
+        iconTop = new ImageIcon(imgTop);
+        JLabel podium = new JLabel(iconTop);
+        podium.setBounds(80, 1700, iconTop.getIconWidth(), iconTop.getIconHeight());
+        panel.add(podium);
+
+        JLabel top1 = new JLabel(topUsers.get(0).getUserName());
+        top1.setFont(customFont.deriveFont(25f));
+        top1.setForeground(Color.WHITE);
+        top1.setBounds(200, 1650, 300, 60);
+        top1.setHorizontalAlignment(JLabel.CENTER);
+        panel.add(top1);
+
+        JLabel top2 = new JLabel(topUsers.get(1).getUserName());
+        top2.setFont(customFont.deriveFont(25f));
+        top2.setForeground(Color.WHITE);
+        top2.setBounds(130, 1720, 100, 60);
+        top2.setHorizontalAlignment(JLabel.CENTER);
+        panel.add(top2);
+
+        JLabel top3 = new JLabel(topUsers.get(2).getUserName());
+        top3.setFont(customFont.deriveFont(25f));
+        top3.setForeground(Color.WHITE);
+        top3.setBounds(podium.getWidth() - 70, 1765, 100, 60);
+        top3.setHorizontalAlignment(JLabel.CENTER);
+        panel.add(top3);
+
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBounds(0, 0, 700, 700);
+        panel.setPreferredSize(new Dimension(700, 2200));
+        getContentPane().add(scrollPane);
+
     }
 
-/*
-        private void createPanelStats() {
-            // TODO: place custom component creation code here
-            // TODO 1. Modifier le titre de la fenetre
-            this.setTitle("STATISTICS");
-
-            //TODO 2. Modifier la taille (400*300)
-            this.setSize(800,600);
-
-            //TODO 3. taille modifiable par l'utilisateur
-            this.setResizable(true);
-
-            //TODO 4. Un click sur croix entraine fermeture de la fenetre
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-            //TODO 5. Centrer la fenetre par rapport à l'écran de l'ordinateur
-            this.setLocationRelativeTo(null);
-
-            //TODO 7. Relier le conteneur à la JFrame
-            this.setContentPane(panel1);
-
-            //TODO 8. Afficher la JFrame
-            this.setVisible(true);
-        }
-*/
+    public void addAllListener(ClientController clientController) {
+        //buttonOk.addActionListener(clientController);
+    }
 }
