@@ -94,8 +94,6 @@ public class UserDao implements DAO<User> {
                     "', state = '" + object.getState() +
                     "' WHERE id = " + object.getId());
 
-            System.out.println("Update OK.");
-
             //else System.out.println("User not found.");
 
         } catch (SQLException e) {

@@ -1,6 +1,7 @@
 package server;
 
 import controller.ClientController;
+import model.Message;
 import model.user.User;
 
 import java.io.BufferedReader;
@@ -17,7 +18,7 @@ public class ClientHandler extends Thread {
 
     public void run() {
         try {
-            while (!Thread.currentThread().isInterrupted()) {
+            while (!this.isInterrupted()) {
                 readCommand();
             }
         } catch (IOException e) {
@@ -29,17 +30,26 @@ public class ClientHandler extends Thread {
         String[] clientCommand = this.in.readLine().split(" ");
 
         switch (clientCommand[0]) {
-            case "Connection:" -> {
-                System.out.println("");
-                controller.setUser(User.convertionMessageIntoUser(clientCommand));
-                controller.getView2().repaint();
-            }
-            case "Message" -> {
-            }
-            case "Disconnection:" -> {
+            case "Connection:", "Disconnection:" -> userUpdate(User.convertionMessageIntoUser(clientCommand));
 
-            }
+            case "Message" -> messageReceived(User.convertionMessageIntoMessage(clientCommand));
+
             default -> System.out.println("default");
+    }
+
+}
+
+    public void userUpdate(User user) {
+        this.controller.setUser(user);
+        if (this.controller.getView2() != null) {
+            this.controller.getView2().repaint();
+        }
+    }
+
+    public void messageReceived(Message message) {
+        this.controller.getMessages().add(message);
+        if (this.controller.getView2() != null) {
+            this.controller.getView2().repaint();
         }
     }
 }

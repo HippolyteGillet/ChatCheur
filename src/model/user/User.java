@@ -1,5 +1,7 @@
 package model.user;
 
+import model.Message;
+
 import java.time.LocalDateTime;
 
 public class User {
@@ -16,22 +18,6 @@ public class User {
     private State state;
     private LocalDateTime lastConnectionTime;
 
-    public enum Access {
-        BANNED,
-        ACCEPTED
-    }
-
-    public enum State {
-        ONLINE,
-        AWAY,
-        OFFLINE
-    }
-
-    public enum Permission {
-        USER,
-        MODERATOR,
-        ADMINISTRATOR
-    }
     public User() {
     }
 
@@ -46,6 +32,37 @@ public class User {
         this.access = Access.ACCEPTED;
         this.state = state;
         this.lastConnectionTime = lastConnectionTime;
+    }
+
+    public static User convertionMessageIntoUser(String[] user) {
+        String[] realUser = new String[15];
+        //Pour chaque case de user on récupère la valeur
+        for (int i = 0; i < user.length - 5; i++) {
+            //Les valeurs à récupérer sont à partir de la case 5
+            //On sépare le string avec le '='
+            String temp = user[i + 5].split("=")[1];
+            //On enlève la virgule de fin
+            realUser[i] = temp.substring(0, temp.length() - 1);
+        }
+        return new User(Integer.parseInt(realUser[0]), realUser[1], realUser[2], realUser[3], realUser[4], realUser[5], User.State.valueOf(realUser[8]), LocalDateTime.now());
+    }
+
+    public static Message convertionMessageIntoMessage(String[] message) {
+        String[] realMessage = new String[15];
+        for (int i = 0; i < message.length - 4; i++) {
+            //La fin est différente pour les messages avec espaces
+            if (i > 3) {
+                realMessage[3] += " " + message[i+4];
+            } else {
+                //Les valeurs à récupérer sont à partir de la case 4
+                //On sépare le string avec le '='
+                String temp = message[i + 4].split("=")[1];
+                //On enlève la virgule de fin
+                realMessage[i] = temp.substring(0, temp.length() - 1);
+            }
+
+        }
+        return new Message(Integer.parseInt(realMessage[0]), Integer.parseInt(realMessage[1]), LocalDateTime.now(), realMessage[3]);
     }
 
     public int getId() {
@@ -164,14 +181,20 @@ public class User {
         return "User{" + "id=" + id + ", userName=" + userName + ", password=" + password + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName + ", permission=" + permission + ", status=" + access + ", state=" + state + ", lastConnectionTime=" + lastConnectionTime + '}';
     }
 
-    public static User convertionMessageIntoUser(String[] user) {
-        String[] realUser = new String[100];
-        for (int i = 0; i < user.length-5; i++) {
-            String temp = user[i + 5].split("=")[1];
-            realUser[i] = temp.substring(0,temp.length()-1);
-        }
-        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXXXXx");
-        //LocalDateTime localDateTime = LocalDateTime.parse(realUser[9], formatter);
-        return new User(Integer.parseInt(realUser[0]), realUser[1], realUser[2], realUser[3], realUser[4], realUser[5], User.State.valueOf(realUser[8]), LocalDateTime.now());
+    public enum Access {
+        BANNED,
+        ACCEPTED
+    }
+
+    public enum State {
+        ONLINE,
+        AWAY,
+        OFFLINE
+    }
+
+    public enum Permission {
+        USER,
+        MODERATOR,
+        ADMINISTRATOR
     }
 }
