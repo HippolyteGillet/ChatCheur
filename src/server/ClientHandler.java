@@ -30,19 +30,16 @@ public class ClientHandler extends Thread {
         String[] clientCommand = this.in.readLine().split(" ");
 
         switch (clientCommand[0]) {
-            case "Connection:" -> {
-                userConnected(User.convertionMessageIntoUser(clientCommand));
-            }
+            case "Connection:", "Disconnection:" -> userUpdate(User.convertionMessageIntoUser(clientCommand));
+
             case "Message" -> messageReceived(User.convertionMessageIntoMessage(clientCommand));
 
-            case "Disconnection:" -> {
-
-            }
             default -> System.out.println("default");
-        }
     }
 
-    public void userConnected(User user) {
+}
+
+    public void userUpdate(User user) {
         this.controller.setUser(user);
         if (this.controller.getView2() != null) {
             this.controller.getView2().repaint();

@@ -49,7 +49,6 @@ public class ChatcheurThread implements Runnable {
         } finally {
             System.out.println("Le client no " + this.numClient + " s'est deconnecte");
             this.chatcheurServer.deleteClient(this.numClient);
-
         }
     }
 

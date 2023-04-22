@@ -183,7 +183,7 @@ public class ClientController implements ActionListener {
             view2.getConversationPanel().repaint();
             view2.getScrollPane().repaint();
 
-            Message messagToSend = new Message(3, currentUser.getId(), LocalDateTime.now(), message);
+            Message messagToSend = new Message(currentUser.getId(), message);
             Log logToSend = new Log(currentUser.getId(), Log.TypeLog.MESSAGE);
 
             sendToServerMessage(messagToSend);
@@ -197,12 +197,13 @@ public class ClientController implements ActionListener {
         }
     }
 
-    //-------------------------DISCONNECTION-----------------------------------
+    //-------------------------DISCONNECTION--------------------------------------
     public void disconnection() {
-        Log logDeconnection = new Log(currentUser.getId(), Log.TypeLog.DISCONNECTION);
-        logDao.create(logDeconnection);
         this.currentUser.setState(User.State.OFFLINE);
+        sendToServerDisconnection();
+        Log logDeconnection = new Log(currentUser.getId(), Log.TypeLog.DISCONNECTION);
         //On met a jour BDD
+        logDao.create(logDeconnection);
         this.userDao.update(currentUser);
         this.currentUser = null;
         gererFenetresDisconnection();
@@ -228,6 +229,8 @@ public class ClientController implements ActionListener {
         view3.setVisible(true);
         view3.addAllListener(this);
     }
+
+    //----------------------------------BANNISSEMENT-----------------------------------------
 
     public void bannissement(int i) {
         //On cree nouvelle list sans le current user
@@ -274,7 +277,7 @@ public class ClientController implements ActionListener {
     }
 
     public void sendToServerDisconnection() {
-        this.out.println("Disconnection: " + currentUser.getUserName() + " disconnected from server");
+        this.out.println("Disconnection: " + currentUser.getUserName() + " disconnected from server " + this.currentUser);
     }
 
     //-------------------------------------PASSWORD-------------------------------------------
@@ -404,29 +407,32 @@ public class ClientController implements ActionListener {
         String[] actionCommand = e.getActionCommand().split(" ");
         switch (actionCommand[0]) {
             //Gère la connexion
-            case "Connexion" -> {
-                connection(view1.getUsername(), view1.getPassword());
-            }
+            case "Connexion" -> connection(view1.getUsername(), view1.getPassword());
+
             //Gère la déconnexion graphiquement
             case "logOut" -> gererFenetresLogOut();
+
             //Gère la déconnexion hors graphique
-            case "Disconnection" -> {
-                sendToServerDisconnection();
-                disconnection();
-            }
+            case "Disconnection" -> disconnection();
+
             //Gère le bannissement
             case "Ban" -> bannissement(Integer.parseInt(actionCommand[1]));
+
             //Gère la modification de son mdp
             case "Ok" -> newMdp();
+
             //Gère l'envoie de message
             case "send" -> send(view2.getTextField1().getText());
+
             //Gère l'oublie de mdp
             case "mdpOublie" -> mdpOublie();
+
             //Gère les stats
             case "Stats" -> {
                 System.out.println("Stats OK");
                 pageStats();
             }
+
             case "SmileyIntrouvable", "ImageIntrouvable" -> contenuIntrouvable();
         }
     }
