@@ -216,14 +216,14 @@ public class Stats extends JDialog{
         JLabel top2 = new JLabel(topUsers.get(1).getUserName());
         top2.setFont(customFont.deriveFont(25f));
         top2.setForeground(Color.WHITE);
-        top2.setBounds(130, 1720, 100, 60);
+        top2.setBounds(80, 1720, 200, 60);
         top2.setHorizontalAlignment(JLabel.CENTER);
         panel.add(top2);
 
         JLabel top3 = new JLabel(topUsers.get(2).getUserName());
         top3.setFont(customFont.deriveFont(25f));
         top3.setForeground(Color.WHITE);
-        top3.setBounds(podium.getWidth() - 70, 1765, 100, 60);
+        top3.setBounds(podium.getWidth() - 120, 1765, 200, 60);
         top3.setHorizontalAlignment(JLabel.CENTER);
         panel.add(top3);
 
