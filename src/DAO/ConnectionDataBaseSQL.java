@@ -9,7 +9,7 @@ public class ConnectionDataBaseSQL{
     /**
      * URL de connexion
      */
-    private static String url = "jdbc:mysql://localhost:3306/chatcheur";
+    private static String url = "jdbc:mysql://localhost:8889/chatcheur";
     /**
      * Nom du user
      */
@@ -17,7 +17,7 @@ public class ConnectionDataBaseSQL{
     /**
      * Mot de passe du user
      */
-    private static String passwd = "";
+    private static String passwd = "root";
     /**
      * Objet Connexion
      */
