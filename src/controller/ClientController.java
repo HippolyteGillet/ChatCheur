@@ -167,24 +167,17 @@ public class ClientController implements ActionListener {
 
     public void send(String message) {
         if (!message.equals("Saisir du texte") && !message.isEmpty() && currentUser != null) {
-            view2.setInputReceived(true);
-            view2.getTextField1().setText(null);
-            int y;
-            if (messages.size() < 9) {
-                y = 680;
-            } else {
-                y = 680 + (messages.size() - 8) * 90;
-            }
-            view2.getTextField1().setBounds(100, y + 90, 750, 60);
-            view2.getScrollPane().getVerticalScrollBar().setValue(view2.getScrollPane().getVerticalScrollBar().getMaximum());
-            view2.getConversationPanel().setPreferredSize(new Dimension(950, y + 170));
-            view2.getScrollPane().getViewport().setViewPosition(new Point(0, y));
-            view2.getSendButton().setBounds(800, y + 105, 30, 30);
-            view2.getConversationPanel().repaint();
-            view2.getScrollPane().repaint();
-
-            Message messagToSend = new Message(currentUser.getId(), message);
+            Message messagToSend = new Message(currentUser.getId(), message, messageDao.getLastID() + 1);
             Log logToSend = new Log(currentUser.getId(), Log.TypeLog.MESSAGE);
+            //On met a jour la vue
+            view2.setInputReceived(true);
+            int y = view2.calculY(messages);
+            view2.getScrollPane().getVerticalScrollBar().setValue(view2.getScrollPane().getVerticalScrollBar().getMaximum());
+            view2.getconversationPanelContent().setPreferredSize(new Dimension(950, y + 60));
+            view2.getScrollPane().getViewport().setViewPosition(new Point(0, y));
+            view2.setY(y);
+            view2.getTextField1().setText(null);
+            view2.repaint();
 
             sendToServerMessage(messagToSend);
 
@@ -196,6 +189,7 @@ public class ClientController implements ActionListener {
             }
         }
     }
+
 
     //-------------------------DISCONNECTION--------------------------------------
     public void disconnection() {
@@ -376,17 +370,15 @@ public class ClientController implements ActionListener {
         for (Integer i : messageDao.findTopUsers()) {
             topUsers.add(userDao.find(i));
         }
-
         return topUsers;
     }
 
     public void contenuIntrouvable() {
         MessageDao messageDao = new MessageDao();
-        messageDao.update(messages.get(messages.size() - 1));
         messageDao.delete(messages.get(messages.size() - 1).getId());
         messages.remove(messages.size() - 1);
-        JOptionPane.showMessageDialog(view1, "Image introuvable, veuillez charger votre image sous le bon nom dans le fichier imageEnvoyees", "Erreur de chargement d'image", JOptionPane.ERROR_MESSAGE);
-        view2.getTextField1().setText("");
+        JOptionPane.showMessageDialog(view2, "Image introuvable, veuillez charger votre image sous le bon nom dans le fichier imageEnvoyees", "Erreur de chargement d'image", JOptionPane.ERROR_MESSAGE);
+        view2.repaint();
     }
 
     public void setUser(User user) {
