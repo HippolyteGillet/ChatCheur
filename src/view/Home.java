@@ -500,12 +500,12 @@ public class Home extends JFrame {
         iconStats = new ImageIcon("IMG/Stats.png");
         Image imgStats = iconStats.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         iconStats = new ImageIcon(imgStats);
-
         stats = new JButton(iconStats);
         stats.setActionCommand("Stats");
         stats.setOpaque(false);
         stats.setContentAreaFilled(false);
         stats.setBorderPainted(false);
+        stats.setFocusPainted(false);
         stats.setBounds(90, 730, iconStats.getIconWidth(), iconStats.getIconHeight());
         contactPanelFooter.add(stats);
 
@@ -518,6 +518,7 @@ public class Home extends JFrame {
         logOut.setOpaque(false);
         logOut.setContentAreaFilled(false);
         logOut.setBorderPainted(false);
+        logOut.setFocusPainted(false);
         logOut.setBounds(280, 730, iconLogOut.getIconWidth(), iconLogOut.getIconHeight());
         contactPanelFooter.add(logOut);
 
