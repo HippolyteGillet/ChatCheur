@@ -31,8 +31,8 @@ public class Home extends JFrame {
     private final JButton logOut;
     private final JButton smileyErrorBtn;
     private final JButton imageErrorBtn;
-    private ImageIcon iconUnban, iconBan, iconStats;
-    private JButton stats;
+    private ImageIcon iconUnban, iconBan, iconStats, iconSettings;
+    private JButton stats, settings;
 
     public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
         for (User user : userList) {
@@ -489,25 +489,33 @@ public class Home extends JFrame {
         add(contactPanelFooter);
 
         //Setting Icon
-        ImageIcon iconSettings = new ImageIcon("IMG/Settings.png");
+        iconSettings = new ImageIcon("IMG/Settings.png");
         Image imgSetting = iconSettings.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         iconSettings = new ImageIcon(imgSetting);
-        JLabel settings = new JLabel(iconSettings);
+        settings = new JButton(iconSettings);
+        settings.setActionCommand("Settings");
+        settings.setOpaque(false);
+        settings.setContentAreaFilled(false);
+        settings.setBorderPainted(false);
+        settings.setFocusPainted(false);
         settings.setBounds(25, 730, iconSettings.getIconWidth(), iconSettings.getIconHeight());
         contactPanelFooter.add(settings);
 
+
         //Stats Icon
-        iconStats = new ImageIcon("IMG/Stats.png");
-        Image imgStats = iconStats.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-        iconStats = new ImageIcon(imgStats);
-        stats = new JButton(iconStats);
-        stats.setActionCommand("Stats");
-        stats.setOpaque(false);
-        stats.setContentAreaFilled(false);
-        stats.setBorderPainted(false);
-        stats.setFocusPainted(false);
-        stats.setBounds(90, 730, iconStats.getIconWidth(), iconStats.getIconHeight());
-        contactPanelFooter.add(stats);
+        if (currentUser.getPermission() == User.Permission.ADMINISTRATOR) {
+            iconStats = new ImageIcon("IMG/Stats.png");
+            Image imgStats = iconStats.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+            iconStats = new ImageIcon(imgStats);
+            stats = new JButton(iconStats);
+            stats.setActionCommand("Stats");
+            stats.setOpaque(false);
+            stats.setContentAreaFilled(false);
+            stats.setBorderPainted(false);
+            stats.setFocusPainted(false);
+            stats.setBounds(90, 730, iconStats.getIconWidth(), iconStats.getIconHeight());
+            contactPanelFooter.add(stats);
+        }
 
         //Log out Icon
         ImageIcon iconLogOut = new ImageIcon("IMG/logOut.png");
@@ -587,7 +595,8 @@ public class Home extends JFrame {
         this.sendButton.addActionListener(controller);
         this.smileyErrorBtn.addActionListener(controller);
         this.imageErrorBtn.addActionListener(controller);
-        this.stats.addActionListener(controller);
+        if (currentUser.getPermission() == User.Permission.ADMINISTRATOR) this.stats.addActionListener(controller);
+        this.settings.addActionListener(controller);
     }
 
     public int calculY(List<Message> messageList) {
