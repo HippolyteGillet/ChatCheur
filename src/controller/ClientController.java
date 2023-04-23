@@ -44,6 +44,7 @@ public class ClientController implements ActionListener {
     private List<Log> logs;
     private List<Message> messages;
     //SERVER
+
     private PrintWriter out;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view, Socket socket) {
