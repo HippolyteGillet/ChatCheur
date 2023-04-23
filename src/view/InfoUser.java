@@ -1,6 +1,7 @@
 package view;
 
 import DAO.UserDao;
+import controller.ClientController;
 import model.user.User;
 
 import javax.swing.*;
@@ -9,8 +10,11 @@ import java.io.File;
 import java.io.IOException;
 
 public class InfoUser extends JDialog {
+    private JComboBox<String> comboBox;
+    private User selectedUser;
     public InfoUser(User user, User currentUser) throws IOException, FontFormatException {
         UserDao userDao = new UserDao();
+        selectedUser = user;
         setBounds(500, 150, 600, 600);
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -53,24 +57,25 @@ public class InfoUser extends JDialog {
         panel.setLayout(null);
 
         String[] options = {"ADMINISTRATOR", "MODERATOR", "USER"};
-        JComboBox<String> comboBox = new JComboBox<>(options);
+        comboBox = new JComboBox<>(options);
         comboBox.setBounds(350, 372, 200, 50);
         comboBox.setFont(customFont.deriveFont(20f));
         comboBox.setEditable(true);
         comboBox.setFocusable(false);
         comboBox.setSelectedItem(user.getPermission().name());
+        comboBox.setActionCommand("newRole");
 
-        comboBox.addActionListener(e -> {
-            String selected = (String) comboBox.getSelectedItem();
-            if (selected != null) {
-                switch (selected) {
-                    case "ADMINISTRATOR" -> user.setPermission(User.Permission.ADMINISTRATOR);
-                    case "MODERATOR" -> user.setPermission(User.Permission.MODERATOR);
-                    case "USER" -> user.setPermission(User.Permission.USER);
-                }
-            }
-            userDao.update(user);
-        });
+//        comboBox.addActionListener(e -> {
+//            String selected = (String) comboBox.getSelectedItem();
+//            if (selected != null) {
+//                switch (selected) {
+//                    case "ADMINISTRATOR" -> user.setPermission(User.Permission.ADMINISTRATOR);
+//                    case "MODERATOR" -> user.setPermission(User.Permission.MODERATOR);
+//                    case "USER" -> user.setPermission(User.Permission.USER);
+//                }
+//            }
+//            userDao.update(user);
+//        });
         panel.add(comboBox);
 
         if(!currentUser.getPermission().equals(User.Permission.ADMINISTRATOR)){
@@ -78,4 +83,17 @@ public class InfoUser extends JDialog {
         }
         getContentPane().add(panel);
     }
+
+    public JComboBox<String> getComboBox() {
+        return comboBox;
+    }
+
+    public User getSelectedUser(){
+         return selectedUser;
+    }
+
+    public void addAllListener(ClientController clientController){
+        comboBox.addActionListener(clientController);
+    }
+
 }
