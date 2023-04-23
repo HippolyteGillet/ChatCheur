@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ClientController implements ActionListener {
     private final LogDao logDao = new LogDao();
@@ -424,11 +425,21 @@ public class ClientController implements ActionListener {
     public void pageSettings(){
         try {
             view6 = new Settings();
-            //view5.addAllListener(this);
+            view6.addAllListener(this);
         }catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
         }
         view6.setVisible(true);
+    }
+
+    public void changeUsn(){
+        if (!Objects.equals(view6.getTextField1().getText(), "")){
+            currentUser.setUserName(view6.getTextField1().getText());
+            userDao.update(currentUser);
+            view2.repaint();
+            view6.dispose();
+            view6 = null;
+        }
     }
 
     //------------------------------LISTENERS------------------------------------------
@@ -463,6 +474,8 @@ public class ClientController implements ActionListener {
             case "SmileyIntrouvable", "ImageIntrouvable" -> contenuIntrouvable();
 
             case "Settings" -> pageSettings();
+
+            case "changeUsername" -> changeUsn();
         }
     }
     //Listener pour bouton connection
