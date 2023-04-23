@@ -28,6 +28,7 @@ public class Home extends JFrame {
     private final JButton sendButton;
     private final JScrollPane convScrollPane;
     private final JPanel conversationPanelContent;
+    JLabel label;
     private final JButton logOut;
     private final JButton smileyErrorBtn;
     private final JButton imageErrorBtn;
@@ -598,6 +599,7 @@ public class Home extends JFrame {
         this.imageErrorBtn.addActionListener(controller);
         if (currentUser.getPermission() == User.Permission.ADMINISTRATOR) this.stats.addActionListener(controller);
         this.settings.addActionListener(controller);
+
     }
 
     public int calculY(List<Message> messageList) {
