@@ -19,22 +19,21 @@ import java.util.ArrayList;
 public class Home extends JFrame {
     private final Font customFont1 = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(30f);
     private final Font customFont2 = Font.createFont(Font.TRUETYPE_FONT, new File("ALBAS.TTF"));
-    private final JTextField textField;
-    private final JButton sendButton;
-    private final JScrollPane convScrollPane;
-    private final JPanel conversationPanelContent;
-    private final JButton logOutButton;
-    private final JButton smileyErrorBtn;
-    private final JButton imageErrorBtn;
     private final List<JButton> ban = new ArrayList<>();
-    private final List<JButton> infosButton = new ArrayList<>();
     int y;
     private User currentUser = new User();
     private Color circleColor = Color.GREEN;
     private Boolean inputReceived;
-    private ImageIcon iconUnban, iconBan, iconStats, settingsIcon;
-    private JButton statsButton, settingsButton, statutButton;
-
+    private final JTextField textField;
+    private final JButton sendButton;
+    private final JScrollPane convScrollPane;
+    private final JPanel conversationPanelContent;
+    JLabel label;
+    private final JButton logOut;
+    private final JButton smileyErrorBtn;
+    private final JButton imageErrorBtn;
+    private ImageIcon iconUnban, iconBan, iconStats, iconSettings;
+    private JButton stats, settings;
 
     public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
         for (User user : userList) {
@@ -331,20 +330,36 @@ public class Home extends JFrame {
         contactPanelHeader.add(currentUserCircle);
 
         //Status du currentUser
-        statutButton = new JButton();
-        statutButton.setActionCommand("State");
-        statutButton.setBorder(null);
-        statutButton.setOpaque(false);
-        statutButton.setContentAreaFilled(false);
-        statutButton.setFont(customFont1.deriveFont(25f));
-        statutButton.setForeground(Color.WHITE);
-        int x = (275 - statutButton.getWidth()) / 2;
-        statutButton.setBounds(x, 50, 100, 60);
+        JLabel label = new JLabel();
+        label.setFont(customFont1.deriveFont(25f));
+        label.setForeground(Color.WHITE);
+        int x = (275 - label.getWidth()) / 2;
+        label.setBounds(x, 50, 100, 60);
         switch (currentUser.getState()) {
-            case ONLINE -> statutButton.setText("Online");
-            case AWAY -> statutButton.setText("Away");
+            case ONLINE -> label.setText("Online");
+            case AWAY -> label.setText("Away");
         }
-        contactPanelHeader.add(statutButton);
+        label.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                switch (currentUser.getState()) {
+                    case ONLINE -> {
+                        currentUser.setState(User.State.AWAY);
+                        label.setText("Away");
+                        circleColor = Color.ORANGE;
+                    }
+                    case AWAY -> {
+                        currentUser.setState(User.State.ONLINE);
+                        label.setText("Online");
+                        circleColor = Color.GREEN;
+                    }
+                }
+                UserDao userDao = new UserDao();
+                userDao.update(currentUser);
+                repaint();
+            }
+        });
+        contactPanelHeader.add(label);
 
         JPanel contactPanelContent = new JPanel() {
             @Override
@@ -472,22 +487,29 @@ public class Home extends JFrame {
         ImageIcon iconInfos = new ImageIcon("IMG/info.png");
         Image imgInfos = iconInfos.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
         iconInfos = new ImageIcon(imgInfos);
+
         int y = 15;
-        int nonCompte = 0;
-        for (int i = 0; i < userList.size(); i++) {
-            User user = userList.get(i);
+        for (User user : userList) {
             if (user.getUserName() != null && !user.equals(currentUser)) {
-                this.infosButton.add(new JButton(iconInfos));
-                this.infosButton.get(i-nonCompte).setActionCommand("Infos " + i);
-                this.infosButton.get(i-nonCompte).setOpaque(false);
-                this.infosButton.get(i-nonCompte).setContentAreaFilled(false);
-                this.infosButton.get(i-nonCompte).setBorderPainted(false);
-                FontMetrics metrics = infosButton.get(i-nonCompte).getFontMetrics(customFont1.deriveFont(25f));
+                JLabel infos = new JLabel(iconInfos);
+                FontMetrics metrics = infos.getFontMetrics(customFont1.deriveFont(25f));
                 int xU = metrics.stringWidth(user.getUserName()) + 30;
-                infosButton.get(i-nonCompte).setBounds(xU, y, infosButton.get(i-nonCompte).getIcon().getIconWidth(), infosButton.get(i-nonCompte).getIcon().getIconHeight());
-                contactPanelContent.add(infosButton.get(i-nonCompte));
+                infos.setBounds(xU, y, infos.getIcon().getIconWidth(), infos.getIcon().getIconHeight());
+                infos.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        InfoUser popup;
+                        try {
+                            popup = new InfoUser(user, currentUser);
+                        } catch (IOException | FontFormatException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        popup.setVisible(true);
+                    }
+                });
+                contactPanelContent.add(infos);
                 y += 90;
-            } else nonCompte=1;
+            }
         }
         JPanel contactPanelFooter = new JPanel() {
             @Override
@@ -507,17 +529,17 @@ public class Home extends JFrame {
         add(contactPanelFooter);
 
         //Setting Icon
-        settingsIcon = new ImageIcon("IMG/Settings.png");
-        Image imgSetting = settingsIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-        settingsIcon = new ImageIcon(imgSetting);
-        settingsButton = new JButton(settingsIcon);
-        settingsButton.setActionCommand("Settings");
-        settingsButton.setOpaque(false);
-        settingsButton.setContentAreaFilled(false);
-        settingsButton.setBorderPainted(false);
-        settingsButton.setFocusPainted(false);
-        settingsButton.setBounds(25, 730, settingsIcon.getIconWidth(), settingsIcon.getIconHeight());
-        contactPanelFooter.add(settingsButton);
+        iconSettings = new ImageIcon("IMG/Settings.png");
+        Image imgSetting = iconSettings.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        iconSettings = new ImageIcon(imgSetting);
+        settings = new JButton(iconSettings);
+        settings.setActionCommand("Settings");
+        settings.setOpaque(false);
+        settings.setContentAreaFilled(false);
+        settings.setBorderPainted(false);
+        settings.setFocusPainted(false);
+        settings.setBounds(25, 730, iconSettings.getIconWidth(), iconSettings.getIconHeight());
+        contactPanelFooter.add(settings);
 
 
         //Stats Icon
@@ -525,28 +547,28 @@ public class Home extends JFrame {
             iconStats = new ImageIcon("IMG/Stats.png");
             Image imgStats = iconStats.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
             iconStats = new ImageIcon(imgStats);
-            statsButton = new JButton(iconStats);
-            statsButton.setActionCommand("Stats");
-            statsButton.setOpaque(false);
-            statsButton.setContentAreaFilled(false);
-            statsButton.setBorderPainted(false);
-            statsButton.setFocusPainted(false);
-            statsButton.setBounds(90, 730, iconStats.getIconWidth(), iconStats.getIconHeight());
-            contactPanelFooter.add(statsButton);
+            stats = new JButton(iconStats);
+            stats.setActionCommand("Stats");
+            stats.setOpaque(false);
+            stats.setContentAreaFilled(false);
+            stats.setBorderPainted(false);
+            stats.setFocusPainted(false);
+            stats.setBounds(90, 730, iconStats.getIconWidth(), iconStats.getIconHeight());
+            contactPanelFooter.add(stats);
         }
 
         //Log out Icon
         ImageIcon iconLogOut = new ImageIcon("IMG/logOut.png");
         Image imgLogOut = iconLogOut.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         iconLogOut = new ImageIcon(imgLogOut);
-        logOutButton = new JButton(iconLogOut);
-        logOutButton.setActionCommand("logOut");
-        logOutButton.setOpaque(false);
-        logOutButton.setContentAreaFilled(false);
-        logOutButton.setBorderPainted(false);
-        logOutButton.setFocusPainted(false);
-        logOutButton.setBounds(280, 730, iconLogOut.getIconWidth(), iconLogOut.getIconHeight());
-        contactPanelFooter.add(logOutButton);
+        logOut = new JButton(iconLogOut);
+        logOut.setActionCommand("logOut");
+        logOut.setOpaque(false);
+        logOut.setContentAreaFilled(false);
+        logOut.setBorderPainted(false);
+        logOut.setFocusPainted(false);
+        logOut.setBounds(280, 730, iconLogOut.getIconWidth(), iconLogOut.getIconHeight());
+        contactPanelFooter.add(logOut);
 
         setTitle("ChatCheur");
         setSize(1300, 829);
@@ -566,22 +588,6 @@ public class Home extends JFrame {
         });
     }
 
-    public Color getCircleColor() {
-        return circleColor;
-    }
-
-    public void setCircleColor(Color circleColor) {
-        this.circleColor = circleColor;
-    }
-
-    public JButton getStatutButton() {
-        return statutButton;
-    }
-
-    public void setStatutButton(JButton statutButton) {
-        this.statutButton = statutButton;
-    }
-
     public JButton getBan(int i) {
         return ban.get(i);
     }
@@ -596,6 +602,10 @@ public class Home extends JFrame {
 
     public JTextField getTextField() {
         return textField;
+    }
+
+    public void setInputReceived(Boolean inputReceived) {
+        this.inputReceived = inputReceived;
     }
 
     public JScrollPane getScrollPane() {
@@ -619,20 +629,16 @@ public class Home extends JFrame {
     }
 
     public void addAllListener(ClientController controller) {
-        this.logOutButton.addActionListener(controller);
+        this.logOut.addActionListener(controller);
         for (JButton jButton : this.ban) {
             jButton.addActionListener(controller);
         }
         this.sendButton.addActionListener(controller);
         this.smileyErrorBtn.addActionListener(controller);
         this.imageErrorBtn.addActionListener(controller);
-        if (currentUser.getPermission() == User.Permission.ADMINISTRATOR)
-            this.statsButton.addActionListener(controller);
-        this.settingsButton.addActionListener(controller);
-        for (JButton jButton : this.infosButton) {
-            jButton.addActionListener(controller);
-        }
-        this.statutButton.addActionListener(controller);
+        if (currentUser.getPermission() == User.Permission.ADMINISTRATOR) this.stats.addActionListener(controller);
+        this.settings.addActionListener(controller);
+
     }
 
     public int calculY(List<Message> messageList) {
@@ -681,7 +687,7 @@ public class Home extends JFrame {
         this.y = y;
     }
 
-    public void setInputReceived(boolean bool) {
-        this.inputReceived = bool;
+    public Boolean getInputReceived() {
+        return inputReceived;
     }
 }
