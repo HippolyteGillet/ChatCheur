@@ -21,6 +21,19 @@ public class User {
     public User() {
     }
 
+    public User(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDateTime lastConnectionTime, Access access) {
+        this.id = id;
+        this.userName = userName;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.permission = Permission.USER;
+        this.access = access;
+        this.state = state;
+        this.lastConnectionTime = lastConnectionTime;
+    }
+
     public User(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDateTime lastConnectionTime) {
         this.id = id;
         this.userName = userName;
@@ -44,19 +57,19 @@ public class User {
             //On enlève la virgule de fin
             realUser[i] = temp.substring(0, temp.length() - 1);
         }
-        if (user[0].equals("Connection:")){
+        /*if (user[0].equals("Connection:")){
             realUser[8] = "ONLINE";
-        }
+        }*/
         try {
             switch (realUser[6]) {
                 case "ADMINISTRATOR" -> {
-                    return new Administrator(Integer.parseInt(realUser[0]), realUser[1], realUser[2], realUser[3], realUser[4], realUser[5], User.State.valueOf(realUser[8]), LocalDateTime.now());
+                    return new Administrator(Integer.parseInt(realUser[0]), realUser[1], realUser[2], realUser[3], realUser[4], realUser[5], User.State.valueOf(realUser[8]), LocalDateTime.now(), Access.valueOf(realUser[7]));
                 }
                 case "MODERATOR" -> {
-                    return new Moderator(Integer.parseInt(realUser[0]), realUser[1], realUser[2], realUser[3], realUser[4], realUser[5], User.State.valueOf(realUser[8]), LocalDateTime.now());
+                    return new Moderator(Integer.parseInt(realUser[0]), realUser[1], realUser[2], realUser[3], realUser[4], realUser[5], User.State.valueOf(realUser[8]), LocalDateTime.now(), Access.valueOf(realUser[7]));
                 }
                 case "USER" -> {
-                    return new User(Integer.parseInt(realUser[0]), realUser[1], realUser[2], realUser[3], realUser[4], realUser[5], User.State.valueOf(realUser[8]), LocalDateTime.now());
+                    return new User(Integer.parseInt(realUser[0]), realUser[1], realUser[2], realUser[3], realUser[4], realUser[5], User.State.valueOf(realUser[8]), LocalDateTime.now(), Access.valueOf(realUser[7]));
                 }
             }
         } catch (Exception e) {
