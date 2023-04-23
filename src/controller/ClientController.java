@@ -136,7 +136,6 @@ public class ClientController implements ActionListener {
             menuView.afficherUserUknown();
 
         }
-        homeView.repaint();
     }
 
     public void connectionToDB(User user) {
@@ -462,18 +461,6 @@ public class ClientController implements ActionListener {
         try {
             infoUserView = new InfoUser(users.get(i), currentUser);
         } catch (IOException | FontFormatException ex) {
-        } catch (IOException | FontFormatException ex) {
-            throw new RuntimeException(ex);
-        }
-        settingsView.setVisible(true);
-        infoUserView.addAllListener(this);
-    }
-
-    //-----------------------------CHANGEMENT DE PERMISSION------------------------------
-    public void gererFenetresInfos(int i) {
-        try {
-            infoUserView = new InfoUser(users.get(i), currentUser);
-        } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
         }
         infoUserView.setVisible(true);
@@ -494,12 +481,6 @@ public class ClientController implements ActionListener {
         userDao.update(userSelected);
 
         sendToServerPermission(userSelected);
-    }
-
-    public InfoUser getInfoUserView() {
-        return infoUserView;
-        infoUserView.setVisible(true);
-        infoUserView.addAllListener(this);
     }
 
     public InfoUser getInfoUserView() {
