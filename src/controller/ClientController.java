@@ -441,10 +441,18 @@ public class ClientController implements ActionListener {
         if (!Objects.equals(view6.getTextField1().getText(), "")){
             currentUser.setUserName(view6.getTextField1().getText());
             userDao.update(currentUser);
-
             view6.dispose();
             view6 = null;
             view2.repaint();
+        }
+    }
+
+    public void changePsswrd(){
+        if (!Objects.equals(view6.getTextField2().getText(), "")){
+            currentUser.setPassword(sha256(view6.getTextField2().getText()));
+            userDao.update(currentUser);
+            view6.dispose();
+            view6 = null;
         }
     }
 
@@ -482,6 +490,8 @@ public class ClientController implements ActionListener {
             case "Settings" -> pageSettings();
 
             case "changeUsername" -> changeUsn();
+
+            case "changePassword" -> changePsswrd();
         }
     }
     //Listener pour bouton connection
