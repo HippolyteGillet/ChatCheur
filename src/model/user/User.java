@@ -21,19 +21,6 @@ public class User {
     public User() {
     }
 
-    public User(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDateTime lastConnectionTime, Access access, Permission permission) {
-        this.id = id;
-        this.userName = userName;
-        this.password = password;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.access = access;
-        this.permission = permission;
-        this.state = state;
-        this.lastConnectionTime = lastConnectionTime;
-    }
-
     public User(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDateTime lastConnectionTime) {
         this.id = id;
         this.userName = userName;
