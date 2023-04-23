@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ClientController implements ActionListener {
     //DAO
@@ -172,17 +173,22 @@ public class ClientController implements ActionListener {
     //-----------------------------MESSAGE---------------------------------
 
     public void send(String message) {
+        if(homeView.getTextField().getText().contains("'")){
+            message = message.replace("'", "‘");
+        }
         if (!message.equals("Saisir du texte") && !message.isEmpty() && currentUser != null) {
             Message messagToSend = new Message(currentUser.getId(), message, messageDao.getLastID() + 1);
             Log logToSend = new Log(currentUser.getId(), Log.TypeLog.MESSAGE);
             //On met a jour la vue
             homeView.setInputReceived(true);
+            messages.add(messagToSend);
             int y = homeView.calculY(messages);
-            homeView.getScrollPane().getVerticalScrollBar().setValue(homeView.getScrollPane().getVerticalScrollBar().getMaximum());
+            messages.remove(messagToSend);
+            homeView.getScrollPane().getVerticalScrollBar().setValue(view2.getScrollPane().getVerticalScrollBar().getMaximum());
             homeView.getconversationPanelContent().setPreferredSize(new Dimension(950, y + 60));
             homeView.getScrollPane().getViewport().setViewPosition(new Point(0, y));
             homeView.setY(y);
-            homeView.getTextField1().setText(null);
+            homeView.getTextField().setText(null);
             homeView.repaint();
 
             sendToServerMessage(messagToSend);
@@ -431,8 +437,8 @@ public class ClientController implements ActionListener {
     public void pageSettings() {
         try {
             settingsView = new Settings();
-            //view5.addAllListener(this);
-        } catch (IOException | FontFormatException ex) {
+            settingsView.addAllListener(this);
+        }catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
         }
         settingsView.setVisible(true);
@@ -488,6 +494,17 @@ public class ClientController implements ActionListener {
         return infoUserView;
     }
 
+    public void changeUsn(){
+        if (!Objects.equals(view6.getTextField1().getText(), "")){
+            currentUser.setUserName(view6.getTextField1().getText());
+            userDao.update(currentUser);
+
+            view6.dispose();
+            view6 = null;
+            view2.repaint();
+        }
+    }
+
     //------------------------------LISTENERS------------------------------------------
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -523,6 +540,8 @@ public class ClientController implements ActionListener {
             case "SmileyIntrouvable", "ImageIntrouvable" -> contenuIntrouvable();
 
             case "Settings" -> pageSettings();
+
+            case "changeUsername" -> changeUsn();
 
             case "Infos" -> gererFenetresInfos(Integer.parseInt(actionCommand[1]));
 

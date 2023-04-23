@@ -170,7 +170,7 @@ public class Stats extends JDialog{
         //--------------------Top Users------------------------
 
         JLabel topTitle = new JLabel("Top Users");
-        topTitle.setFont(customFont.deriveFont(Font.BOLD, 30f));
+        topTitle.setFont(customFont.deriveFont(Font.BOLD, 32f));
         topTitle.setForeground(Color.BLACK);
         topTitle.setBounds(200, 1580, 300, 60);
         topTitle.setHorizontalAlignment(JLabel.CENTER);
