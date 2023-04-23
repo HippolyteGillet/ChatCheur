@@ -634,7 +634,7 @@ public class Home extends JFrame {
         this.y = y;
     }
 
-    public Boolean getInputReceived() {
-        return inputReceived;
+    public void setInputReceived(boolean bool) {
+        this.inputReceived = bool;
     }
 }
