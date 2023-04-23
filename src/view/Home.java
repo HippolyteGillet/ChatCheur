@@ -579,6 +579,7 @@ public class Home extends JFrame {
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
+                //TODO
                 currentUser.setState(User.State.AWAY);
                 userList.get(currentUser.getId() - 1).setState(User.State.AWAY);
                 UserDao userDao = new UserDao();

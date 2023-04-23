@@ -137,7 +137,7 @@ public class ClientController implements ActionListener {
             view1.afficherUserUknown();
 
         }
-        view2.repaint();
+        //view2.repaint();
     }
 
     public void connectionToDB(User user) {
@@ -202,9 +202,9 @@ public class ClientController implements ActionListener {
 
 
     //-------------------------DISCONNECTION--------------------------------------
-    public void disconnection() {
+    public void disconnection(boolean sendToServer) {
         this.currentUser.setState(User.State.OFFLINE);
-        sendToServerDisconnection();
+        if (sendToServer)sendToServerDisconnection();
         Log logDeconnection = new Log(currentUser.getId(), Log.TypeLog.DISCONNECTION);
         //On met a jour BDD
         logDao.create(logDeconnection);
@@ -215,8 +215,10 @@ public class ClientController implements ActionListener {
 
     public void gererFenetresDisconnection() {
         //On ferme les autres fenetres
-        view3.dispose();
-        view3 = null;
+        if(view3 != null){
+            view3.dispose();
+            view3 = null;
+        }
         view2.dispose();
         view2 = null;
         //On crée la fenetre de base
@@ -249,7 +251,7 @@ public class ClientController implements ActionListener {
                 }
             }
 
-        }
+        }//TODO
         if (userToChange.getId() < currentUser.getId()) {
             positionIcon = userToChange.getId() - 1;
         } else {
@@ -267,6 +269,8 @@ public class ClientController implements ActionListener {
                         userJava.setAccess(User.Access.ACCEPTED);
                     }
                 }
+                view2.repaint();
+
                 userDao.update(userToChange);
                 Log logBan = new Log(userToChange.getId(), Log.TypeLog.UNBAN);
                 logDao.create(logBan);
@@ -280,17 +284,23 @@ public class ClientController implements ActionListener {
                         userJava.setAccess(User.Access.BANNED);
                     }
                 }
+                view2.repaint();
+
                 userDao.update(userToChange);
                 Log logBan = new Log(userToChange.getId(), Log.TypeLog.BAN);
                 logDao.create(logBan);
             }
         }
-        view2.repaint();
+        sendToServerChange(userToChange);
     }
 
     //-----------------------------------ENVOIE SERVEUR-----------------------------------------
     public void sendToServerConnection() {
         this.out.println("Connection: " + this.currentUser.getUserName() + " connected to server " + this.currentUser);
+    }
+
+    public void sendToServerChange(User userChanged) {
+        this.out.println("Change: " + userChanged );
     }
 
     public void sendToServerMessage(Message message) {
@@ -468,7 +478,7 @@ public class ClientController implements ActionListener {
             case "logOut" -> gererFenetresLogOut();
 
             //Gère la déconnexion hors graphique
-            case "Disconnection" -> disconnection();
+            case "Disconnection" -> disconnection(true);
 
             //Gère le bannissement
             case "Ban" -> bannissement(Integer.parseInt(actionCommand[1]));
@@ -494,5 +504,9 @@ public class ClientController implements ActionListener {
             case "changePassword" -> changePsswrd();
         }
     }
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
     //Listener pour bouton connection
 }
