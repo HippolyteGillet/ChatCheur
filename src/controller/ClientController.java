@@ -267,7 +267,7 @@ public class ClientController implements ActionListener {
             int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir bannir cet utilisateur ?", "Confirmer le bannissement", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
                 homeView.setIconUnban(positionIcon);
-                userToChange.setAccess(User.Access.ACCEPTED);
+                userToChange.setAccess(User.Access.BANNED);
                 //On met à jour la BDD
                 userDao.update(userToChange);
                 Log logBan = new Log(userToChange.getId(), Log.TypeLog.BAN);
