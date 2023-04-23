@@ -230,28 +230,49 @@ public class ClientController implements ActionListener {
     public void bannissement(int i) {
         //On cree nouvelle list sans le current user
         List<User> nonCurrentUsers = new ArrayList<>();
+        User userToChange = null;
+        int positionIcon = 0;
         for (User user : this.users) {
-            if (!user.equals(this.currentUser)) {
+            if (user.getId() != (this.currentUser.getId())) {
                 nonCurrentUsers.add(user);
+                if (user.getId() == i) {
+                    userToChange = user;
+                }
             }
+
         }
+        if (userToChange.getId() < currentUser.getId()) {
+            positionIcon = userToChange.getId() - 1;
+        } else {
+            positionIcon = userToChange.getId() - 2;
+        }
+
         //Si l'utilisateur est banni, on le débanni, sinon on le banni
-        if (nonCurrentUsers.get(i).getAccess().equals(User.Access.BANNED)) {
+        if (userToChange.getAccess().equals(User.Access.BANNED)) {
             int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir débannir cet utilisateur ?", "Confirmer le débannissement", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
-                view2.setIconBan(i);
-                users.get(nonCurrentUsers.get(i).getId() - 1).setAccess(User.Access.ACCEPTED);
-                userDao.update(nonCurrentUsers.get(i));
-                Log logBan = new Log(nonCurrentUsers.get(i).getId(), Log.TypeLog.UNBAN);
+                //A trouver une solution pour le i
+                view2.setIconBan(positionIcon);
+                for (User userJava: users) {
+                    if (userJava.getId() == userToChange.getId()) {
+                        userJava.setAccess(User.Access.ACCEPTED);
+                    }
+                }
+                userDao.update(userToChange);
+                Log logBan = new Log(userToChange.getId(), Log.TypeLog.UNBAN);
                 logDao.create(logBan);
             }
         } else {
             int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir bannir cet utilisateur ?", "Confirmer le bannissement", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
-                view2.setIconUnban(i);
-                users.get(nonCurrentUsers.get(i).getId() - 1).setAccess(User.Access.BANNED);
-                userDao.update(nonCurrentUsers.get(i));
-                Log logBan = new Log(nonCurrentUsers.get(i).getId(), Log.TypeLog.BAN);
+                view2.setIconUnban(positionIcon);
+                for (User userJava: users) {
+                    if (userJava.getId() == userToChange.getId()) {
+                        userJava.setAccess(User.Access.BANNED);
+                    }
+                }
+                userDao.update(userToChange);
+                Log logBan = new Log(userToChange.getId(), Log.TypeLog.BAN);
                 logDao.create(logBan);
             }
         }
