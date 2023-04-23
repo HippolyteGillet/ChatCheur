@@ -7,6 +7,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import model.user.User;
 import org.jfree.chart.ChartFactory;
@@ -183,9 +184,19 @@ public class Stats extends JDialog{
         podium.setBounds(80, 1760, iconTop.getIconWidth(), iconTop.getIconHeight());
         panel.add(podium);
 
-        String s1;
-        if (topUsers.get(0).getUserName() != null) s1 = topUsers.get(0).getUserName();
-        else s1 = "";
+        String s1 = "";
+        String s2 = "";
+        String s3 = "";
+
+        for (int i = 0; i < Math.min(topUsers.size(), 3); i++) {
+            if (i == 0) {
+                s1 = topUsers.get(i).getUserName();
+            } else if (i == 1) {
+                s2 = topUsers.get(i).getUserName();
+            } else if (i == 2) {
+                s3 = topUsers.get(i).getUserName();
+            }
+        }
 
         JLabel top1 = new JLabel(s1);
         top1.setFont(customFont.deriveFont(25f));
@@ -194,20 +205,12 @@ public class Stats extends JDialog{
         top1.setHorizontalAlignment(JLabel.CENTER);
         panel.add(top1);
 
-        String s2;
-        if (topUsers.get(1).getUserName() != null) s2 = topUsers.get(1).getUserName();
-        else s2 = "";
-
         JLabel top2 = new JLabel(s2);
         top2.setFont(customFont.deriveFont(25f));
         top2.setForeground(Color.WHITE);
         top2.setBounds(70, 1785, 200, 60);
         top2.setHorizontalAlignment(JLabel.CENTER);
         panel.add(top2);
-
-        String s3;
-        if (topUsers.get(2).getUserName() != null) s3 = topUsers.get(2).getUserName();
-        else s3 = "";
 
         JLabel top3 = new JLabel(s3);
         top3.setFont(customFont.deriveFont(25f));
