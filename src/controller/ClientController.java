@@ -78,9 +78,6 @@ public class ClientController implements ActionListener {
         return users;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
 
     public List<Log> getLogs() {
         return logs;
@@ -139,6 +136,7 @@ public class ClientController implements ActionListener {
             view1.afficherUserUknown();
 
         }
+        view2.repaint();
     }
 
     public void connectionToDB(User user) {
@@ -159,6 +157,11 @@ public class ClientController implements ActionListener {
             //On met la 1ere fenetre a null
             this.view1 = null;
             this.view2.addAllListener(this);
+            this.view2.setVisible(true);
+            this.view2.setResizable(true);
+            this.view2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            this.view2.setLocationRelativeTo(null);
+            view2.repaint();
         } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
         }
