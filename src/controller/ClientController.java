@@ -42,6 +42,7 @@ public class ClientController implements ActionListener {
     private NewPassword view4;
     private Stats view5;
     private Settings view6;
+    private InfoUser view7;
     private User currentUser;
     private List<User> users;
     private List<Log> logs;
@@ -57,6 +58,9 @@ public class ClientController implements ActionListener {
         this.view2 = null;
         this.view3 = null;
         this.view4 = null;
+        this.view5 = null;
+        this.view6 = null;
+        this.view7 = null;
         view1.addAllListener(this);
         try {
             this.out = new PrintWriter(socket.getOutputStream(), true);
@@ -115,9 +119,6 @@ public class ClientController implements ActionListener {
                     System.out.println("User trouve : " + username);
                     //On regarde si le user est banni
                     if (user.getAccess().equals(User.Access.ACCEPTED)) {
-
-
-
                         this.currentUser = user;
                         this.currentUser.setState(User.State.ONLINE);
                         this.currentUser.setLastConnectionTime(LocalDateTime.now());
@@ -140,7 +141,6 @@ public class ClientController implements ActionListener {
         if (this.currentUser == null && !userFinded) {
             System.out.println("Aucun utilisateur trouve");
             view1.afficherUserUknown();
-
         }
         //view2.repaint();
     }
@@ -176,7 +176,7 @@ public class ClientController implements ActionListener {
     //-----------------------------MESSAGE---------------------------------
 
     public void send(String message) {
-        if(view2.getTextField().getText().contains("'")){
+        if (view2.getTextField().getText().contains("'")) {
             message = message.replace("'", "‘");
         }
         if (!message.equals("Saisir du texte") && !message.isEmpty() && currentUser != null) {
@@ -187,7 +187,7 @@ public class ClientController implements ActionListener {
             view2.setInputReceived(true);
             messages.add(messagToSend);
             int y = view2.calculY(messages);
-            if(message.charAt(0) == '/'){
+            if (message.charAt(0) == '/') {
                 ImageIcon imageIcon = new ImageIcon("imageEnvoyees" + message);
                 int imageIconWidth = imageIcon.getIconWidth();
                 int imageIconHeight = imageIcon.getIconHeight();
@@ -218,11 +218,10 @@ public class ClientController implements ActionListener {
         }
     }
 
-
     //-------------------------DISCONNECTION--------------------------------------
     public void disconnection(boolean sendToServer) {
         this.currentUser.setState(User.State.OFFLINE);
-        if (sendToServer)sendToServerDisconnection();
+        if (sendToServer) sendToServerDisconnection();
         Log logDeconnection = new Log(currentUser.getId(), Log.TypeLog.DISCONNECTION);
         //On met a jour BDD
         logDao.create(logDeconnection);
@@ -233,7 +232,7 @@ public class ClientController implements ActionListener {
 
     public void gererFenetresDisconnection() {
         //On ferme les autres fenetres
-        if(view3 != null){
+        if (view3 != null) {
             view3.dispose();
             view3 = null;
         }
@@ -252,6 +251,16 @@ public class ClientController implements ActionListener {
         view3 = new LogOut(view2);
         view3.setVisible(true);
         view3.addAllListener(this);
+    }
+
+    public void infoUser(int i) {
+        try {
+            view7 = new InfoUser(users.get(i - 1), currentUser);
+            view7.addAllListener(this);
+        } catch (IOException | FontFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+        view7.setVisible(true);
     }
 
     //----------------------------------BANNISSEMENT-----------------------------------------
@@ -281,8 +290,8 @@ public class ClientController implements ActionListener {
             int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir débannir cet utilisateur ?", "Confirmer le débannissement", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
                 //A trouver une solution pour le i
-                view2.setIconBan(positionIcon);
-                for (User userJava: users) {
+                //view2.setIconBan(positionIcon);
+                for (User userJava : users) {
                     if (userJava.getId() == userToChange.getId()) {
                         userJava.setAccess(User.Access.ACCEPTED);
                     }
@@ -296,8 +305,8 @@ public class ClientController implements ActionListener {
         } else {
             int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir bannir cet utilisateur ?", "Confirmer le bannissement", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
-                view2.setIconUnban(positionIcon);
-                for (User userJava: users) {
+                //view2.setIconUnban(positionIcon);
+                for (User userJava : users) {
                     if (userJava.getId() == userToChange.getId()) {
                         userJava.setAccess(User.Access.BANNED);
                     }
@@ -318,7 +327,7 @@ public class ClientController implements ActionListener {
     }
 
     public void sendToServerChange(User userChanged) {
-        this.out.println("Change: " + userChanged );
+        this.out.println("Change: " + userChanged);
     }
 
     public void sendToServerMessage(Message message) {
@@ -455,18 +464,18 @@ public class ClientController implements ActionListener {
         return view2;
     }
 
-    public void pageSettings(){
+    public void pageSettings() {
         try {
             view6 = new Settings();
             view6.addAllListener(this);
-        }catch (IOException | FontFormatException ex) {
+        } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
         }
         view6.setVisible(true);
     }
 
-    public void changeUsn(){
-        if (!Objects.equals(view6.getTextField1().getText(), "")){
+    public void changeUsn() {
+        if (!Objects.equals(view6.getTextField1().getText(), "")) {
             currentUser.setUserName(view6.getTextField1().getText());
             userDao.update(currentUser);
             view6.dispose();
@@ -475,15 +484,16 @@ public class ClientController implements ActionListener {
         }
     }
 
-    public void changePsswrd(){
-        if (!Objects.equals(view6.getTextField2().getText(), "")){
+    public void changePsswrd() {
+        if (!Objects.equals(view6.getTextField2().getText(), "")) {
             currentUser.setPassword(sha256(view6.getTextField2().getText()));
             userDao.update(currentUser);
             view6.dispose();
             view6 = null;
         }
     }
-    public void addImage(){
+
+    public void addImage() {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new FileNameExtensionFilter("Images", "jpg", "jpeg", "png", "gif"));
         if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
@@ -497,6 +507,19 @@ public class ClientController implements ActionListener {
             send("/" + file.getName());
             view2.getTextField().setForeground(Color.BLACK);
         }
+    }
+
+    public void newRole() {
+        String selected = (String) view7.getComboBox().getSelectedItem();
+        User user = users.get(view7.getSelectedUser().getId() - 1);
+        if (selected != null) {
+            switch (selected) {
+                case "ADMINISTRATOR" -> user.setPermission(User.Permission.ADMINISTRATOR);
+                case "MODERATOR" -> user.setPermission(User.Permission.MODERATOR);
+                case "USER" -> user.setPermission(User.Permission.USER);
+            }
+        }
+        userDao.update(user);
     }
 
     //------------------------------LISTENERS------------------------------------------
@@ -515,6 +538,8 @@ public class ClientController implements ActionListener {
 
             //Gère le bannissement
             case "Ban" -> bannissement(Integer.parseInt(actionCommand[1]));
+
+            case "Info" -> infoUser(Integer.parseInt(actionCommand[1]));
 
             //Gère la modification de son mdp
             case "Ok" -> newMdp();
@@ -537,8 +562,11 @@ public class ClientController implements ActionListener {
             case "changePassword" -> changePsswrd();
 
             case "addImage" -> addImage();
+
+            case "newRole" -> newRole();
         }
     }
+
     public User getCurrentUser() {
         return currentUser;
     }

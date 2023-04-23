@@ -20,6 +20,7 @@ public class Home extends JFrame {
     private final Font customFont1 = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(30f);
     private final Font customFont2 = Font.createFont(Font.TRUETYPE_FONT, new File("ALBAS.TTF"));
     private final List<JButton> ban = new ArrayList<>();
+    private final List<JButton> info = new ArrayList<>();
     int y;
     private User currentUser = new User();
     private Color circleColor = Color.GREEN;
@@ -41,6 +42,12 @@ public class Home extends JFrame {
         for (User user : userList) {
             if (user.getUserName().equals(username)) {
                 currentUser = user;
+            }
+        }
+        List<User> nonCurrentUsers = new ArrayList<>();
+        for (User user : userList) {
+            if (!user.equals(currentUser)) {
+                nonCurrentUsers.add(user);
             }
         }
         inputReceived = false;
@@ -119,7 +126,7 @@ public class Home extends JFrame {
                         yTime = yDraw + 5;
                         g.setColor(new Color(140, 56, 6));
                     } else {
-                        if(messageList.get(i).getContent().charAt(0) == '/') {
+                        if (messageList.get(i).getContent().charAt(0) == '/') {
                             ImageIcon image = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1));
                             int imageIconWidth = image.getIconWidth();
                             int imageIconHeight = image.getIconHeight();
@@ -138,7 +145,7 @@ public class Home extends JFrame {
                             x = 900 - image.getIconWidth();
                             xTime = x + 15;
                             yTime = yDraw + textHeight - 45;
-                        }else{
+                        } else {
                             x = 900 - textWidth - 20;
                             xTime = x + 15;
                             yTime = yDraw + textHeight - 45;
@@ -240,8 +247,7 @@ public class Home extends JFrame {
                             String formattedPreviousTime = previousTime.format(formatter);
                             if (formattedTime.equals(formattedPreviousTime) && messageList.get(i - 1).getUser_id() == messageList.get(i).getUser_id()) {
                                 yDraw -= 53;
-                            }
-                            else {
+                            } else {
                                 g.setFont(customFont1.deriveFont(12f));
                                 g.setColor(new Color(100, 98, 98));
                                 g.drawString(formattedTime, xTime, yTime);
@@ -334,6 +340,7 @@ public class Home extends JFrame {
                     textField.setForeground(Color.BLACK);
                 }
             }
+
             @Override
             public void focusLost(FocusEvent e) {
                 if (textField.getText().isEmpty()) {
@@ -410,6 +417,19 @@ public class Home extends JFrame {
             }
         });
         contactPanelHeader.add(label);
+        for (int i = 0; i < nonCurrentUsers.size(); i++) {
+            if (nonCurrentUsers.get(i).getUserName() != null) {
+                ban.add(new JButton(iconUnban));
+            }
+        }
+        //Ban Icon
+        iconBan = new ImageIcon("IMG/ban-icon.png");
+        Image imgBan = iconBan.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        iconBan = new ImageIcon(imgBan);
+        //Unban Icon
+        iconUnban = new ImageIcon("IMG/unban-icon.png");
+        Image imgUnban = iconUnban.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        iconUnban = new ImageIcon(imgUnban);
 
         JPanel contactPanelContent = new JPanel() {
             @Override
@@ -424,17 +444,19 @@ public class Home extends JFrame {
                 int y = 0;
                 int y1 = 30;
                 g.setFont(customFont1.deriveFont(25f));
-                for (User user : userList) {
-                    if (user.getUserName() != null && user.getId() != currentUser.getId()) {
-                        if (user.getAccess().equals(User.Access.BANNED)) {
+                for (int i = 0; i < nonCurrentUsers.size(); i++) {
+                    if (nonCurrentUsers.get(i).getUserName() != null) {
+                        if (nonCurrentUsers.get(i).getAccess().equals(User.Access.BANNED)) {
                             g.setColor(new Color(100, 98, 98));
+                            ban.get(i).setIcon(iconBan);
                         } else {
                             g.setColor(new Color(20, 48, 46));
+                            ban.get(i).setIcon(iconUnban);
                         }
                         g.fillRoundRect(10, y, 330, 70, 20, 20);
                         y += 90;
                         g.setColor(Color.WHITE);
-                        g.drawString(user.getUserName(), 20, y1);
+                        g.drawString(nonCurrentUsers.get(i).getUserName(), 20, y1);
                         y1 += 90;
                     }
                 }
@@ -496,38 +518,24 @@ public class Home extends JFrame {
         usersCirclePanel.setOpaque(false);
         contactPanelContent.add(usersCirclePanel);
 
-        //Ban Icon
-        iconBan = new ImageIcon("IMG/ban-icon.png");
-        Image imgBan = iconBan.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        iconBan = new ImageIcon(imgBan);
-        //Unban Icon
-        iconUnban = new ImageIcon("IMG/unban-icon.png");
-        Image imgUnban = iconUnban.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        iconUnban = new ImageIcon(imgUnban);
+
         //Dessine les icones de ban et unban selon les utilisateurs et leur status (moderateur et admin)
         if (!currentUser.getPermission().equals(User.Permission.USER)) {
             int y = 20;
-            List<User> nonCurrentUsers = new ArrayList<>();
-            for (User user : userList) {
-                if (!user.equals(currentUser)) {
-                    nonCurrentUsers.add(user);
-                }
-            }
             for (int i = 0; i < nonCurrentUsers.size(); i++) {
                 if (nonCurrentUsers.get(i).getUserName() != null) {
-                    this.ban.add(new JButton(iconUnban));
                     int idToBan = nonCurrentUsers.get(i).getId();
-                    this.ban.get(i).setActionCommand("Ban " + idToBan);
-                    this.ban.get(i).setOpaque(false);
-                    this.ban.get(i).setContentAreaFilled(false);
-                    this.ban.get(i).setBorderPainted(false);
-                    this.ban.get(i).setIcon(iconBan);
+                    ban.get(i).setActionCommand("Ban " + idToBan);
+                    ban.get(i).setOpaque(false);
+                    ban.get(i).setContentAreaFilled(false);
+                    ban.get(i).setBorderPainted(false);
+                    ban.get(i).setIcon(iconBan);
                     switch (nonCurrentUsers.get(i).getAccess()) {
-                        case ACCEPTED -> this.ban.get(i).setIcon(iconBan);
-                        case BANNED -> this.ban.get(i).setIcon(iconUnban);
+                        case ACCEPTED -> ban.get(i).setIcon(iconBan);
+                        case BANNED -> ban.get(i).setIcon(iconUnban);
                     }
-                    this.ban.get(i).setBounds(260, y, this.ban.get(i).getIcon().getIconWidth(), this.ban.get(i).getIcon().getIconHeight());
-                    contactPanelContent.add(this.ban.get(i));
+                    ban.get(i).setBounds(260, y, ban.get(i).getIcon().getIconWidth(), ban.get(i).getIcon().getIconHeight());
+                    contactPanelContent.add(ban.get(i));
                     y += 90;
                 }
             }
@@ -539,25 +547,19 @@ public class Home extends JFrame {
         iconInfos = new ImageIcon(imgInfos);
 
         int y = 15;
-        for (User user : userList) {
-            if (user.getUserName() != null && !user.equals(currentUser)) {
-                JLabel infos = new JLabel(iconInfos);
-                FontMetrics metrics = infos.getFontMetrics(customFont1.deriveFont(25f));
-                int xU = metrics.stringWidth(user.getUserName()) + 30;
-                infos.setBounds(xU, y, infos.getIcon().getIconWidth(), infos.getIcon().getIconHeight());
-                infos.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        InfoUser popup;
-                        try {
-                            popup = new InfoUser(user, currentUser);
-                        } catch (IOException | FontFormatException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                        popup.setVisible(true);
-                    }
-                });
-                contactPanelContent.add(infos);
+
+        for (int i = 0; i < nonCurrentUsers.size(); i++) {
+            if (nonCurrentUsers.get(i).getUserName() != null) {
+                info.add(new JButton(iconInfos));
+                FontMetrics metrics = info.get(i).getFontMetrics(customFont1.deriveFont(25f));
+                int xU = metrics.stringWidth(nonCurrentUsers.get(i).getUserName()) + 30;
+                info.get(i).setBounds(xU, y, info.get(i).getIcon().getIconWidth() + 5, info.get(i).getIcon().getIconHeight() + 5);
+                info.get(i).setOpaque(false);
+                info.get(i).setContentAreaFilled(false);
+                info.get(i).setBorderPainted(false);
+                info.get(i).setFocusable(false);
+                info.get(i).setActionCommand("Info " + nonCurrentUsers.get(i).getId());
+                contactPanelContent.add(info.get(i));
                 y += 90;
             }
         }
@@ -680,7 +682,10 @@ public class Home extends JFrame {
 
     public void addAllListener(ClientController controller) {
         this.logOut.addActionListener(controller);
-        for (JButton jButton : this.ban) {
+        for (JButton jButton : ban) {
+            jButton.addActionListener(controller);
+        }
+        for (JButton jButton : info) {
             jButton.addActionListener(controller);
         }
         this.sendButton.addActionListener(controller);
@@ -741,7 +746,6 @@ public class Home extends JFrame {
                 }
             }
         }
-        System.out.println("Y: " + y);
         return y;
     }
 
