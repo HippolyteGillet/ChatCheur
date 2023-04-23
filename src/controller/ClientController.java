@@ -44,7 +44,6 @@ public class ClientController implements ActionListener {
     private List<Log> logs;
     private List<Message> messages;
     //SERVER
-
     private PrintWriter out;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view, Socket socket) {
@@ -276,7 +275,6 @@ public class ClientController implements ActionListener {
                 sendToServerBannissement(userToChange);
             }
         }
-        homeView.repaint();
     }
 
     //-----------------------------------ENVOIE SERVEUR-----------------------------------------
@@ -464,6 +462,18 @@ public class ClientController implements ActionListener {
         try {
             infoUserView = new InfoUser(users.get(i), currentUser);
         } catch (IOException | FontFormatException ex) {
+        } catch (IOException | FontFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+        settingsView.setVisible(true);
+        infoUserView.addAllListener(this);
+    }
+
+    //-----------------------------CHANGEMENT DE PERMISSION------------------------------
+    public void gererFenetresInfos(int i) {
+        try {
+            infoUserView = new InfoUser(users.get(i), currentUser);
+        } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
         }
         infoUserView.setVisible(true);
@@ -484,6 +494,12 @@ public class ClientController implements ActionListener {
         userDao.update(userSelected);
 
         sendToServerPermission(userSelected);
+    }
+
+    public InfoUser getInfoUserView() {
+        return infoUserView;
+        infoUserView.setVisible(true);
+        infoUserView.addAllListener(this);
     }
 
     public InfoUser getInfoUserView() {
