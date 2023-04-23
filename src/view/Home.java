@@ -427,7 +427,8 @@ public class Home extends JFrame {
             for (int i = 0; i < nonCurrentUsers.size(); i++) {
                 if (nonCurrentUsers.get(i).getUserName() != null) {
                     this.ban.add(new JButton(iconUnban));
-                    this.ban.get(i).setActionCommand("Ban " + i);
+                    int idToBan = nonCurrentUsers.get(i).getId();
+                    this.ban.get(i).setActionCommand("Ban " + idToBan);
                     this.ban.get(i).setOpaque(false);
                     this.ban.get(i).setContentAreaFilled(false);
                     this.ban.get(i).setBorderPainted(false);
