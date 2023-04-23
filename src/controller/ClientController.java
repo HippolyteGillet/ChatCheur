@@ -184,7 +184,7 @@ public class ClientController implements ActionListener {
             messages.add(messagToSend);
             int y = homeView.calculY(messages);
             messages.remove(messagToSend);
-            homeView.getScrollPane().getVerticalScrollBar().setValue(view2.getScrollPane().getVerticalScrollBar().getMaximum());
+            homeView.getScrollPane().getVerticalScrollBar().setValue(homeView.getScrollPane().getVerticalScrollBar().getMaximum());
             homeView.getconversationPanelContent().setPreferredSize(new Dimension(950, y + 60));
             homeView.getScrollPane().getViewport().setViewPosition(new Point(0, y));
             homeView.setY(y);
@@ -495,13 +495,13 @@ public class ClientController implements ActionListener {
     }
 
     public void changeUsn(){
-        if (!Objects.equals(view6.getTextField1().getText(), "")){
-            currentUser.setUserName(view6.getTextField1().getText());
+        if (!Objects.equals(settingsView.getTextField1().getText(), "")){
+            currentUser.setUserName(settingsView.getTextField1().getText());
             userDao.update(currentUser);
 
-            view6.dispose();
-            view6 = null;
-            view2.repaint();
+            settingsView.dispose();
+            settingsView = null;
+            homeView.repaint();
         }
     }
 
@@ -529,7 +529,7 @@ public class ClientController implements ActionListener {
             case "Ok" -> newMdp();
 
             //Gère l'envoie de message
-            case "send" -> send(homeView.getTextField1().getText());
+            case "send" -> send(homeView.getTextField().getText());
 
             //Gère l'oublie de mdp
             case "mdpOublie" -> mdpOublie();

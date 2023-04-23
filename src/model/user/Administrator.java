@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 
 public class Administrator extends Moderator{
 
-    Administrator(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDateTime lastConnectionTime) {
-        super(id, userName, password, email, firstName, lastName, state, lastConnectionTime);
+    Administrator(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDateTime lastConnectionTime, Access access) {
+        super(id, userName, password, email, firstName, lastName, state, lastConnectionTime, access);
         setPermission(Permission.ADMINISTRATOR);
         //java.DAO update:
         //userDAO.update(this);
@@ -16,17 +16,17 @@ public class Administrator extends Moderator{
 
         switch (permission) {
             case ADMINISTRATOR -> {
-                Administrator administrator = new Administrator(user.getId(), user.getUserName(), user.getPassword(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getState(), user.getLastConnectionTime());
+                Administrator administrator = new Administrator(user.getId(), user.getUserName(), user.getPassword(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getState(), user.getLastConnectionTime(), user.getAccess());
                 //Replace the old object by the new one:
                 //userDAO.update(administrator);
             }
             case MODERATOR -> {
-                Moderator moderator = new Moderator(user.getId(), user.getUserName(), user.getPassword(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getState(), user.getLastConnectionTime());
+                Moderator moderator = new Moderator(user.getId(), user.getUserName(), user.getPassword(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getState(), user.getLastConnectionTime(), user.getAccess());
                 //Replace the old object by the new one:
                 //userDAO.update(moderator);
             }
             case USER -> {
-                User user1 = new User(user.getId(), user.getUserName(), user.getPassword(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getState(), user.getLastConnectionTime());
+                User user1 = new User(user.getId(), user.getUserName(), user.getPassword(), user.getEmail(), user.getFirstName(), user.getLastName(), user.getState(), user.getLastConnectionTime(), user.getAccess());
                 //Replace the old object by the new one:
                 //userDAO.update(user1);
             }
