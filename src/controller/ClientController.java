@@ -78,7 +78,6 @@ public class ClientController implements ActionListener {
         return users;
     }
 
-
     public List<Log> getLogs() {
         return logs;
     }
@@ -111,12 +110,13 @@ public class ClientController implements ActionListener {
                     //On regarde si le user est banni
                     if (user.getAccess().equals(User.Access.ACCEPTED)) {
 
-                        gererFenetresConnection();
+
 
                         this.currentUser = user;
                         this.currentUser.setState(User.State.ONLINE);
                         this.currentUser.setLastConnectionTime(LocalDateTime.now());
 
+                        gererFenetresConnection();
                         sendToServerConnection();
                         connectionToDB(this.currentUser);
 
