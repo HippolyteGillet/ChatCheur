@@ -25,6 +25,7 @@ public class Stats extends JDialog{
                  ArrayList<User> usersOnline, ArrayList<User> usersAway, ArrayList<User> usersOffline,
                  ArrayList<User> banned, ArrayList<Integer> messagesPerHour, ArrayList<Integer> connectionsPerHour,
                  ArrayList<User> topUsers) throws IOException, FontFormatException {
+        setTitle("Statitics");
         setBounds(400, 80, 700, 700);
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

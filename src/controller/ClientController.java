@@ -35,6 +35,7 @@ public class ClientController implements ActionListener {
     private LogOut view3;
     private NewPassword view4;
     private Stats view5;
+    private Settings view6;
     private User currentUser;
     private List<User> users;
     private List<Log> logs;
@@ -302,7 +303,6 @@ public class ClientController implements ActionListener {
                     getNumberBanned(), getNumberMessagesPerHour(), getNumberConnectionsPerHour(), getTopUsers());
             //view5.addAllListener(this);
 
-
         } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
         }
@@ -397,6 +397,16 @@ public class ClientController implements ActionListener {
         return view2;
     }
 
+    public void pageSettings(){
+        try {
+            view6 = new Settings();
+            //view5.addAllListener(this);
+        }catch (IOException | FontFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+        view6.setVisible(true);
+    }
+
     //------------------------------LISTENERS------------------------------------------
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -424,11 +434,11 @@ public class ClientController implements ActionListener {
             case "mdpOublie" -> mdpOublie();
 
             //Gère les stats
-            case "Stats" -> {
-                pageStats();
-            }
+            case "Stats" -> pageStats();
 
             case "SmileyIntrouvable", "ImageIntrouvable" -> contenuIntrouvable();
+
+            case "Settings" -> pageSettings();
         }
     }
     //Listener pour bouton connection
