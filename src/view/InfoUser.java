@@ -1,6 +1,7 @@
 package view;
 
 import DAO.UserDao;
+import controller.ClientController;
 import model.user.User;
 
 import javax.swing.*;
@@ -9,8 +10,10 @@ import java.io.File;
 import java.io.IOException;
 
 public class InfoUser extends JDialog {
+    private JComboBox<String> permissionBox;
+    private User user;
     public InfoUser(User user, User currentUser) throws IOException, FontFormatException {
-        UserDao userDao = new UserDao();
+        this.user = user;
         setBounds(500, 150, 600, 600);
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -53,15 +56,16 @@ public class InfoUser extends JDialog {
         panel.setLayout(null);
 
         String[] options = {"ADMINISTRATOR", "MODERATOR", "USER"};
-        JComboBox<String> comboBox = new JComboBox<>(options);
-        comboBox.setBounds(350, 372, 200, 50);
-        comboBox.setFont(customFont.deriveFont(20f));
-        comboBox.setEditable(true);
-        comboBox.setFocusable(false);
-        comboBox.setSelectedItem(user.getPermission().name());
+        permissionBox = new JComboBox<>(options);
+        permissionBox.setActionCommand("NewRole");
+        permissionBox.setBounds(350, 372, 200, 50);
+        permissionBox.setFont(customFont.deriveFont(20f));
+        permissionBox.setEditable(true);
+        permissionBox.setFocusable(false);
+        permissionBox.setSelectedItem(user.getPermission().name());
 
-        comboBox.addActionListener(e -> {
-            String selected = (String) comboBox.getSelectedItem();
+        /*permissionBox.addActionListener(e -> {
+            String selected = (String) permissionBox.getSelectedItem();
             if (selected != null) {
                 switch (selected) {
                     case "ADMINISTRATOR" -> user.setPermission(User.Permission.ADMINISTRATOR);
@@ -70,12 +74,24 @@ public class InfoUser extends JDialog {
                 }
             }
             userDao.update(user);
-        });
-        panel.add(comboBox);
+        });*/
+        panel.add(permissionBox);
 
         if(!currentUser.getPermission().equals(User.Permission.ADMINISTRATOR)){
-            comboBox.setVisible(false);
+            permissionBox.setVisible(false);
         }
         getContentPane().add(panel);
+    }
+
+    public JComboBox<String> getPermissionBox() {
+        return permissionBox;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void addAllListener(ClientController controller) {
+        this.permissionBox.addActionListener(controller);
     }
 }

@@ -19,20 +19,22 @@ import java.util.ArrayList;
 public class Home extends JFrame {
     private final Font customFont1 = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(30f);
     private final Font customFont2 = Font.createFont(Font.TRUETYPE_FONT, new File("ALBAS.TTF"));
-    private final List<JButton> ban = new ArrayList<>();
-    int y;
-    private User currentUser = new User();
-    private Color circleColor = Color.GREEN;
-    private Boolean inputReceived;
     private final JTextField textField1;
     private final JButton sendButton;
     private final JScrollPane convScrollPane;
     private final JPanel conversationPanelContent;
-    private final JButton logOut;
+    private final JButton logOutButton;
     private final JButton smileyErrorBtn;
     private final JButton imageErrorBtn;
-    private ImageIcon iconUnban, iconBan, iconStats, iconSettings;
-    private JButton stats, settings;
+    private final List<JButton> ban = new ArrayList<>();
+    private final List<JButton> infosButton = new ArrayList<>();
+    int y;
+    private User currentUser = new User();
+    private Color circleColor = Color.GREEN;
+    private Boolean inputReceived;
+    private ImageIcon iconUnban, iconBan, iconStats, settingsIcon;
+    private JButton statsButton, settingsButton, statutButton;
+
 
     public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
         for (User user : userList) {
@@ -224,7 +226,6 @@ public class Home extends JFrame {
         convScrollPane.getVerticalScrollBar().setValue(convScrollPane.getVerticalScrollBar().getMaximum());
         conversationPanelContent.setPreferredSize(new Dimension(950, y + 60));
         convScrollPane.getViewport().setViewPosition(new Point(0, y));
-        System.out.println("y2 Home = " + y);
         convScrollPane.setBorder(null);
         add(convScrollPane);
 
@@ -291,36 +292,20 @@ public class Home extends JFrame {
         contactPanelHeader.add(currentUserCircle);
 
         //Status du currentUser
-        JLabel label = new JLabel();
-        label.setFont(customFont1.deriveFont(25f));
-        label.setForeground(Color.WHITE);
-        int x = (275 - label.getWidth()) / 2;
-        label.setBounds(x, 50, 100, 60);
+        statutButton = new JButton();
+        statutButton.setActionCommand("State");
+        statutButton.setBorder(null);
+        statutButton.setOpaque(false);
+        statutButton.setContentAreaFilled(false);
+        statutButton.setFont(customFont1.deriveFont(25f));
+        statutButton.setForeground(Color.WHITE);
+        int x = (275 - statutButton.getWidth()) / 2;
+        statutButton.setBounds(x, 50, 100, 60);
         switch (currentUser.getState()) {
-            case ONLINE -> label.setText("Online");
-            case AWAY -> label.setText("Away");
+            case ONLINE -> statutButton.setText("Online");
+            case AWAY -> statutButton.setText("Away");
         }
-        label.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                switch (currentUser.getState()) {
-                    case ONLINE -> {
-                        currentUser.setState(User.State.AWAY);
-                        label.setText("Away");
-                        circleColor = Color.ORANGE;
-                    }
-                    case AWAY -> {
-                        currentUser.setState(User.State.ONLINE);
-                        label.setText("Online");
-                        circleColor = Color.GREEN;
-                    }
-                }
-                UserDao userDao = new UserDao();
-                userDao.update(currentUser);
-                repaint();
-            }
-        });
-        contactPanelHeader.add(label);
+        contactPanelHeader.add(statutButton);
 
         JPanel contactPanelContent = new JPanel() {
             @Override
@@ -448,15 +433,20 @@ public class Home extends JFrame {
         ImageIcon iconInfos = new ImageIcon("IMG/info.png");
         Image imgInfos = iconInfos.getImage().getScaledInstance(15, 15, Image.SCALE_SMOOTH);
         iconInfos = new ImageIcon(imgInfos);
-
         int y = 15;
-        for (User user : userList) {
+        int nonCompte = 0;
+        for (int i = 0; i < userList.size(); i++) {
+            User user = userList.get(i);
             if (user.getUserName() != null && !user.equals(currentUser)) {
-                JLabel infos = new JLabel(iconInfos);
-                FontMetrics metrics = infos.getFontMetrics(customFont1.deriveFont(25f));
+                this.infosButton.add(new JButton(iconInfos));
+                this.infosButton.get(i-nonCompte).setActionCommand("Infos " + i);
+                this.infosButton.get(i-nonCompte).setOpaque(false);
+                this.infosButton.get(i-nonCompte).setContentAreaFilled(false);
+                this.infosButton.get(i-nonCompte).setBorderPainted(false);
+                FontMetrics metrics = infosButton.get(i-nonCompte).getFontMetrics(customFont1.deriveFont(25f));
                 int xU = metrics.stringWidth(user.getUserName()) + 30;
-                infos.setBounds(xU, y, infos.getIcon().getIconWidth(), infos.getIcon().getIconHeight());
-                infos.addMouseListener(new MouseAdapter() {
+                infosButton.get(i-nonCompte).setBounds(xU, y, infosButton.get(i-nonCompte).getIcon().getIconWidth(), infosButton.get(i-nonCompte).getIcon().getIconHeight());
+                /*infosButton.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         InfoUser popup;
@@ -467,10 +457,10 @@ public class Home extends JFrame {
                         }
                         popup.setVisible(true);
                     }
-                });
-                contactPanelContent.add(infos);
+                });*/
+                contactPanelContent.add(infosButton.get(i-nonCompte));
                 y += 90;
-            }
+            } else nonCompte=1;
         }
         JPanel contactPanelFooter = new JPanel() {
             @Override
@@ -490,17 +480,17 @@ public class Home extends JFrame {
         add(contactPanelFooter);
 
         //Setting Icon
-        iconSettings = new ImageIcon("IMG/Settings.png");
-        Image imgSetting = iconSettings.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-        iconSettings = new ImageIcon(imgSetting);
-        settings = new JButton(iconSettings);
-        settings.setActionCommand("Settings");
-        settings.setOpaque(false);
-        settings.setContentAreaFilled(false);
-        settings.setBorderPainted(false);
-        settings.setFocusPainted(false);
-        settings.setBounds(25, 730, iconSettings.getIconWidth(), iconSettings.getIconHeight());
-        contactPanelFooter.add(settings);
+        settingsIcon = new ImageIcon("IMG/Settings.png");
+        Image imgSetting = settingsIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        settingsIcon = new ImageIcon(imgSetting);
+        settingsButton = new JButton(settingsIcon);
+        settingsButton.setActionCommand("Settings");
+        settingsButton.setOpaque(false);
+        settingsButton.setContentAreaFilled(false);
+        settingsButton.setBorderPainted(false);
+        settingsButton.setFocusPainted(false);
+        settingsButton.setBounds(25, 730, settingsIcon.getIconWidth(), settingsIcon.getIconHeight());
+        contactPanelFooter.add(settingsButton);
 
 
         //Stats Icon
@@ -508,28 +498,28 @@ public class Home extends JFrame {
             iconStats = new ImageIcon("IMG/Stats.png");
             Image imgStats = iconStats.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
             iconStats = new ImageIcon(imgStats);
-            stats = new JButton(iconStats);
-            stats.setActionCommand("Stats");
-            stats.setOpaque(false);
-            stats.setContentAreaFilled(false);
-            stats.setBorderPainted(false);
-            stats.setFocusPainted(false);
-            stats.setBounds(90, 730, iconStats.getIconWidth(), iconStats.getIconHeight());
-            contactPanelFooter.add(stats);
+            statsButton = new JButton(iconStats);
+            statsButton.setActionCommand("Stats");
+            statsButton.setOpaque(false);
+            statsButton.setContentAreaFilled(false);
+            statsButton.setBorderPainted(false);
+            statsButton.setFocusPainted(false);
+            statsButton.setBounds(90, 730, iconStats.getIconWidth(), iconStats.getIconHeight());
+            contactPanelFooter.add(statsButton);
         }
 
         //Log out Icon
         ImageIcon iconLogOut = new ImageIcon("IMG/logOut.png");
         Image imgLogOut = iconLogOut.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         iconLogOut = new ImageIcon(imgLogOut);
-        logOut = new JButton(iconLogOut);
-        logOut.setActionCommand("logOut");
-        logOut.setOpaque(false);
-        logOut.setContentAreaFilled(false);
-        logOut.setBorderPainted(false);
-        logOut.setFocusPainted(false);
-        logOut.setBounds(280, 730, iconLogOut.getIconWidth(), iconLogOut.getIconHeight());
-        contactPanelFooter.add(logOut);
+        logOutButton = new JButton(iconLogOut);
+        logOutButton.setActionCommand("logOut");
+        logOutButton.setOpaque(false);
+        logOutButton.setContentAreaFilled(false);
+        logOutButton.setBorderPainted(false);
+        logOutButton.setFocusPainted(false);
+        logOutButton.setBounds(280, 730, iconLogOut.getIconWidth(), iconLogOut.getIconHeight());
+        contactPanelFooter.add(logOutButton);
 
         setTitle("ChatCheur");
         setSize(1300, 829);
@@ -548,6 +538,22 @@ public class Home extends JFrame {
         });
     }
 
+    public Color getCircleColor() {
+        return circleColor;
+    }
+
+    public void setCircleColor(Color circleColor) {
+        this.circleColor = circleColor;
+    }
+
+    public JButton getStatutButton() {
+        return statutButton;
+    }
+
+    public void setStatutButton(JButton statutButton) {
+        this.statutButton = statutButton;
+    }
+
     public JButton getBan(int i) {
         return ban.get(i);
     }
@@ -562,10 +568,6 @@ public class Home extends JFrame {
 
     public JTextField getTextField1() {
         return textField1;
-    }
-
-    public void setInputReceived(Boolean inputReceived) {
-        this.inputReceived = inputReceived;
     }
 
     public JScrollPane getScrollPane() {
@@ -589,15 +591,20 @@ public class Home extends JFrame {
     }
 
     public void addAllListener(ClientController controller) {
-        this.logOut.addActionListener(controller);
+        this.logOutButton.addActionListener(controller);
         for (JButton jButton : this.ban) {
             jButton.addActionListener(controller);
         }
         this.sendButton.addActionListener(controller);
         this.smileyErrorBtn.addActionListener(controller);
         this.imageErrorBtn.addActionListener(controller);
-        if (currentUser.getPermission() == User.Permission.ADMINISTRATOR) this.stats.addActionListener(controller);
-        this.settings.addActionListener(controller);
+        if (currentUser.getPermission() == User.Permission.ADMINISTRATOR)
+            this.statsButton.addActionListener(controller);
+        this.settingsButton.addActionListener(controller);
+        for (JButton jButton : this.infosButton) {
+            jButton.addActionListener(controller);
+        }
+        this.statutButton.addActionListener(controller);
     }
 
     public int calculY(List<Message> messageList) {
@@ -622,7 +629,7 @@ public class Home extends JFrame {
                     y += 60;
                 } else if (formattedTime.equals(formattedPreviousTime) && messageList.get(i + 1).getUser_id() == messageList.get(i).getUser_id()) {
                     y += 53;
-                }  else {
+                } else {
                     y += 90;
                 }
                 if (!formattedDate.equals(previousTime.format(formatter2))) {
@@ -641,5 +648,9 @@ public class Home extends JFrame {
 
     public Boolean getInputReceived() {
         return inputReceived;
+    }
+
+    public void setInputReceived(Boolean inputReceived) {
+        this.inputReceived = inputReceived;
     }
 }
