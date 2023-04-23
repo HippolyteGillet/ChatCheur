@@ -79,6 +79,18 @@ public class ClientController implements ActionListener {
 
     }
 
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public List<Log> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(List<Log> logs) {
+        this.logs = logs;
+    }
+
     public List<Message> getMessages() {
         return messages;
     }
@@ -98,12 +110,13 @@ public class ClientController implements ActionListener {
                     //On regarde si le user est banni
                     if (user.getAccess().equals(User.Access.ACCEPTED)) {
 
-                        gererFenetresConnection();
+
 
                         this.currentUser = user;
                         this.currentUser.setState(User.State.ONLINE);
                         this.currentUser.setLastConnectionTime(LocalDateTime.now());
 
+                        gererFenetresConnection();
                         sendToServerConnection();
                         connectionToDB(this.currentUser);
 
@@ -123,6 +136,7 @@ public class ClientController implements ActionListener {
             menuView.afficherUserUknown();
 
         }
+        homeView.repaint();
     }
 
     public void connectionToDB(User user) {
@@ -141,6 +155,13 @@ public class ClientController implements ActionListener {
             this.menuView.dispose();
             this.homeView = new Home(users, logs, messages, menuView.getUsername());
             //On met la 1ere fenetre a null
+            this.menuView = null;
+            this.homeView.addAllListener(this);
+            this.homeView.setVisible(true);
+            this.homeView.setResizable(true);
+            this.homeView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            this.homeView.setLocationRelativeTo(null);
+            homeView.repaint();
             this.menuView = null;
             this.homeView.addAllListener(this);
         } catch (IOException | FontFormatException ex) {

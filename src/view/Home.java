@@ -446,18 +446,6 @@ public class Home extends JFrame {
                 FontMetrics metrics = infosButton.get(i-nonCompte).getFontMetrics(customFont1.deriveFont(25f));
                 int xU = metrics.stringWidth(user.getUserName()) + 30;
                 infosButton.get(i-nonCompte).setBounds(xU, y, infosButton.get(i-nonCompte).getIcon().getIconWidth(), infosButton.get(i-nonCompte).getIcon().getIconHeight());
-                /*infosButton.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        InfoUser popup;
-                        try {
-                            popup = new InfoUser(user, currentUser);
-                        } catch (IOException | FontFormatException ex) {
-                            throw new RuntimeException(ex);
-                        }
-                        popup.setVisible(true);
-                    }
-                });*/
                 contactPanelContent.add(infosButton.get(i-nonCompte));
                 y += 90;
             } else nonCompte=1;
@@ -648,9 +636,5 @@ public class Home extends JFrame {
 
     public Boolean getInputReceived() {
         return inputReceived;
-    }
-
-    public void setInputReceived(Boolean inputReceived) {
-        this.inputReceived = inputReceived;
     }
 }
