@@ -183,21 +183,33 @@ public class Stats extends JDialog{
         podium.setBounds(80, 1760, iconTop.getIconWidth(), iconTop.getIconHeight());
         panel.add(podium);
 
-        JLabel top1 = new JLabel(topUsers.get(0).getUserName());
+        String s1;
+        if (topUsers.get(0).getUserName() != null) s1 = topUsers.get(0).getUserName();
+        else s1 = "";
+
+        JLabel top1 = new JLabel(s1);
         top1.setFont(customFont.deriveFont(25f));
         top1.setForeground(Color.WHITE);
         top1.setBounds(200, 1690, 300, 60);
         top1.setHorizontalAlignment(JLabel.CENTER);
         panel.add(top1);
 
-        JLabel top2 = new JLabel(topUsers.get(1).getUserName());
+        String s2;
+        if (topUsers.get(1).getUserName() != null) s2 = topUsers.get(1).getUserName();
+        else s2 = "";
+
+        JLabel top2 = new JLabel(s2);
         top2.setFont(customFont.deriveFont(25f));
         top2.setForeground(Color.WHITE);
         top2.setBounds(70, 1785, 200, 60);
         top2.setHorizontalAlignment(JLabel.CENTER);
         panel.add(top2);
 
-        JLabel top3 = new JLabel(topUsers.get(2).getUserName());
+        String s3;
+        if (topUsers.get(2).getUserName() != null) s3 = topUsers.get(2).getUserName();
+        else s3 = "";
+
+        JLabel top3 = new JLabel(s3);
         top3.setFont(customFont.deriveFont(25f));
         top3.setForeground(Color.WHITE);
         top3.setBounds(podium.getWidth() - 110, 1825, 200, 60);
