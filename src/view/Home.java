@@ -24,7 +24,7 @@ public class Home extends JFrame {
     private User currentUser = new User();
     private Color circleColor = Color.GREEN;
     private Boolean inputReceived;
-    private final JTextField textField1;
+    private final JTextField textField;
     private final JButton sendButton;
     private final JScrollPane convScrollPane;
     private final JPanel conversationPanelContent;
@@ -54,7 +54,6 @@ public class Home extends JFrame {
                 int yDraw = y;
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     if (messageList.get(i).getContent().charAt(0) == '/') {
-                        //image
                         ImageIcon image = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1));
                         if (image.getImage().getWidth(null) == -1) {
                             imageErrorBtn.setActionCommand("ImageIntrouvable");
@@ -94,8 +93,6 @@ public class Home extends JFrame {
                             g.drawImage(image.getImage(), x + 30, yDraw - (imageIconHeight) + 35, null);
                             yDraw -= imageIconHeight + 20;
                         }
-
-
                     } else {
                         FontMetrics metrics = g.getFontMetrics(customFont1);
                         int textWidth = metrics.stringWidth(messageList.get(i).getContent());
@@ -119,13 +116,56 @@ public class Home extends JFrame {
                             LocalDateTime time = messageList.get(i).getLocalDateTime();
                             String formattedTime = time.format(formatter);
                             String formattedDate = time.format(formatter2);
+                            if (messageList.get(i).getContent().length() > 40) {
+                                int nbLines = 0;
+                                int index = messageList.get(i).getContent().lastIndexOf(" ", 40);
+                                String firstLine = messageList.get(i).getContent().substring(0, index);
+                                for (int j = 0; j < messageList.get(i).getContent().length(); j += firstLine.length()) {
+                                    nbLines++;
+                                    yDraw -= 33;
+                                }
+                                textWidth = metrics.stringWidth(firstLine);
+                                textHeight = metrics.getHeight() * nbLines;
+                                width = textWidth + 30;
+                                height = textHeight;
+                                textHeight /= nbLines;
+                                if (messageList.get(i).getUser_id() != currentUser.getId()) {
+                                    x = 75;
+                                    xTime = 17;
+                                    yTime = yDraw + 5;
+                                    g.setColor(new Color(140, 56, 6));
+                                } else {
+                                    x = 900 - textWidth - 20;
+                                    xTime = x + 15;
+                                    yTime = yDraw + textHeight - 45;
+                                    g.setColor(new Color(183, 90, 25));
+                                }
+                                g.fillRoundRect(x, yDraw, width, height, 50, 50);
+                                g.setColor(Color.WHITE);
+                                g.setFont(customFont1);
+                                g.drawString(firstLine, x + 15, yDraw - 5 + (textHeight));
+                                int[] indexTab;
+                                indexTab = new int[nbLines];
+                                indexTab[0] = index;
+                                for (int j = 1; j < nbLines; j++) {
+                                    indexTab[j] = messageList.get(i).getContent().lastIndexOf(" ", ((j + 1) * (firstLine.length())));
+                                    String line;
+                                    if (j == nbLines - 1) {
+                                        line = messageList.get(i).getContent().substring(indexTab[j - 1] + 1);
+                                    } else {
+                                        line = messageList.get(i).getContent().substring(indexTab[j - 1] + 1, indexTab[j]);
+                                    }
+                                    g.drawString(line, x + 15, yDraw - 5 + (textHeight) + j * 35);
+                                }
 
-                            g.fillRoundRect(x, yDraw, width, height, 50, 50);
-                            g.setColor(Color.WHITE);
-                            g.setFont(customFont1);
-                            g.drawString(messageList.get(i).getContent(), x + 15, yDraw - 5 + textHeight);
+                            } else {
+                                g.fillRoundRect(x, yDraw, width, height, 50, 50);
+                                g.setColor(Color.WHITE);
+                                g.setFont(customFont1);
+                                g.drawString(messageList.get(i).getContent(), x + 15, yDraw - 5 + textHeight);
+                            }
                             for (User user : userList) {
-                                if (messageList.get(i).getUser_id() == user.getId() && !user.getUserName().equals(currentUser.getUserName())) {
+                                if (messageList.get(i).getUser_id() == user.getId() && user.getId() != currentUser.getId()) {
                                     int letterWidth = metrics.stringWidth(user.getUserName().substring(0, 1).toUpperCase());
                                     int letterHeight = metrics.getHeight();
                                     if (i != 0) {
@@ -150,7 +190,6 @@ public class Home extends JFrame {
                                         g.setColor(Color.WHITE);
                                         g.drawString(user.getUserName().substring(0, 1).toUpperCase(), 36 - letterWidth / 2, yDraw + 64 - letterHeight / 2);
 
-                                        //Affiche le nom de l'utilisateur
                                         g.setFont(customFont1.deriveFont(20f));
                                         g.setColor(new Color(100, 98, 98));
                                         g.drawString(user.getUserName(), x + 15, yDraw + textHeight - 46);
@@ -225,41 +264,40 @@ public class Home extends JFrame {
         convScrollPane.getVerticalScrollBar().setValue(convScrollPane.getVerticalScrollBar().getMaximum());
         conversationPanelContent.setPreferredSize(new Dimension(950, y + 60));
         convScrollPane.getViewport().setViewPosition(new Point(0, y));
-        System.out.println("y2 Home = " + y);
         convScrollPane.setBorder(null);
         add(convScrollPane);
 
-        textField1 = new JTextField("Saisir du texte");
-        textField1.setHorizontalAlignment(JTextField.CENTER);
-        textField1.setBounds(100, 10, 750, 60);
-        textField1.setFont(customFont1);
-        textField1.setForeground(Color.GRAY);
-        textField1.setCaretColor(Color.GRAY);
-        textField1.setBorder(BorderFactory.createLineBorder(new Color(238, 213, 173)));
-        textField1.setOpaque(false);
-        textField1.addFocusListener(new FocusListener() {
+        textField = new JTextField("Saisir du texte");
+        textField.setHorizontalAlignment(JTextField.CENTER);
+        textField.setBounds(120, 10, 680, 60);
+        textField.setFont(customFont1);
+        textField.setForeground(Color.GRAY);
+        textField.setCaretColor(Color.GRAY);
+        textField.setBorder(BorderFactory.createLineBorder(Color.WHITE));
+        textField.setOpaque(false);
+        textField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (textField1.getText().equals("Saisir du texte")) {
-                    textField1.setText("");
-                    textField1.setForeground(Color.BLACK);
+                if (textField.getText().equals("Saisir du texte")) {
+                    textField.setText("");
+                    textField.setForeground(Color.BLACK);
                 }
             }
 
             @Override
             public void focusLost(FocusEvent e) {
-                if (textField1.getText().isEmpty()) {
-                    textField1.setForeground(Color.GRAY);
-                    textField1.setText("Saisir du texte");
+                if (textField.getText().isEmpty()) {
+                    textField.setForeground(Color.GRAY);
+                    textField.setText("Saisir du texte");
                 }
             }
         });
-        textField1.addActionListener(e -> {
-            if (!textField1.getText().isEmpty() && !textField1.getText().contentEquals("$") && !textField1.getText().contentEquals("/")) {
+        textField.addActionListener(e -> {
+            if (!textField.getText().isEmpty() && !textField.getText().contentEquals("$") && !textField.getText().contentEquals("/")) {
                 sendButton.doClick();
             }
         });
-        conversationPanelFooter.add(textField1);
+        conversationPanelFooter.add(textField);
 
         JPanel contactPanelHeader = new JPanel() {
             @Override
@@ -337,7 +375,7 @@ public class Home extends JFrame {
                 int y1 = 30;
                 g.setFont(customFont1.deriveFont(25f));
                 for (User user : userList) {
-                    if (user.getUserName() != null && !user.getUserName().equals(currentUser.getUserName())) {
+                    if (user.getUserName() != null && user.getId() != currentUser.getId()) {
                         if (user.getAccess().equals(User.Access.BANNED)) {
                             g.setColor(new Color(100, 98, 98));
                         } else {
@@ -354,7 +392,7 @@ public class Home extends JFrame {
                 g.setFont(customFont1.deriveFont(15f));
                 int y2 = 55;
                 for (User status : userList) {
-                    if (status.getState() != null && !status.getUserName().equals(currentUser.getUserName())) {
+                    if (status.getState() != null && status.getId() != currentUser.getId()) {
                         String statu = "";
                         switch (status.getState()) {
                             case ONLINE -> statu = "Online";
@@ -388,7 +426,7 @@ public class Home extends JFrame {
                 super.paintComponent(g);
                 int y = 30;
                 for (User user : userList) {
-                    if (user.getUserName() != null && !user.getUserName().equals(currentUser.getUserName())) {
+                    if (user.getUserName() != null && user.getId() != currentUser.getId()) {
                         if (user.getAccess().equals(User.Access.BANNED)) {
                             g.setColor(new Color(100, 98, 98));
                         } else {
@@ -542,6 +580,7 @@ public class Home extends JFrame {
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 currentUser.setState(User.State.AWAY);
+                userList.get(currentUser.getId() - 1).setState(User.State.AWAY);
                 UserDao userDao = new UserDao();
                 userDao.update(currentUser);
                 dispose(); // Fermer la fenêtre
@@ -561,8 +600,8 @@ public class Home extends JFrame {
         ban.get(i).setIcon(iconUnban);
     }
 
-    public JTextField getTextField1() {
-        return textField1;
+    public JTextField getTextField() {
+        return textField;
     }
 
     public void setInputReceived(Boolean inputReceived) {
@@ -624,7 +663,7 @@ public class Home extends JFrame {
                     y += 60;
                 } else if (formattedTime.equals(formattedPreviousTime) && messageList.get(i + 1).getUser_id() == messageList.get(i).getUser_id()) {
                     y += 53;
-                }  else {
+                } else {
                     y += 90;
                 }
                 if (!formattedDate.equals(previousTime.format(formatter2))) {
@@ -632,6 +671,13 @@ public class Home extends JFrame {
                 }
             } else {
                 y += 90;
+            }
+            if (messageList.get(i).getContent().length() > 40) {
+                int index = messageList.get(i).getContent().lastIndexOf(" ", 40);
+                String firstLine = messageList.get(i).getContent().substring(0, index);
+                for (int j = 0; j < messageList.get(i).getContent().length(); j += firstLine.length()) {
+                    y += 33;
+                }
             }
         }
         return y;
