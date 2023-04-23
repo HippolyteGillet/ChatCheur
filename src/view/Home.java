@@ -25,7 +25,7 @@ public class Home extends JFrame {
     private Color circleColor = Color.GREEN;
     private Boolean inputReceived;
     private final JTextField textField;
-    private final JButton sendButton;
+    private final JButton sendButton, imageButton;
     private final JScrollPane convScrollPane;
     private final JPanel conversationPanelContent;
     JLabel label;
@@ -34,6 +34,8 @@ public class Home extends JFrame {
     private final JButton imageErrorBtn;
     private ImageIcon iconUnban, iconBan, iconStats, iconSettings;
     private JButton stats, settings;
+    private int MAXWIDTH = 500;
+    private int MAXHEIGHT = 300;
 
     public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
         for (User user : userList) {
@@ -62,6 +64,18 @@ public class Home extends JFrame {
                             imageErrorBtn.setActionCommand("send");
                             int imageIconWidth = image.getIconWidth();
                             int imageIconHeight = image.getIconHeight();
+                            double ratio = (double) imageIconWidth / (double) imageIconHeight;
+                            if (imageIconWidth > MAXWIDTH) {
+                                imageIconWidth = MAXWIDTH;
+                                imageIconHeight = (int) (imageIconWidth / ratio);
+                            }
+                            if (imageIconHeight > MAXHEIGHT) {
+                                imageIconHeight = MAXHEIGHT;
+                                imageIconWidth = (int) (imageIconHeight * ratio);
+                            }
+                            Image resizedImage = image.getImage().getScaledInstance(imageIconWidth, imageIconHeight, Image.SCALE_SMOOTH);
+                            image = new ImageIcon(resizedImage);
+
                             int x;
                             if (messageList.get(i).getUser_id() != currentUser.getId()) {
                                 x = 50;
@@ -69,10 +83,10 @@ public class Home extends JFrame {
                                 x = 900 - imageIconWidth - 20;
                             }
                             g.drawImage(image.getImage(), x + 30, yDraw - (imageIconHeight) + 35, null);
-                            yDraw -= imageIconHeight + 20;
+                            yDraw -= imageIconHeight - 35;
                         }
-
-                    } else if (messageList.get(i).getContent().charAt(0) == '$') {
+                    }
+                    if (messageList.get(i).getContent().charAt(0) == '$') {
                         ImageIcon image = new ImageIcon("Smileys/" + messageList.get(i).getContent().substring(1) + ".png");
                         Image smiley = image.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
                         image = new ImageIcon(smiley);
@@ -90,32 +104,55 @@ public class Home extends JFrame {
                             } else {
                                 x = 900 - imageIconWidth - 20;
                             }
-                            g.drawImage(image.getImage(), x + 30, yDraw - (imageIconHeight) + 35, null);
+                            g.drawImage(image.getImage(), x + 30, yDraw - (imageIconHeight) + 20, null);
                             yDraw -= imageIconHeight + 20;
                         }
+                    }
+
+                    FontMetrics metrics = g.getFontMetrics(customFont1);
+                    int textWidth = metrics.stringWidth(messageList.get(i).getContent());
+                    int textHeight = metrics.getHeight();
+                    int x, xTime, yTime;
+                    if (messageList.get(i).getUser_id() != currentUser.getId()) {
+                        x = 75;
+                        xTime = 17;
+                        yTime = yDraw + 5;
+                        g.setColor(new Color(140, 56, 6));
                     } else {
-                        FontMetrics metrics = g.getFontMetrics(customFont1);
-                        int textWidth = metrics.stringWidth(messageList.get(i).getContent());
-                        int textHeight = metrics.getHeight();
-                        int x, xTime, yTime;
-                        if (messageList.get(i).getUser_id() != currentUser.getId()) {
-                            x = 75;
-                            xTime = 17;
-                            yTime = yDraw + 5;
-                            g.setColor(new Color(140, 56, 6));
-                        } else {
+                        if(messageList.get(i).getContent().charAt(0) == '/') {
+                            ImageIcon image = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1));
+                            int imageIconWidth = image.getIconWidth();
+                            int imageIconHeight = image.getIconHeight();
+                            double ratio = (double) imageIconWidth / (double) imageIconHeight;
+                            if (imageIconWidth > MAXWIDTH) {
+                                imageIconWidth = MAXWIDTH;
+                                imageIconHeight = (int) (imageIconWidth / ratio);
+                            }
+                            if (imageIconHeight > MAXHEIGHT) {
+                                imageIconHeight = MAXHEIGHT;
+                                imageIconWidth = (int) (imageIconHeight * ratio);
+                            }
+                            Image resizedImage = image.getImage().getScaledInstance(imageIconWidth, imageIconHeight, Image.SCALE_SMOOTH);
+                            image = new ImageIcon(resizedImage);
+
+                            x = 900 - image.getIconWidth();
+                            xTime = x + 15;
+                            yTime = yDraw + textHeight - 45;
+                        }else{
                             x = 900 - textWidth - 20;
                             xTime = x + 15;
                             yTime = yDraw + textHeight - 45;
-                            g.setColor(new Color(183, 90, 25));
                         }
-                        int width = textWidth + 30;
-                        int height = textHeight + 10;
+                        g.setColor(new Color(183, 90, 25));
+                    }
+                    int width = textWidth + 30;
+                    int height = textHeight + 10;
 
-                        if (!messageList.isEmpty()) {
-                            LocalDateTime time = messageList.get(i).getLocalDateTime();
-                            String formattedTime = time.format(formatter);
-                            String formattedDate = time.format(formatter2);
+                    if (!messageList.isEmpty()) {
+                        LocalDateTime time = messageList.get(i).getLocalDateTime();
+                        String formattedTime = time.format(formatter);
+                        String formattedDate = time.format(formatter2);
+                        if (messageList.get(i).getContent().charAt(0) != '/' && messageList.get(i).getContent().charAt(0) != '$') {
                             if (messageList.get(i).getContent().length() > 40) {
                                 int nbLines = 0;
                                 int index = messageList.get(i).getContent().lastIndexOf(" ", 40);
@@ -164,63 +201,64 @@ public class Home extends JFrame {
                                 g.setFont(customFont1);
                                 g.drawString(messageList.get(i).getContent(), x + 15, yDraw - 5 + textHeight);
                             }
-                            for (User user : userList) {
-                                if (messageList.get(i).getUser_id() == user.getId() && user.getId() != currentUser.getId()) {
-                                    int letterWidth = metrics.stringWidth(user.getUserName().substring(0, 1).toUpperCase());
-                                    int letterHeight = metrics.getHeight();
-                                    if (i != 0) {
-                                        LocalDateTime previousTime = messageList.get(i - 1).getLocalDateTime();
-                                        String formattedPreviousTime = previousTime.format(formatter);
-                                        if (!formattedPreviousTime.equals(formattedTime) || messageList.get(i - 1).getUser_id() != messageList.get(i).getUser_id()) {
-                                            g.setColor(Color.BLACK);
-                                            g.fillOval(10, yDraw + 10, 50, 50);
-                                            g.setFont(customFont1.deriveFont(25f));
-                                            g.setColor(Color.WHITE);
-                                            //Affiche la première lettre du nom de l'utilisateur
-                                            g.drawString(user.getUserName().substring(0, 1).toUpperCase(), 36 - letterWidth / 2, yDraw + 64 - letterHeight / 2);
-                                            //Affiche le nom de l'utilisateur
-                                            g.setFont(customFont1.deriveFont(20f));
-                                            g.setColor(new Color(100, 98, 98));
-                                            g.drawString(user.getUserName(), x + 15, yDraw + textHeight - 46);
-                                        }
-                                    } else {
+                        }
+                        for (User user : userList) {
+                            if (messageList.get(i).getUser_id() == user.getId() && user.getId() != currentUser.getId()) {
+                                int letterWidth = metrics.stringWidth(user.getUserName().substring(0, 1).toUpperCase());
+                                int letterHeight = metrics.getHeight();
+                                if (i != 0) {
+                                    LocalDateTime previousTime = messageList.get(i - 1).getLocalDateTime();
+                                    String formattedPreviousTime = previousTime.format(formatter);
+                                    if (!formattedPreviousTime.equals(formattedTime) || messageList.get(i - 1).getUser_id() != messageList.get(i).getUser_id()) {
                                         g.setColor(Color.BLACK);
                                         g.fillOval(10, yDraw + 10, 50, 50);
                                         g.setFont(customFont1.deriveFont(25f));
                                         g.setColor(Color.WHITE);
+                                        //Affiche la première lettre du nom de l'utilisateur
                                         g.drawString(user.getUserName().substring(0, 1).toUpperCase(), 36 - letterWidth / 2, yDraw + 64 - letterHeight / 2);
-
+                                        //Affiche le nom de l'utilisateur
                                         g.setFont(customFont1.deriveFont(20f));
                                         g.setColor(new Color(100, 98, 98));
                                         g.drawString(user.getUserName(), x + 15, yDraw + textHeight - 46);
                                     }
+                                } else {
+                                    g.setColor(Color.BLACK);
+                                    g.fillOval(10, yDraw + 10, 50, 50);
+                                    g.setFont(customFont1.deriveFont(25f));
+                                    g.setColor(Color.WHITE);
+                                    g.drawString(user.getUserName().substring(0, 1).toUpperCase(), 36 - letterWidth / 2, yDraw + 64 - letterHeight / 2);
+
+                                    g.setFont(customFont1.deriveFont(20f));
+                                    g.setColor(new Color(100, 98, 98));
+                                    g.drawString(user.getUserName(), x + 15, yDraw + textHeight - 46);
                                 }
                             }
-                            //Affiche l'heure d'envoi du message
-                            if (i != 0) {
-                                LocalDateTime previousTime = messageList.get(i - 1).getLocalDateTime();
-                                String formattedPreviousTime = previousTime.format(formatter);
-                                if (formattedTime.equals(formattedPreviousTime) && messageList.get(i - 1).getUser_id() == messageList.get(i).getUser_id()) {
-                                    yDraw -= 53;
-                                } else {
-                                    g.setFont(customFont1.deriveFont(12f));
-                                    g.setColor(new Color(100, 98, 98));
-                                    g.drawString(formattedTime, xTime, yTime);
-                                    yDraw -= 90;
-                                    if (!formattedDate.equals(previousTime.format(formatter2))) {
-                                        g.setFont(customFont1.deriveFont(18f));
-                                        g.drawString(formattedDate, 425, yDraw + 30);
-                                        yDraw -= 70;
-                                    }
-                                }
-                            } else {
+                        }
+                        //Affiche l'heure d'envoi du message
+                        if (i != 0) {
+                            LocalDateTime previousTime = messageList.get(i - 1).getLocalDateTime();
+                            String formattedPreviousTime = previousTime.format(formatter);
+                            if (formattedTime.equals(formattedPreviousTime) && messageList.get(i - 1).getUser_id() == messageList.get(i).getUser_id()) {
+                                yDraw -= 53;
+                            }
+                            else {
                                 g.setFont(customFont1.deriveFont(12f));
                                 g.setColor(new Color(100, 98, 98));
                                 g.drawString(formattedTime, xTime, yTime);
-                                g.setFont(customFont1.deriveFont(18f));
-                                g.drawString(formattedDate, 425, yDraw - 30);
                                 yDraw -= 90;
+                                if (!formattedDate.equals(previousTime.format(formatter2))) {
+                                    g.setFont(customFont1.deriveFont(18f));
+                                    g.drawString(formattedDate, 425, yDraw + 30);
+                                    yDraw -= 70;
+                                }
                             }
+                        } else {
+                            g.setFont(customFont1.deriveFont(12f));
+                            g.setColor(new Color(100, 98, 98));
+                            g.drawString(formattedTime, xTime, yTime);
+                            g.setFont(customFont1.deriveFont(18f));
+                            g.drawString(formattedDate, 425, yDraw - 30);
+                            yDraw -= 90;
                         }
                     }
                 }
@@ -243,6 +281,19 @@ public class Home extends JFrame {
         conversationPanelFooter.setLayout(null);
         conversationPanelFooter.setBounds(350, 720, 950, 130);
         add(conversationPanelFooter);
+
+        //Add Image Icon
+        ImageIcon iconAdd = new ImageIcon("IMG/image.png");
+        Image imgAdd = iconAdd.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        iconAdd = new ImageIcon(imgAdd);
+
+        imageButton = new JButton(iconAdd);
+        imageButton.setBounds(110, 25, 30, 30);
+        imageButton.setBorder(null);
+        imageButton.setOpaque(false);
+        imageButton.setContentAreaFilled(false);
+        imageButton.setActionCommand("addImage");
+        conversationPanelFooter.add(imageButton);
 
         //Send Icon
         ImageIcon iconSend = new ImageIcon("IMG/send.png");
@@ -269,7 +320,7 @@ public class Home extends JFrame {
 
         textField = new JTextField("Saisir du texte");
         textField.setHorizontalAlignment(JTextField.CENTER);
-        textField.setBounds(120, 10, 680, 60);
+        textField.setBounds(140, 10, 660, 60);
         textField.setFont(customFont1);
         textField.setForeground(Color.GRAY);
         textField.setCaretColor(Color.GRAY);
@@ -283,7 +334,6 @@ public class Home extends JFrame {
                     textField.setForeground(Color.BLACK);
                 }
             }
-
             @Override
             public void focusLost(FocusEvent e) {
                 if (textField.getText().isEmpty()) {
@@ -293,7 +343,7 @@ public class Home extends JFrame {
             }
         });
         textField.addActionListener(e -> {
-            if (!textField.getText().isEmpty() && !textField.getText().contentEquals("$") && !textField.getText().contentEquals("/")) {
+            if (!textField.getText().isEmpty() && !textField.getText().contentEquals("$")) {
                 sendButton.doClick();
             }
         });
@@ -541,7 +591,6 @@ public class Home extends JFrame {
         settings.setBounds(25, 730, iconSettings.getIconWidth(), iconSettings.getIconHeight());
         contactPanelFooter.add(settings);
 
-
         //Stats Icon
         if (currentUser.getPermission() == User.Permission.ADMINISTRATOR) {
             iconStats = new ImageIcon("IMG/Stats.png");
@@ -635,6 +684,7 @@ public class Home extends JFrame {
             jButton.addActionListener(controller);
         }
         this.sendButton.addActionListener(controller);
+        this.imageButton.addActionListener(controller);
         this.smileyErrorBtn.addActionListener(controller);
         this.imageErrorBtn.addActionListener(controller);
         if (currentUser.getPermission() == User.Permission.ADMINISTRATOR) this.stats.addActionListener(controller);
@@ -654,15 +704,11 @@ public class Home extends JFrame {
                 String formattedTime = time.format(formatter);
                 String formattedDate = time.format(formatter2);
 
-                if (messageList.get(i).getContent().charAt(0) == '/') {
-                    ImageIcon imageSent = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1));
-                    Image img = imageSent.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-                    imageSent = new ImageIcon(img);
-                    int imageIconHeight = imageSent.getIconHeight();
-                    y += imageIconHeight + 20;
-                } else if (messageList.get(i).getContent().charAt(0) == '$') {
+                if (messageList.get(i).getContent().charAt(0) == '$') {
                     y += 60;
-                } else if (formattedTime.equals(formattedPreviousTime) && messageList.get(i + 1).getUser_id() == messageList.get(i).getUser_id()) {
+                }
+
+                if (formattedTime.equals(formattedPreviousTime) && messageList.get(i + 1).getUser_id() == messageList.get(i).getUser_id()) {
                     y += 53;
                 } else {
                     y += 90;
@@ -673,6 +719,20 @@ public class Home extends JFrame {
             } else {
                 y += 90;
             }
+            if (messageList.get(i).getContent().charAt(0) == '/') {
+                ImageIcon imageSent = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1));
+                int imageIconWidth = imageSent.getIconWidth();
+                int imageIconHeight = imageSent.getIconHeight();
+                double ratio = (double) imageIconWidth / (double) imageIconHeight;
+                if (imageIconWidth > MAXWIDTH) {
+                    imageIconWidth = MAXWIDTH;
+                    imageIconHeight = (int) (imageIconWidth / ratio);
+                }
+                if (imageIconHeight > MAXHEIGHT) {
+                    imageIconHeight = MAXHEIGHT;
+                }
+                y += imageIconHeight + 35;
+            }
             if (messageList.get(i).getContent().length() > 40) {
                 int index = messageList.get(i).getContent().lastIndexOf(" ", 40);
                 String firstLine = messageList.get(i).getContent().substring(0, index);
@@ -681,6 +741,7 @@ public class Home extends JFrame {
                 }
             }
         }
+        System.out.println("Y: " + y);
         return y;
     }
 

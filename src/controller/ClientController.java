@@ -10,14 +10,19 @@ import view.*;
 import server.ChatcheurThread;
 import view.Menu;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -177,10 +182,25 @@ public class ClientController implements ActionListener {
         if (!message.equals("Saisir du texte") && !message.isEmpty() && currentUser != null) {
             Message messagToSend = new Message(currentUser.getId(), message, messageDao.getLastID() + 1);
             Log logToSend = new Log(currentUser.getId(), Log.TypeLog.MESSAGE);
+            sendToServerMessage(messagToSend);
             //On met a jour la vue
             view2.setInputReceived(true);
             messages.add(messagToSend);
             int y = view2.calculY(messages);
+            if(message.charAt(0) == '/'){
+                ImageIcon imageIcon = new ImageIcon("imageEnvoyees" + message);
+                int imageIconWidth = imageIcon.getIconWidth();
+                int imageIconHeight = imageIcon.getIconHeight();
+                double ratio = (double) imageIconWidth / (double) imageIconHeight;
+                if (imageIconWidth > 300) {
+                    imageIconWidth = 500;
+                    imageIconHeight = (int) (imageIconWidth / ratio);
+                }
+                if (imageIconHeight > 300) {
+                    imageIconHeight = 300;
+                }
+                y -= imageIconHeight + 70;
+            }
             messages.remove(messagToSend);
             view2.getScrollPane().getVerticalScrollBar().setValue(view2.getScrollPane().getVerticalScrollBar().getMaximum());
             view2.getconversationPanelContent().setPreferredSize(new Dimension(950, y + 60));
@@ -188,8 +208,6 @@ public class ClientController implements ActionListener {
             view2.setY(y);
             view2.getTextField().setText(null);
             view2.repaint();
-
-            sendToServerMessage(messagToSend);
 
             try {
                 messageDao.create(messagToSend);
@@ -465,6 +483,21 @@ public class ClientController implements ActionListener {
             view6 = null;
         }
     }
+    public void addImage(){
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileFilter(new FileNameExtensionFilter("Images", "jpg", "jpeg", "png", "gif"));
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            File destination = new File("imageEnvoyees/" + file.getName());
+            try {
+                Files.copy(file.toPath(), destination.toPath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            send("/" + file.getName());
+            view2.getTextField().setForeground(Color.BLACK);
+        }
+    }
 
     //------------------------------LISTENERS------------------------------------------
     @Override
@@ -502,6 +535,8 @@ public class ClientController implements ActionListener {
             case "changeUsername" -> changeUsn();
 
             case "changePassword" -> changePsswrd();
+
+            case "addImage" -> addImage();
         }
     }
     public User getCurrentUser() {
