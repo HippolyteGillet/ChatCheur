@@ -30,7 +30,7 @@ public class ClientHandler extends Thread {
         String[] clientCommand = this.in.readLine().split(" ");
 
         switch (clientCommand[0]) {
-            case "Connection:", "Disconnection:", "Kick:", "State:", "Permission:" -> userUpdate(User.convertionMessageIntoUser(clientCommand));
+            case "Connection:", "Disconnection:" -> userUpdate(User.convertionMessageIntoUser(clientCommand));
 
             case "Message" -> messageReceived(User.convertionMessageIntoMessage(clientCommand));
 
@@ -41,18 +41,15 @@ public class ClientHandler extends Thread {
 
     public void userUpdate(User user) {
         this.controller.setUser(user);
-        if (this.controller.getHomeView() != null) {
-            this.controller.getHomeView().repaint();
-        }
-        if (this.controller.getInfoUserView() != null) {
-            this.controller.getInfoUserView().repaint();
+        if (this.controller.getView2() != null) {
+            this.controller.getView2().repaint();
         }
     }
 
     public void messageReceived(Message message) {
         this.controller.getMessages().add(message);
-        if (this.controller.getHomeView() != null) {
-            this.controller.getHomeView().repaint();
+        if (this.controller.getView2() != null) {
+            this.controller.getView2().repaint();
         }
     }
 }

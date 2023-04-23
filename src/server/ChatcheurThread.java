@@ -59,7 +59,7 @@ public class ChatcheurThread implements Runnable {
         String[] clientCommand = this.in.readLine().split(" ");
 
         switch (clientCommand[0]) {
-            case "Connection:", "Disconnection:", "Message", "Kick:", "State:", "Permission:" ->
+            case "Connection:", "Disconnection:", "Message" ->
                     this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
             default -> System.out.println("default");
         }
