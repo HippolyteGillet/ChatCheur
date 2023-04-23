@@ -21,26 +21,6 @@ import org.jfree.data.general.DefaultPieDataset;
 
 public class Stats extends JDialog{
 
-    //private JButton buttonOk;
-    private DefaultPieDataset pieDataset;
-    private DefaultCategoryDataset barDataset;
-    private JFreeChart chart;
-    private CategoryPlot categoryPlot;
-    private PiePlot piePlot;
-    private ChartPanel chartPanel;
-    private ImageIcon iconTop;
-
-    /*private ArrayList<User> usersOnline;
-    private ArrayList<User> usersAway;
-    private ArrayList<User> usersOffline;
-    private ArrayList<User> typeUser;
-    private ArrayList<User> typeModerator;
-    private ArrayList<User> typeAdministrator;
-    private ArrayList<User> banned;
-    private ArrayList<Integer> messagesPerHour;
-    private ArrayList<Integer> connectionsPerHour;
-    private ArrayList<User> topUsers;*/
-
     public Stats(ArrayList<User> typeUser, ArrayList<User> typeModerator, ArrayList<User> typeAdministrator,
                  ArrayList<User> usersOnline, ArrayList<User> usersAway, ArrayList<User> usersOffline,
                  ArrayList<User> banned, ArrayList<Integer> messagesPerHour, ArrayList<Integer> connectionsPerHour,
@@ -65,20 +45,19 @@ public class Stats extends JDialog{
         panel.setVisible(true);
 
         //----------------------Graph 1--------------------------
-        //showPieChartStatut(panel);
 
-        pieDataset = new DefaultPieDataset();
+        DefaultPieDataset pieDataset = new DefaultPieDataset();
         pieDataset.setValue("ADMIN", typeAdministrator.size());
         pieDataset.setValue("USER", typeUser.size());
         pieDataset.setValue("MODERATOR", typeModerator.size());
         //create chart
-        chart = ChartFactory.createPieChart3D(
+        JFreeChart chart = ChartFactory.createPieChart3D(
                 "USERS BY STATUS",pieDataset,
                 true,
                 true,
                 false);
 
-        piePlot = (PiePlot) chart.getPlot();
+        PiePlot piePlot = (PiePlot) chart.getPlot();
 
         //change pieChart background color
         piePlot.setBackgroundPaint(new Color(234, 213, 178));
@@ -88,7 +67,7 @@ public class Stats extends JDialog{
         piePlot.setSectionPaint("ADMIN",new Color( 27,47,46));
 
 
-        chartPanel = new ChartPanel(chart);
+        ChartPanel chartPanel = new ChartPanel(chart);
         //panel1.removeAll();
         //chartPanel.getPreferredSize();
         chartPanel.validate();
@@ -97,7 +76,6 @@ public class Stats extends JDialog{
         //chartPanel.setVisible(true);
 
         //----------------------Graph 2--------------------------
-        //showPieChartType(panel);
 
         pieDataset = new DefaultPieDataset();
         pieDataset.setValue("ONLINE", usersOnline.size());
@@ -131,9 +109,8 @@ public class Stats extends JDialog{
         chartPanel.validate();
 
         //----------------------Graph 3--------------------------
-        //showChartMessage(panel);
 
-        barDataset = new DefaultCategoryDataset();
+        DefaultCategoryDataset barDataset = new DefaultCategoryDataset();
 
         for (int i = 0; i < 24; i++) {
             barDataset .addValue(messagesPerHour.get(i), "",(i+1) + "");
@@ -147,7 +124,7 @@ public class Stats extends JDialog{
                 barDataset ,
                 PlotOrientation.VERTICAL,
                 true, true, false);
-        categoryPlot = chart.getCategoryPlot();
+        CategoryPlot categoryPlot = chart.getCategoryPlot();
 
         //change bar color
         categoryPlot.setBackgroundPaint(new Color(238, 213, 173));
@@ -161,7 +138,6 @@ public class Stats extends JDialog{
         panel.validate();
 
         //----------------------Graph 4--------------------------
-        //showChartConnection(panel);
 
         barDataset = new DefaultCategoryDataset();
 
@@ -193,37 +169,37 @@ public class Stats extends JDialog{
         //--------------------Top Users------------------------
 
         JLabel topTitle = new JLabel("Top Users");
-        topTitle.setFont(customFont.deriveFont(Font.BOLD, 25f));
+        topTitle.setFont(customFont.deriveFont(Font.BOLD, 30f));
         topTitle.setForeground(Color.BLACK);
-        topTitle.setBounds(200, 1560, 300, 60);
+        topTitle.setBounds(200, 1580, 300, 60);
         topTitle.setHorizontalAlignment(JLabel.CENTER);
         panel.add(topTitle);
 
-        iconTop = new ImageIcon("IMG/podium.png");
-        Image imgTop = iconTop.getImage().getScaledInstance(530, 330, Image.SCALE_SMOOTH);
+        ImageIcon iconTop = new ImageIcon("IMG/Podium.png");
+        Image imgTop = iconTop.getImage().getScaledInstance(530, 260, Image.SCALE_SMOOTH);
         iconTop = new ImageIcon(imgTop);
         JLabel podium = new JLabel(iconTop);
-        podium.setBounds(80, 1700, iconTop.getIconWidth(), iconTop.getIconHeight());
+        podium.setBounds(80, 1760, iconTop.getIconWidth(), iconTop.getIconHeight());
         panel.add(podium);
 
         JLabel top1 = new JLabel(topUsers.get(0).getUserName());
         top1.setFont(customFont.deriveFont(25f));
         top1.setForeground(Color.WHITE);
-        top1.setBounds(200, 1650, 300, 60);
+        top1.setBounds(200, 1690, 300, 60);
         top1.setHorizontalAlignment(JLabel.CENTER);
         panel.add(top1);
 
         JLabel top2 = new JLabel(topUsers.get(1).getUserName());
         top2.setFont(customFont.deriveFont(25f));
         top2.setForeground(Color.WHITE);
-        top2.setBounds(80, 1720, 200, 60);
+        top2.setBounds(70, 1785, 200, 60);
         top2.setHorizontalAlignment(JLabel.CENTER);
         panel.add(top2);
 
         JLabel top3 = new JLabel(topUsers.get(2).getUserName());
         top3.setFont(customFont.deriveFont(25f));
         top3.setForeground(Color.WHITE);
-        top3.setBounds(podium.getWidth() - 120, 1765, 200, 60);
+        top3.setBounds(podium.getWidth() - 110, 1825, 200, 60);
         top3.setHorizontalAlignment(JLabel.CENTER);
         panel.add(top3);
 
@@ -231,7 +207,7 @@ public class Stats extends JDialog{
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBounds(0, 0, 700, 700);
-        panel.setPreferredSize(new Dimension(700, 2200));
+        panel.setPreferredSize(new Dimension(700, 2160));
         getContentPane().add(scrollPane);
 
     }

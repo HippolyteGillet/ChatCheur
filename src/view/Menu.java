@@ -124,7 +124,7 @@ public class Menu extends JFrame {
         mdpOublie.setContentAreaFilled(false);
         mdpOublie.setBorderPainted(false);
         mdpOublie.setActionCommand("mdpOublie");
-        mdpOublie.setBounds(250, 435, 250, 40);
+        mdpOublie.setBounds(200, 435, 300, 40);
         mdpOublie.setFont(customFont.deriveFont(20f));
         mdpOublie.setForeground(Color.WHITE);
         panel.add(mdpOublie);
