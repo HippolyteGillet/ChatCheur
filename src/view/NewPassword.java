@@ -17,7 +17,7 @@ public class NewPassword extends JDialog {
 
     private JTextField textFieldNewPassword;
 
-    public NewPassword() throws IOException, FontFormatException {
+    public NewPassword(Color c1, Color c2, Color c3, Color c4, Color c5, Color c6) throws IOException, FontFormatException {
         setBounds(420, 150, 600, 600);
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -28,10 +28,10 @@ public class NewPassword extends JDialog {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(new Color(140,56,6));
+                g.setColor(c3);
                 g.fillRoundRect(100, 20, 400, 90, 80, 80);
                 g.fillRoundRect(450, 480, 100, 60, 40, 40);
-                g.setColor(new Color(183, 90, 25));
+                g.setColor(c2);
                 g.fillRoundRect(125, 150, 350, 70, 70, 70);
                 g.fillRoundRect(125, 260, 350, 70, 70, 70);
                 g.fillRoundRect(125, 370, 350, 70, 70, 70);
@@ -41,16 +41,16 @@ public class NewPassword extends JDialog {
                 g.drawString("mot de passe", 210, 95);
             }
         };
-        panel.setBackground(new Color(238, 213, 173));
+        panel.setBackground(c1);
         panel.setLayout(null);
 
         textFieldUserName = new JTextField("Utilisateur");
         textFieldUserName.setHorizontalAlignment(JTextField.CENTER);
         textFieldUserName.setBounds(125, 150, 350, 70);
         textFieldUserName.setFont(customFont);
-        textFieldUserName.setForeground(new Color(225,225,225));
-        textFieldUserName.setCaretColor(new Color(225,225,225));
-        textFieldUserName.setBorder(BorderFactory.createLineBorder(new Color(238, 213, 173)));
+        textFieldUserName.setForeground(c5);
+        textFieldUserName.setCaretColor(c5);
+        textFieldUserName.setBorder(BorderFactory.createLineBorder(c1));
         textFieldUserName.setOpaque(false);
         textFieldUserName.addFocusListener(new FocusListener() {
             @Override
@@ -64,7 +64,7 @@ public class NewPassword extends JDialog {
             @Override
             public void focusLost(FocusEvent e) {
                 if (textFieldUserName.getText().isEmpty()) {
-                    textFieldUserName.setForeground(new Color(225,225,225));
+                    textFieldUserName.setForeground(c5);
                     textFieldUserName.setText("Utilisateur");
                 }
             }
@@ -76,9 +76,9 @@ public class NewPassword extends JDialog {
         textField2.setHorizontalAlignment(JTextField.CENTER);
         textField2.setBounds(125, 260, 350, 70);
         textField2.setFont(customFont);
-        textField2.setForeground(new Color(225,225,225));
-        textField2.setCaretColor(new Color(225,225,225));
-        textField2.setBorder(BorderFactory.createLineBorder(new Color(238, 213, 173)));
+        textField2.setForeground(c5);
+        textField2.setCaretColor(c5);
+        textField2.setBorder(BorderFactory.createLineBorder(c1));
         textField2.setOpaque(false);
         textField2.addFocusListener(new FocusListener() {
             @Override
@@ -92,7 +92,7 @@ public class NewPassword extends JDialog {
             @Override
             public void focusLost(FocusEvent e) {
                 if (textField2.getText().isEmpty()) {
-                    textField2.setForeground(new Color(225,225,225));
+                    textField2.setForeground(c5);
                     textField2.setText("Nouveau mot de passe");
                 }
             }
@@ -103,9 +103,9 @@ public class NewPassword extends JDialog {
         textFieldNewPassword.setHorizontalAlignment(JTextField.CENTER);
         textFieldNewPassword.setBounds(125, 370, 350, 70);
         textFieldNewPassword.setFont(customFont);
-        textFieldNewPassword.setForeground(new Color(225,225,225));
-        textFieldNewPassword.setCaretColor(new Color(225,225,225));
-        textFieldNewPassword.setBorder(BorderFactory.createLineBorder(new Color(238, 213, 173)));
+        textFieldNewPassword.setForeground(c5);
+        textFieldNewPassword.setCaretColor(c5);
+        textFieldNewPassword.setBorder(BorderFactory.createLineBorder(c1));
         textFieldNewPassword.setOpaque(false);
         textFieldNewPassword.addFocusListener(new FocusListener() {
             @Override
@@ -119,7 +119,7 @@ public class NewPassword extends JDialog {
             @Override
             public void focusLost(FocusEvent e) {
                 if (textFieldNewPassword.getText().isEmpty()) {
-                    textFieldNewPassword.setForeground(new Color(225,225,225));
+                    textFieldNewPassword.setForeground(c5);
                     textFieldNewPassword.setText("Confirmer mot de passe");
                 }
             }
@@ -131,9 +131,9 @@ public class NewPassword extends JDialog {
         buttonOk.setActionCommand("Ok");
         buttonOk.setBounds(450, 480, 100, 60);
         buttonOk.setFont(customFont.deriveFont(25f));
-        buttonOk.setForeground(new Color(225,225,225));
-        buttonOk.setBackground(new Color(140,56,6));
-        buttonOk.setBorder(BorderFactory.createLineBorder(new Color(238, 213, 173)));
+        buttonOk.setForeground(c5);
+        buttonOk.setBackground(c3);
+        buttonOk.setBorder(BorderFactory.createLineBorder(c1));
         buttonOk.setFocusPainted(false);
         panel.add(buttonOk);
 

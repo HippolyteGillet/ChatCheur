@@ -12,7 +12,7 @@ import java.io.IOException;
 public class InfoUser extends JDialog {
     private JComboBox<String> comboBox;
     private User selectedUser;
-    public InfoUser(User user, User currentUser) throws IOException, FontFormatException {
+    public InfoUser(User user, User currentUser, Color c1, Color c2, Color c3, Color c4, Color c5, Color c6) throws IOException, FontFormatException {
         UserDao userDao = new UserDao();
         selectedUser = user;
         setBounds(500, 150, 600, 600);
@@ -23,9 +23,9 @@ public class InfoUser extends JDialog {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(new Color(20, 48, 46));
+                g.setColor(c2);
                 g.fillRoundRect(100, 20, 400, 90, 80, 80);
-                g.setColor(Color.WHITE);
+                g.setColor(c5);
                 g.setFont(customFont.deriveFont(40f));
                 g.drawString("Informations", 175, 75);
                 g.fillRoundRect(35, 190, 250, 80, 80, 80);
@@ -38,7 +38,7 @@ public class InfoUser extends JDialog {
                 g.drawString("Pseudo", 110, 350);
                 g.drawString("Role", 410, 350);
 
-                g.setColor(Color.BLACK);
+                g.setColor(c4);
                 g.setFont(customFont.deriveFont(25f));
                 FontMetrics metrics = g.getFontMetrics(customFont.deriveFont(25f));
                 int x1 = (330 - metrics.stringWidth(user.getLastName())) / 2;
@@ -53,7 +53,7 @@ public class InfoUser extends JDialog {
                 }
             }
         };
-        panel.setBackground(new Color(147, 185, 175));
+        panel.setBackground(c1);
         panel.setLayout(null);
 
         String[] options = {"ADMINISTRATOR", "MODERATOR", "USER"};
