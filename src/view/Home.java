@@ -34,7 +34,7 @@ public class Home extends JFrame {
     private final int MAXHEIGHT = 300;
     List<User> nonCurrentUsers;
 
-    public Home(List<User> userList, List<Message> messageList, String username, Color c1, Color c2, Color c3, Color c4, Color c5) throws IOException, FontFormatException {
+    public Home(List<User> userList, List<Message> messageList, String username, Color c1, Color c2, Color c3, Color c4, Color c5, Color c6) throws IOException, FontFormatException {
         for (User user : userList) {
             if (user.getUserName().equals(username)) {
                 currentUser = user;
@@ -120,7 +120,7 @@ public class Home extends JFrame {
                         x = 75;
                         xTime = 17;
                         yTime = yDraw + 5;
-                        g.setColor(new Color(140, 56, 6));
+                        g.setColor(c4);
                     } else {
                         if (messageList.get(i).getContent().charAt(0) == '/') {
                             ImageIcon image = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1));
@@ -144,7 +144,7 @@ public class Home extends JFrame {
                         }
                         xTime = x + 15;
                         yTime = yDraw + textHeight - 45;
-                        g.setColor(new Color(183, 90, 25));
+                        g.setColor(c5);
                     }
                     int width = textWidth + 30;
                     int height = textHeight + 10;
@@ -171,12 +171,12 @@ public class Home extends JFrame {
                                     x = 75;
                                     xTime = 17;
                                     yTime = yDraw + 5;
-                                    g.setColor(new Color(140, 56, 6));
+                                    g.setColor(c4);
                                 } else {
                                     x = 900 - textWidth - 20;
                                     xTime = x + 15;
                                     yTime = yDraw + textHeight - 45;
-                                    g.setColor(new Color(183, 90, 25));
+                                    g.setColor(c5);
                                 }
                                 g.fillRoundRect(x, yDraw, width, height, 50, 50);
                                 g.setColor(Color.WHITE);
@@ -219,7 +219,7 @@ public class Home extends JFrame {
                                         g.drawString(user.getUserName().substring(0, 1).toUpperCase(), 36 - letterWidth / 2, yDraw + 64 - letterHeight / 2);
                                         //Affiche le nom de l'utilisateur
                                         g.setFont(customFont1.deriveFont(20f));
-                                        g.setColor(new Color(100, 98, 98));
+                                        g.setColor(c6);
                                         g.drawString(user.getUserName(), x + 15, yDraw + textHeight - 46);
                                     }
                                 } else {
@@ -230,7 +230,7 @@ public class Home extends JFrame {
                                     g.drawString(user.getUserName().substring(0, 1).toUpperCase(), 36 - letterWidth / 2, yDraw + 64 - letterHeight / 2);
 
                                     g.setFont(customFont1.deriveFont(20f));
-                                    g.setColor(new Color(100, 98, 98));
+                                    g.setColor(c6);
                                     g.drawString(user.getUserName(), x + 15, yDraw + textHeight - 46);
                                 }
                             }
@@ -243,7 +243,7 @@ public class Home extends JFrame {
                                 yDraw -= 53;
                             } else {
                                 g.setFont(customFont1.deriveFont(12f));
-                                g.setColor(new Color(100, 98, 98));
+                                g.setColor(c6);
                                 g.drawString(formattedTime, xTime, yTime);
                                 yDraw -= 90;
                                 if (!formattedDate.equals(previousTime.format(formatter2))) {
@@ -254,7 +254,7 @@ public class Home extends JFrame {
                             }
                         } else {
                             g.setFont(customFont1.deriveFont(12f));
-                            g.setColor(new Color(100, 98, 98));
+                            g.setColor(c6);
                             g.drawString(formattedTime, xTime, yTime);
                             g.setFont(customFont1.deriveFont(18f));
                             g.drawString(formattedDate, 425, yDraw - 30);
@@ -428,7 +428,7 @@ public class Home extends JFrame {
                 for (int i = 0; i < nonCurrentUsers.size(); i++) {
                     if (nonCurrentUsers.get(i).getUserName() != null) {
                         if (nonCurrentUsers.get(i).getAccess().equals(User.Access.BANNED)) {
-                            g.setColor(new Color(100, 98, 98));
+                            g.setColor(c6);
                             ban.get(i).setVisible(!currentUser.getPermission().equals(User.Permission.USER));
                         } else {
                             g.setColor(c3);
@@ -482,7 +482,7 @@ public class Home extends JFrame {
                 for (User user : userList) {
                     if (user.getUserName() != null && user.getId() != currentUser.getId()) {
                         if (user.getAccess().equals(User.Access.BANNED)) {
-                            g.setColor(new Color(100, 98, 98));
+                            g.setColor(c6);
                         } else {
                             switch (user.getState()) {
                                 case ONLINE -> g.setColor(Color.GREEN);

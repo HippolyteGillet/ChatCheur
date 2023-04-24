@@ -48,7 +48,7 @@ public class ClientController implements ActionListener {
     private List<Log> logs;
     private List<Message> messages;
     private PrintWriter out;
-    private Color C1, C2, C3, C4, C5;
+    private Color C1, C2, C3, C4, C5, C6;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view, Socket socket) {
         this.currentUser = null;
@@ -165,7 +165,7 @@ public class ClientController implements ActionListener {
         try {
             //On supprime menu
             this.view1.dispose();
-            this.view2 = new Home(users, messages, view1.getUsername(), C1, C2, C3, C4, C5);
+            this.view2 = new Home(users, messages, view1.getUsername(), C1, C2, C3, C4, C5, C6);
             //On met la 1ere fenetre a null
             this.view1 = null;
             this.view2.addAllListener(this);
@@ -254,7 +254,7 @@ public class ClientController implements ActionListener {
     }
 
     public void gererFenetresLogOut() {
-        view3 = new LogOut(view2, C1, C2, C3, C4, C5);
+        view3 = new LogOut(view2, C1, C2, C3, C4, C5, C6);
         view3.setVisible(true);
         view3.addAllListener(this);
     }
@@ -376,7 +376,7 @@ public class ClientController implements ActionListener {
             view5 = new Stats(getTypeUser(), getTypeModerator(), getTypeAdministrator(),
                     getUsersOnline(), getUsersAway(), getUsersOffline(),
                     getNumberBanned(), getNumberMessagesPerHour(), getNumberConnectionsPerHour(), getTopUsers(),
-                    C1, C2, C3, C4, C5);
+                    C1, C2, C3, C4, C5, C6);
             //view5.addAllListener(this);
 
         } catch (IOException | FontFormatException ex) {
@@ -475,7 +475,7 @@ public class ClientController implements ActionListener {
 
     public void pageSettings() {
         try {
-            view6 = new Settings(C1, C2, C3, C4, C5);
+            view6 = new Settings(C1, C2, C3, C4, C5, C6);
             view6.addAllListener(this);
         } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
@@ -505,12 +505,13 @@ public class ClientController implements ActionListener {
     }
 
     public void initialColors(){
-        if (C1 == null && C2 == null && C3 == null && C4 == null && C5 == null) {
+        if (C1 == null && C2 == null && C3 == null && C4 == null && C5 == null && C6 == null) {
             C1 = new Color(238, 213, 173);
             C2 = new Color(147, 185, 175);
             C3 = new Color( 27,47,46);
             C4 = new Color(140,56,6);
-            C5 = Color.WHITE;
+            C5 = new Color(183, 90, 25);
+            C6 = Color.WHITE;
         }
     }
     public void setTheme1(){
@@ -519,9 +520,10 @@ public class ClientController implements ActionListener {
         C3 = new Color( 27,47,46);
         C4 = new Color(140,56,6);
         C5 = Color.WHITE;
+        C6 = Color.BLACK;
         view2.dispose();
         try {
-            view2 = new Home(users, messages, currentUser.getUserName(), C1, C2, C3, C4, C5);
+            view2 = new Home(users, messages, currentUser.getUserName(), C1, C2, C3, C4, C5, C6);
             view2.addAllListener(this);
             view2.setVisible(true);
             view2.setResizable(true);
@@ -541,9 +543,10 @@ public class ClientController implements ActionListener {
         C3 = new Color( 27,47,46);
         C4 = new Color(140,56,6);
         C5 = Color.WHITE;
+        C6 = Color.BLACK;
         view2.dispose();
         try {
-            view2 = new Home(users, messages, currentUser.getUserName(), C1, C2, C3, C4, C5);
+            view2 = new Home(users, messages, currentUser.getUserName(), C1, C2, C3, C4, C5, C6);
             view2.addAllListener(this);
             view2.setVisible(true);
             view2.setResizable(true);
@@ -563,9 +566,10 @@ public class ClientController implements ActionListener {
         C3 = new Color( 27,47,46);
         C4 = new Color(140,56,6);
         C5 = Color.WHITE;
+        C6 = Color.BLACK;
         view2.dispose();
         try {
-            view2 = new Home(users, messages, currentUser.getUserName(), C1, C2, C3, C4, C5);
+            view2 = new Home(users, messages, currentUser.getUserName(), C1, C2, C3, C4, C5, C6);
             view2.addAllListener(this);
             view2.setVisible(true);
             view2.setResizable(true);
