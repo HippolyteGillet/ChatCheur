@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class Home extends JFrame {
     private final Font customFont1 = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(30f);
     private final Font customFont2 = Font.createFont(Font.TRUETYPE_FONT, new File("ALBAS.TTF"));
-    private final List<JButton> ban = new ArrayList<>();
+    private List<JButton> ban = new ArrayList<>();
     private final List<JButton> info = new ArrayList<>();
     int y;
     private User currentUser = new User();
@@ -30,10 +30,12 @@ public class Home extends JFrame {
     private final JScrollPane convScrollPane;
     private final JPanel conversationPanelContent;
     JLabel label;
+    JPanel contactPanelContent;
     private ImageIcon iconUnban, iconBan, iconStats, iconSettings;
     private JButton stats, closing;
     private int MAXWIDTH = 500;
     private int MAXHEIGHT = 300;
+    List<User> nonCurrentUsers;
 
     public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
         for (User user : userList) {
@@ -41,7 +43,7 @@ public class Home extends JFrame {
                 currentUser = user;
             }
         }
-        List<User> nonCurrentUsers = new ArrayList<>();
+        nonCurrentUsers = new ArrayList<>();
         for (User user : userList) {
             if (!user.equals(currentUser)) {
                 nonCurrentUsers.add(user);
@@ -414,7 +416,7 @@ public class Home extends JFrame {
         Image imgUnban = iconUnban.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
         iconUnban = new ImageIcon(imgUnban);
 
-        JPanel contactPanelContent = new JPanel() {
+        contactPanelContent = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
@@ -431,10 +433,10 @@ public class Home extends JFrame {
                     if (nonCurrentUsers.get(i).getUserName() != null) {
                         if (nonCurrentUsers.get(i).getAccess().equals(User.Access.BANNED)) {
                             g.setColor(new Color(100, 98, 98));
-                            ban.get(i).setIcon(iconBan);
+                            if (!currentUser.getPermission().equals(User.Permission.USER)) ban.get(i).setIcon(iconBan);
                         } else {
                             g.setColor(new Color(20, 48, 46));
-                            ban.get(i).setIcon(iconUnban);
+                            if (!currentUser.getPermission().equals(User.Permission.USER)) ban.get(i).setIcon(iconUnban);
                         }
                         g.fillRoundRect(10, y, 330, 70, 20, 20);
                         y += 90;
@@ -459,6 +461,7 @@ public class Home extends JFrame {
                     }
                 }
             }
+
         };
         contactPanelContent.setLayout(null);
         contactPanelContent.setBounds(0, 170, 350, 490);
@@ -502,9 +505,11 @@ public class Home extends JFrame {
         contactPanelContent.add(usersCirclePanel);
 
 
-        //Dessine les icones de ban et unban selon les utilisateurs et leur status (moderateur et admin)
+
+        //TODO: Mettre ca dan dans un paint Component pour que sa s'actualise (j'ai deja fait le fait de les remove normalement)
+        //Dessine les icones de ban et unban selon les utilisateurs et leur status (moderateur et admin), les mettre dans un paintComponent
         if (!currentUser.getPermission().equals(User.Permission.USER)) {
-            int y = 20;
+            int yBtn = 20;
             for (int i = 0; i < nonCurrentUsers.size(); i++) {
                 if (nonCurrentUsers.get(i).getUserName() != null) {
                     int idToBan = nonCurrentUsers.get(i).getId();
@@ -517,9 +522,9 @@ public class Home extends JFrame {
                         case ACCEPTED -> ban.get(i).setIcon(iconBan);
                         case BANNED -> ban.get(i).setIcon(iconUnban);
                     }
-                    ban.get(i).setBounds(260, y, ban.get(i).getIcon().getIconWidth(), ban.get(i).getIcon().getIconHeight());
+                    ban.get(i).setBounds(260, yBtn, ban.get(i).getIcon().getIconWidth(), ban.get(i).getIcon().getIconHeight());
                     contactPanelContent.add(ban.get(i));
-                    y += 90;
+                    yBtn += 90;
                 }
             }
         }
@@ -745,5 +750,16 @@ public class Home extends JFrame {
 
     public Boolean getInputReceived() {
         return inputReceived;
+    }
+
+    public void updateNonCurrentWithFullArray(List<User> userList) {
+        nonCurrentUsers = new ArrayList<>();
+        for (User user : userList) {
+            if (user.getId() != currentUser.getId()) {
+                nonCurrentUsers.add(user);
+            }else{
+                currentUser = user;
+            }
+        }
     }
 }
