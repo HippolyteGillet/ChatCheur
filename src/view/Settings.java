@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-public class Settings extends JDialog{
+public class Settings extends JDialog {
 
     private JTextField textField1, textField2;
     private JButton changeUsername, changePassword;
@@ -66,16 +66,16 @@ public class Settings extends JDialog{
         textField1.setHorizontalAlignment(JTextField.CENTER);
         textField1.setBounds(150, 120, 400, 80);
         textField1.setFont(customFont);
-        textField1.setForeground(c6);
-        textField1.setCaretColor(Color.GRAY);
+        textField1.setForeground(Color.WHITE);
+        textField1.setCaretColor(Color.WHITE);
         textField1.setBorder(null);
         textField1.setOpaque(false);
         textField1.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
                 //if (textField1.getText().equals("New username")) {
-                    textField1.setText("");
-                    textField1.setForeground(Color.BLACK);
+                textField1.setText("");
+                textField1.setForeground(Color.WHITE);
                 //}
             }
 
@@ -90,19 +90,16 @@ public class Settings extends JDialog{
         textField2.setHorizontalAlignment(JTextField.CENTER);
         textField2.setBounds(150, 480, 400, 80);
         textField2.setFont(customFont);
-        textField2.setForeground(c6);
-        textField2.setCaretColor(Color.GRAY);
+        textField2.setForeground(Color.WHITE);
+        textField2.setCaretColor(Color.WHITE);
         textField2.setBorder(null);
         textField2.setOpaque(false);
         textField2.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                //if (textField2.getText().equals("New username")) {
                 textField2.setText("");
-                textField2.setForeground(Color.BLACK);
-                //}
+                textField2.setForeground(Color.WHITE);
             }
-
             @Override
             public void focusLost(FocusEvent e) {
                 textField2.getText();
@@ -134,7 +131,20 @@ public class Settings extends JDialog{
         changePassword.setActionCommand("changePassword");
         panel.add(changePassword);
 
-        theme1 = new JButton("");
+        ImageIcon theme1Icon = new ImageIcon("IMG/Theme 1 Chatcheur.png");
+        Image theme1Image = theme1Icon.getImage().getScaledInstance(100, 90, Image.SCALE_SMOOTH);
+        theme1Icon = new ImageIcon(theme1Image);
+
+        ImageIcon theme2Icon = new ImageIcon("IMG/Theme 2 Chatcheur.png");
+        Image theme2Image = theme2Icon.getImage().getScaledInstance(100, 90, Image.SCALE_SMOOTH);
+        theme2Icon = new ImageIcon(theme2Image);
+
+        ImageIcon theme3Icon = new ImageIcon("IMG/Theme 3 Chatcheur.png");
+        Image theme3Image = theme3Icon.getImage().getScaledInstance(100, 90, Image.SCALE_SMOOTH);
+        theme3Icon = new ImageIcon(theme3Image);
+
+
+        theme1 = new JButton(theme1Icon);
         theme1.setFont(customFont);
         theme1.setOpaque(false);
         theme1.setHorizontalAlignment(JButton.CENTER);
@@ -142,11 +152,11 @@ public class Settings extends JDialog{
         theme1.setFocusPainted(false);
         theme1.setContentAreaFilled(false);
         theme1.setBorderPainted(true);
-        theme1.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        theme1.setBorder(null);
         theme1.setActionCommand("theme1");
         panel.add(theme1);
 
-        theme2 = new JButton("");
+        theme2 = new JButton(theme2Icon);
         theme2.setFont(customFont);
         theme2.setOpaque(false);
         theme2.setHorizontalAlignment(JButton.CENTER);
@@ -154,11 +164,11 @@ public class Settings extends JDialog{
         theme2.setFocusPainted(false);
         theme2.setContentAreaFilled(false);
         theme2.setBorderPainted(true);
-        theme2.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        theme2.setBorder(null);
         theme2.setActionCommand("theme2");
         panel.add(theme2);
 
-        theme3 = new JButton("");
+        theme3 = new JButton(theme3Icon);
         theme3.setFont(customFont);
         theme3.setOpaque(false);
         theme3.setHorizontalAlignment(JButton.CENTER);
@@ -166,7 +176,7 @@ public class Settings extends JDialog{
         theme3.setFocusPainted(false);
         theme3.setContentAreaFilled(false);
         theme3.setBorderPainted(true);
-        theme3.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        theme3.setBorder(null);
         theme3.setActionCommand("theme3");
         panel.add(theme3);
 

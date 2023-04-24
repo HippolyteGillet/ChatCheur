@@ -428,7 +428,7 @@ public class Home extends JFrame {
                 for (int i = 0; i < nonCurrentUsers.size(); i++) {
                     if (nonCurrentUsers.get(i).getUserName() != null) {
                         if (nonCurrentUsers.get(i).getAccess().equals(User.Access.BANNED)) {
-                            g.setColor(c6);
+                            g.setColor(Color.GRAY);
                             ban.get(i).setVisible(!currentUser.getPermission().equals(User.Permission.USER));
                         } else {
                             g.setColor(c3);
@@ -482,7 +482,7 @@ public class Home extends JFrame {
                 for (User user : userList) {
                     if (user.getUserName() != null && user.getId() != currentUser.getId()) {
                         if (user.getAccess().equals(User.Access.BANNED)) {
-                            g.setColor(c6);
+                            g.setColor(Color.GRAY);
                         } else {
                             switch (user.getState()) {
                                 case ONLINE -> g.setColor(Color.GREEN);

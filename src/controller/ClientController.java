@@ -534,15 +534,15 @@ public class ClientController implements ActionListener {
             C3 = new Color( 27,47,46);
             C4 = new Color(140,56,6);
             C5 = new Color(183, 90, 25);
-            C6 = Color.WHITE;
+            C6 = Color.GRAY;
         }
     }
     public void setTheme1(){
-        C1 = new Color(0, 0, 173);
-        C2 = new Color(147, 185, 175);
-        C3 = new Color( 27,47,46);
-        C4 = new Color(140,56,6);
-        C5 = Color.WHITE;
+        C1 = new Color(246, 245, 254);
+        C2 = new Color(251, 108, 122);
+        C3 = new Color( 38,38,38);
+        C4 = new Color(111,35,255);
+        C5 = new Color(128,101,254);
         C6 = Color.BLACK;
         view2.dispose();
         try {
@@ -561,11 +561,11 @@ public class ClientController implements ActionListener {
     }
 
     public void setTheme2(){
-        C1 = new Color(200, 0, 173);
-        C2 = new Color(147, 185, 175);
-        C3 = new Color( 27,47,46);
-        C4 = new Color(140,56,6);
-        C5 = Color.WHITE;
+        C1 = new Color(254, 232, 199);
+        C2 = new Color(20, 79, 89);
+        C3 = new Color( 1,17,27);
+        C4 = new Color(100, 29, 14);
+        C5 = new Color(251,102,9);
         C6 = Color.BLACK;
         view2.dispose();
         try {
@@ -584,11 +584,11 @@ public class ClientController implements ActionListener {
     }
 
     public void setTheme3(){
-        C1 = new Color(0, 0, 173);
-        C2 = new Color(147, 185, 175);
-        C3 = new Color( 27,47,46);
-        C4 = new Color(140,56,6);
-        C5 = Color.WHITE;
+        C1 = new Color(255, 246, 236);
+        C2 = new Color(248, 146, 17);
+        C3 = Color.BLACK;
+        C4 = new Color(17,24,46);
+        C5 = new Color(102,133,202);
         C6 = Color.BLACK;
         view2.dispose();
         try {
