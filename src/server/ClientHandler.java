@@ -72,6 +72,8 @@ public class ClientHandler extends Thread {
             String temp = clientCommand[i].split("=")[1];
             newUser[i-1] = temp.substring(0, temp.length()-1);
         }
+        controller.getUsers().get(Integer.parseInt(newUser[0])-1).setUserName(newUser[1]);
+        controller.getUsers().get(Integer.parseInt(newUser[0])-1).setPassword(newUser[2]);
         controller.getUsers().get(Integer.parseInt(newUser[0])-1).setState(User.State.valueOf(newUser[8]));
         controller.getUsers().get(Integer.parseInt(newUser[0])-1).setAccess(User.Access.valueOf(newUser[7]));
 
