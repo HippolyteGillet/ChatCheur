@@ -14,8 +14,9 @@ public class Settings extends JDialog{
 
     private JTextField textField1, textField2;
     private JButton changeUsername, changePassword;
+    private JButton theme1, theme2, theme3;
 
-    public Settings() throws IOException, FontFormatException {
+    public Settings(Color c1, Color c2, Color c3, Color c4, Color c5) throws IOException, FontFormatException {
         setTitle("Settings");
         setBounds(400, 60, 700, 770);
         setResizable(false);
@@ -27,17 +28,17 @@ public class Settings extends JDialog{
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(Color.WHITE);
+                g.setColor(c5);
                 g.setFont(customFont.deriveFont(30f));
                 g.fillRoundRect(150, 120, 400, 80, 60, 60);
                 g.fillRoundRect(150, 480, 400, 80, 60, 60);
-                g.setColor(new Color(238, 213, 173));
+                g.fillRoundRect(75, 880, 550, 140, 60, 60);
+                g.setColor(c1);
                 g.fillRoundRect(250, 250, 200, 60, 60, 60);
                 g.fillRoundRect(250, 610, 200, 60, 60, 60);
-
             }
         };
-        panel.setBackground(new Color(140,56,6));
+        panel.setBackground(c4);
 
         JLabel label1 = new JLabel("Don't like your username? No problem!");
         label1.setFont(customFont);
@@ -52,6 +53,13 @@ public class Settings extends JDialog{
         label2.setHorizontalAlignment(JLabel.CENTER);
         label2.setBounds(0, 390, 700, 60);
         panel.add(label2);
+
+        JLabel label3 = new JLabel("Set background colors here!");
+        label3.setFont(customFont);
+        label3.setForeground(Color.WHITE);
+        label3.setHorizontalAlignment(JLabel.CENTER);
+        label3.setBounds(0, 750, 700, 60);
+        panel.add(label3);
 
         textField1 = new JTextField("New username");
         textField1.setHorizontalAlignment(JTextField.CENTER);
@@ -125,10 +133,51 @@ public class Settings extends JDialog{
         changePassword.setActionCommand("changePassword");
         panel.add(changePassword);
 
+        theme1 = new JButton("");
+        theme1.setFont(customFont);
+        theme1.setOpaque(false);
+        theme1.setHorizontalAlignment(JButton.CENTER);
+        theme1.setBounds(140, 905, 100, 90);
+        theme1.setFocusPainted(false);
+        theme1.setContentAreaFilled(false);
+        theme1.setBorderPainted(true);
+        theme1.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        theme1.setActionCommand("theme1");
+        panel.add(theme1);
+
+        theme2 = new JButton("");
+        theme2.setFont(customFont);
+        theme2.setOpaque(false);
+        theme2.setHorizontalAlignment(JButton.CENTER);
+        theme2.setBounds(300, 905, 100, 90);
+        theme2.setFocusPainted(false);
+        theme2.setContentAreaFilled(false);
+        theme2.setBorderPainted(true);
+        theme2.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        theme2.setActionCommand("theme2");
+        panel.add(theme2);
+
+        theme3 = new JButton("");
+        theme3.setFont(customFont);
+        theme3.setOpaque(false);
+        theme3.setHorizontalAlignment(JButton.CENTER);
+        theme3.setBounds(460, 905, 100, 90);
+        theme3.setFocusPainted(false);
+        theme3.setContentAreaFilled(false);
+        theme3.setBorderPainted(true);
+        theme3.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        theme3.setActionCommand("theme3");
+        panel.add(theme3);
+
         panel.setLayout(null);
         panel.setVisible(true);
-        getContentPane().add(panel);
 
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBounds(0, 0, 700, 700);
+        panel.setPreferredSize(new Dimension(700, 2160));
+        getContentPane().add(scrollPane);
     }
 
     public JTextField getTextField1() {
@@ -139,8 +188,12 @@ public class Settings extends JDialog{
         return textField2;
     }
 
+    //--------------------Add Listener-----------------------
     public void addAllListener(ClientController clientController) {
         if (!Objects.equals(textField1.getText(), "")) changeUsername.addActionListener(clientController);
         if (!Objects.equals(textField2.getText(), "")) changePassword.addActionListener(clientController);
+        theme1.addActionListener(clientController);
+        theme2.addActionListener(clientController);
+        theme3.addActionListener(clientController);
     }
 }

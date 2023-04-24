@@ -48,6 +48,7 @@ public class ClientController implements ActionListener {
     private List<Log> logs;
     private List<Message> messages;
     private PrintWriter out;
+    private Color C1, C2, C3, C4, C5;
 
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view, Socket socket) {
         this.currentUser = null;
@@ -164,7 +165,7 @@ public class ClientController implements ActionListener {
         try {
             //On supprime menu
             this.view1.dispose();
-            this.view2 = new Home(users, messages, view1.getUsername());
+            this.view2 = new Home(users, messages, view1.getUsername(), C1, C2, C3, C4, C5);
             //On met la 1ere fenetre a null
             this.view1 = null;
             this.view2.addAllListener(this);
@@ -253,7 +254,7 @@ public class ClientController implements ActionListener {
     }
 
     public void gererFenetresLogOut() {
-        view3 = new LogOut(view2);
+        view3 = new LogOut(view2, C1, C2, C3, C4, C5);
         view3.setVisible(true);
         view3.addAllListener(this);
     }
@@ -374,7 +375,8 @@ public class ClientController implements ActionListener {
         try {
             view5 = new Stats(getTypeUser(), getTypeModerator(), getTypeAdministrator(),
                     getUsersOnline(), getUsersAway(), getUsersOffline(),
-                    getNumberBanned(), getNumberMessagesPerHour(), getNumberConnectionsPerHour(), getTopUsers());
+                    getNumberBanned(), getNumberMessagesPerHour(), getNumberConnectionsPerHour(), getTopUsers(),
+                    C1, C2, C3, C4, C5);
             //view5.addAllListener(this);
 
         } catch (IOException | FontFormatException ex) {
@@ -473,7 +475,7 @@ public class ClientController implements ActionListener {
 
     public void pageSettings() {
         try {
-            view6 = new Settings();
+            view6 = new Settings(C1, C2, C3, C4, C5);
             view6.addAllListener(this);
         } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
@@ -500,6 +502,81 @@ public class ClientController implements ActionListener {
             view6.dispose();
             view6 = null;
         }
+    }
+
+    public void initialColors(){
+        if (C1 == null && C2 == null && C3 == null && C4 == null && C5 == null) {
+            C1 = new Color(238, 213, 173);
+            C2 = new Color(147, 185, 175);
+            C3 = new Color( 27,47,46);
+            C4 = new Color(140,56,6);
+            C5 = Color.WHITE;
+        }
+    }
+    public void setTheme1(){
+        C1 = new Color(0, 0, 173);
+        C2 = new Color(147, 185, 175);
+        C3 = new Color( 27,47,46);
+        C4 = new Color(140,56,6);
+        C5 = Color.WHITE;
+        view2.dispose();
+        try {
+            view2 = new Home(users, messages, currentUser.getUserName(), C1, C2, C3, C4, C5);
+            view2.addAllListener(this);
+            view2.setVisible(true);
+            view2.setResizable(true);
+            view2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            view2.setLocationRelativeTo(null);
+            view2.repaint();
+        }catch (IOException | FontFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+        view6.dispose();
+        pageSettings();
+    }
+
+    public void setTheme2(){
+        C1 = new Color(200, 0, 173);
+        C2 = new Color(147, 185, 175);
+        C3 = new Color( 27,47,46);
+        C4 = new Color(140,56,6);
+        C5 = Color.WHITE;
+        view2.dispose();
+        try {
+            view2 = new Home(users, messages, currentUser.getUserName(), C1, C2, C3, C4, C5);
+            view2.addAllListener(this);
+            view2.setVisible(true);
+            view2.setResizable(true);
+            view2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            view2.setLocationRelativeTo(null);
+            view2.repaint();
+        }catch (IOException | FontFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+        view6.dispose();
+        pageSettings();
+    }
+
+    public void setTheme3(){
+        C1 = new Color(0, 0, 173);
+        C2 = new Color(147, 185, 175);
+        C3 = new Color( 27,47,46);
+        C4 = new Color(140,56,6);
+        C5 = Color.WHITE;
+        view2.dispose();
+        try {
+            view2 = new Home(users, messages, currentUser.getUserName(), C1, C2, C3, C4, C5);
+            view2.addAllListener(this);
+            view2.setVisible(true);
+            view2.setResizable(true);
+            view2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            view2.setLocationRelativeTo(null);
+            view2.repaint();
+        }catch (IOException | FontFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+        view6.dispose();
+        pageSettings();
     }
 
     public void addImage() {
@@ -569,10 +646,16 @@ public class ClientController implements ActionListener {
         String[] actionCommand = e.getActionCommand().split(" ");
         switch (actionCommand[0]) {
             //Gère la connexion
-            case "Connexion" -> connection(view1.getUsername(), view1.getPassword());
+            case "Connexion" -> {
+                initialColors();
+                connection(view1.getUsername(), view1.getPassword());
+            }
 
             //Gère la déconnexion graphiquement
-            case "logOut" -> gererFenetresLogOut();
+            case "logOut" -> {
+                initialColors();
+                gererFenetresLogOut();
+            }
 
             //Gère la déconnexion hors graphique
             case "Disconnection" -> disconnection(true);
@@ -592,11 +675,17 @@ public class ClientController implements ActionListener {
             case "mdpOublie" -> mdpOublie();
 
             //Gère les stats
-            case "Stats" -> pageStats();
+            case "Stats" -> {
+                initialColors();
+                pageStats();
+            }
 
             case "SmileyIntrouvable", "ImageIntrouvable" -> contenuIntrouvable();
 
-            case "Settings" -> pageSettings();
+            case "Settings" -> {
+                initialColors();
+                pageSettings();
+            }
 
             case "changeUsername" -> changeUsn();
 
@@ -609,6 +698,12 @@ public class ClientController implements ActionListener {
             case "changeUserStatus" -> changeUserStatus();
 
             case "closing" -> closing();
+
+            case "theme1" -> setTheme1();
+
+            case "theme2" -> setTheme2();
+
+            case "theme3" -> setTheme3();
         }
     }
 

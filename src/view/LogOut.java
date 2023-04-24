@@ -23,7 +23,7 @@ public class LogOut extends JDialog {
         }
     }
 
-    public LogOut(JFrame parentFrame) {
+    public LogOut(JFrame parentFrame, Color c1, Color c2, Color c3, Color c4, Color c5) {
         setBounds(650, 200, 400, 400);
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -33,23 +33,23 @@ public class LogOut extends JDialog {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
 
-                g.setColor(new Color(20, 48, 46));
+                g.setColor(c3);
                 g.fillRoundRect(50, 40, 300, 70, 60, 60);
-                g.setColor(Color.WHITE);
+                g.setColor(c5);
                 g.setFont(font);
                 g.drawString("Se déconnecter ?", 75, 85);
 
-                g.setColor(Color.WHITE);
+                g.setColor(c5);
                 g.fillRoundRect(125, 160, 150, 60, 60, 60);
                 g.fillRoundRect(125, 250, 150, 60, 60, 60);
 
-                g.setColor(new Color(20, 48, 46));
+                g.setColor(c3);
                 g.drawString("Oui", 170, 200);
                 g.drawString("Non", 170, 290);
 
             }
         };
-        panel.setBackground(new Color(147, 185, 175));
+        panel.setBackground(c2);
         panel.setLayout(null);
         getContentPane().add(panel);
 
