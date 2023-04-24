@@ -528,6 +528,34 @@ public class ClientController implements ActionListener {
         userDao.update(user);
     }
 
+    public void changeUserStatus() {
+        switch (currentUser.getState()) {
+            case ONLINE -> {
+                currentUser.setState(User.State.AWAY);
+                view2.getStatusCurrent().setText("Away");
+                view2.setColorStatusCurrent(Color.ORANGE);
+            }
+            case AWAY -> {
+                currentUser.setState(User.State.ONLINE);
+                view2.getStatusCurrent().setText("Online");
+                view2.setColorStatusCurrent(Color.GREEN);
+            }
+        }
+        userDao.update(currentUser);
+        view2.getStatusCurrent().setContentAreaFilled(false);
+        view2.getStatusCurrent().setBorder(null);
+        view2.getStatusCurrent().setForeground(Color.WHITE);
+        view2.getStatusCurrent().setOpaque(false);
+        view2.getStatusCurrent().setFocusable(false);
+        view2.repaint();
+    }
+
+    public void closing() {
+        currentUser.setState(User.State.AWAY);
+        userDao.update(currentUser);
+        view2.dispose(); // Fermer la fenêtre
+    }
+
     //------------------------------LISTENERS------------------------------------------
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -570,6 +598,10 @@ public class ClientController implements ActionListener {
             case "addImage" -> addImage();
 
             case "newRole" -> newRole();
+
+            case "changeUserStatus" -> changeUserStatus();
+
+            case "closing" -> closing();
         }
     }
 

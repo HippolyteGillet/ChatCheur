@@ -26,15 +26,12 @@ public class Home extends JFrame {
     private Color circleColor = Color.GREEN;
     private Boolean inputReceived;
     private final JTextField textField;
-    private final JButton sendButton, imageButton;
+    private final JButton sendButton, imageButton, statusCurrent, logOut, smileyErrorBtn, imageErrorBtn, settings;
     private final JScrollPane convScrollPane;
     private final JPanel conversationPanelContent;
     JLabel label;
-    private final JButton logOut;
-    private final JButton smileyErrorBtn;
-    private final JButton imageErrorBtn;
     private ImageIcon iconUnban, iconBan, iconStats, iconSettings;
-    private JButton stats, settings;
+    private JButton stats, closing;
     private int MAXWIDTH = 500;
     private int MAXHEIGHT = 300;
 
@@ -387,36 +384,22 @@ public class Home extends JFrame {
         contactPanelHeader.add(currentUserCircle);
 
         //Status du currentUser
-        JLabel label = new JLabel();
-        label.setFont(customFont1.deriveFont(25f));
-        label.setForeground(Color.WHITE);
-        int x = (275 - label.getWidth()) / 2;
-        label.setBounds(x, 50, 100, 60);
+        statusCurrent = new JButton("Online");
+        statusCurrent.setFont(customFont1.deriveFont(25f));
+        statusCurrent.setContentAreaFilled(false);
+        statusCurrent.setBorder(null);
+        statusCurrent.setForeground(Color.WHITE);
+        statusCurrent.setOpaque(false);
+        statusCurrent.setFocusable(false);
+        int x = (260 - statusCurrent.getText().length()) / 2;
+        statusCurrent.setBounds(x, 55, 100, 50);
         switch (currentUser.getState()) {
-            case ONLINE -> label.setText("Online");
-            case AWAY -> label.setText("Away");
+            case ONLINE -> statusCurrent.setText("Online");
+            case AWAY -> statusCurrent.setText("Away");
         }
-        label.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                switch (currentUser.getState()) {
-                    case ONLINE -> {
-                        currentUser.setState(User.State.AWAY);
-                        label.setText("Away");
-                        circleColor = Color.ORANGE;
-                    }
-                    case AWAY -> {
-                        currentUser.setState(User.State.ONLINE);
-                        label.setText("Online");
-                        circleColor = Color.GREEN;
-                    }
-                }
-                UserDao userDao = new UserDao();
-                userDao.update(currentUser);
-                repaint();
-            }
-        });
-        contactPanelHeader.add(label);
+        statusCurrent.setActionCommand("changeUserStatus");
+        contactPanelHeader.add(statusCurrent);
+
         for (int i = 0; i < nonCurrentUsers.size(); i++) {
             if (nonCurrentUsers.get(i).getUserName() != null) {
                 ban.add(new JButton(iconUnban));
@@ -621,6 +604,9 @@ public class Home extends JFrame {
         logOut.setBounds(280, 730, iconLogOut.getIconWidth(), iconLogOut.getIconHeight());
         contactPanelFooter.add(logOut);
 
+        closing = new JButton();
+        closing.setActionCommand("closing");
+
         setTitle("ChatCheur");
         setSize(1300, 829);
         setResizable(false);
@@ -630,12 +616,7 @@ public class Home extends JFrame {
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                //TODO
-                currentUser.setState(User.State.AWAY);
-                userList.get(currentUser.getId() - 1).setState(User.State.AWAY);
-                UserDao userDao = new UserDao();
-                userDao.update(currentUser);
-                dispose(); // Fermer la fenêtre
+                closing.doClick();
             }
         });
     }
@@ -680,6 +661,14 @@ public class Home extends JFrame {
         return sendButton;
     }
 
+    public JButton getStatusCurrent() {
+        return statusCurrent;
+    }
+
+    public void setColorStatusCurrent(Color color) {
+        circleColor = color;
+    }
+
     public void addAllListener(ClientController controller) {
         this.logOut.addActionListener(controller);
         for (JButton jButton : ban) {
@@ -694,7 +683,8 @@ public class Home extends JFrame {
         this.imageErrorBtn.addActionListener(controller);
         if (currentUser.getPermission() == User.Permission.ADMINISTRATOR) this.stats.addActionListener(controller);
         this.settings.addActionListener(controller);
-
+        statusCurrent.addActionListener(controller);
+        this.closing.addActionListener(controller);
     }
 
     public int calculY(List<Message> messageList) {
