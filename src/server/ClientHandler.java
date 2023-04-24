@@ -63,6 +63,7 @@ public class ClientHandler extends Thread {
         if (controller.getCurrentUser().getId() == (Integer.parseInt(newUser[0]))) {
             controller.setCurrentUser(controller.getUsers().get(Integer.parseInt(newUser[0])-1));
         }
+        controller.getView2().updateNonCurrentWithFullArray(controller.getUsers());
         this.controller.getView2().repaint();
     }
 
@@ -81,7 +82,8 @@ public class ClientHandler extends Thread {
             if (controller.getCurrentUser().getId() == (Integer.parseInt(newUser[0])) && newUser[7].equals("BANNED")) {
                 controller.getCurrentUser().setAccess(User.Access.BANNED);
                 controller.disconnection(false);
-
+            }else {
+                controller.getView2().updateNonCurrentWithFullArray(controller.getUsers());
             }
         }
         if (this.controller.getView2() != null) {

@@ -345,6 +345,10 @@ public class ClientController implements ActionListener {
         this.out.println("Disconnection: " + currentUser.getUserName() + " disconnected from server " + this.currentUser);
     }
 
+    public void sendToServeurEnd(){
+        this.out.println("End");
+    }
+
     //-------------------------------------PASSWORD-------------------------------------------
     public void mdpOublie() {
         try {
@@ -542,6 +546,7 @@ public class ClientController implements ActionListener {
             }
         }
         userDao.update(currentUser);
+        sendToServerChange(currentUser);
         view2.getStatusCurrent().setContentAreaFilled(false);
         view2.getStatusCurrent().setBorder(null);
         view2.getStatusCurrent().setForeground(Color.WHITE);
@@ -553,7 +558,9 @@ public class ClientController implements ActionListener {
     public void closing() {
         currentUser.setState(User.State.AWAY);
         userDao.update(currentUser);
-        view2.dispose(); // Fermer la fenêtre
+        view2.dispose();
+        sendToServeurEnd();
+        // Fermer la fenêtre
     }
 
     //------------------------------LISTENERS------------------------------------------

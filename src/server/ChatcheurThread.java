@@ -61,6 +61,9 @@ public class ChatcheurThread implements Runnable {
         switch (clientCommand[0]) {
             case "Connection:", "Disconnection:", "Message", "Change:", "Role:" ->
                     this.chatcheurServer.sendAllMessage(tableauToMessage(clientCommand));
+            case "End" -> {
+                clientSocket.close();
+            }
             default -> System.out.println("default");
         }
     }
