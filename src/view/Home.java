@@ -1,8 +1,6 @@
 package view;
 
-import DAO.UserDao;
 import controller.ClientController;
-import model.Log;
 import model.Message;
 import model.user.User;
 
@@ -19,25 +17,24 @@ import java.util.ArrayList;
 public class Home extends JFrame {
     private final Font customFont1 = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(30f);
     private final Font customFont2 = Font.createFont(Font.TRUETYPE_FONT, new File("ALBAS.TTF"));
-    private List<JButton> ban = new ArrayList<>();
+    private final List<JButton> ban = new ArrayList<>();
     private final List<JButton> info = new ArrayList<>();
     int y;
     private User currentUser = new User();
     private Color circleColor = Color.GREEN;
     private Boolean inputReceived;
     private final JTextField textField;
-    private final JButton sendButton, imageButton, statusCurrent, logOut, smileyErrorBtn, imageErrorBtn, settings;
+    private final JButton sendButton, imageButton, statusCurrent, logOut, smileyErrorBtn, imageErrorBtn, settings, closing;
     private final JScrollPane convScrollPane;
     private final JPanel conversationPanelContent;
-    JLabel label;
     JPanel contactPanelContent;
-    private ImageIcon iconUnban, iconBan, iconStats, iconSettings;
-    private JButton stats, closing;
-    private int MAXWIDTH = 500;
-    private int MAXHEIGHT = 300;
+    private ImageIcon iconUnban, iconBan, iconStats;
+    private JButton stats;
+    private final int MAXWIDTH = 500;
+    private final int MAXHEIGHT = 300;
     List<User> nonCurrentUsers;
 
-    public Home(List<User> userList, List<Log> logList, List<Message> messageList, String username) throws IOException, FontFormatException {
+    public Home(List<User> userList, List<Message> messageList, String username) throws IOException, FontFormatException {
         for (User user : userList) {
             if (user.getUserName().equals(username)) {
                 currentUser = user;
@@ -142,13 +139,11 @@ public class Home extends JFrame {
                             image = new ImageIcon(resizedImage);
 
                             x = 900 - image.getIconWidth();
-                            xTime = x + 15;
-                            yTime = yDraw + textHeight - 45;
                         } else {
                             x = 900 - textWidth - 20;
-                            xTime = x + 15;
-                            yTime = yDraw + textHeight - 45;
                         }
+                        xTime = x + 15;
+                        yTime = yDraw + textHeight - 45;
                         g.setColor(new Color(183, 90, 25));
                     }
                     int width = textWidth + 30;
@@ -365,6 +360,7 @@ public class Home extends JFrame {
                 g.fillRoundRect(25, 15, 300, 90, 75, 75);
                 g.setFont(customFont1.deriveFont(25f));
                 g.setColor(Color.WHITE);
+                // Affichage du pseudo du l'utilisateur
                 int x = 25 + ((300 - g.getFontMetrics().stringWidth(currentUser.getUserName())) / 2);
                 g.drawString(currentUser.getUserName(), x, 50);
             }
@@ -402,8 +398,8 @@ public class Home extends JFrame {
         statusCurrent.setActionCommand("changeUserStatus");
         contactPanelHeader.add(statusCurrent);
 
-        for (int i = 0; i < nonCurrentUsers.size(); i++) {
-            if (nonCurrentUsers.get(i).getUserName() != null) {
+        for (User nonCurrentUser : nonCurrentUsers) {
+            if (nonCurrentUser.getUserName() != null) {
                 ban.add(new JButton(iconUnban));
             }
         }
@@ -433,10 +429,11 @@ public class Home extends JFrame {
                     if (nonCurrentUsers.get(i).getUserName() != null) {
                         if (nonCurrentUsers.get(i).getAccess().equals(User.Access.BANNED)) {
                             g.setColor(new Color(100, 98, 98));
-                            if (!currentUser.getPermission().equals(User.Permission.USER)) ban.get(i).setIcon(iconBan);
+                            ban.get(i).setVisible(!currentUser.getPermission().equals(User.Permission.USER));
                         } else {
                             g.setColor(new Color(20, 48, 46));
-                            if (!currentUser.getPermission().equals(User.Permission.USER)) ban.get(i).setIcon(iconUnban);
+                            ban.get(i).setIcon(iconUnban);
+                            ban.get(i).setVisible(!currentUser.getPermission().equals(User.Permission.USER));
                         }
                         g.fillRoundRect(10, y, 330, 70, 20, 20);
                         y += 90;
@@ -504,28 +501,23 @@ public class Home extends JFrame {
         usersCirclePanel.setOpaque(false);
         contactPanelContent.add(usersCirclePanel);
 
-
-
-        //TODO: Mettre ca dan dans un paint Component pour que sa s'actualise (j'ai deja fait le fait de les remove normalement)
         //Dessine les icones de ban et unban selon les utilisateurs et leur status (moderateur et admin), les mettre dans un paintComponent
-        if (!currentUser.getPermission().equals(User.Permission.USER)) {
-            int yBtn = 20;
-            for (int i = 0; i < nonCurrentUsers.size(); i++) {
-                if (nonCurrentUsers.get(i).getUserName() != null) {
-                    int idToBan = nonCurrentUsers.get(i).getId();
-                    ban.get(i).setActionCommand("Ban " + idToBan);
-                    ban.get(i).setOpaque(false);
-                    ban.get(i).setContentAreaFilled(false);
-                    ban.get(i).setBorderPainted(false);
-                    ban.get(i).setIcon(iconBan);
-                    switch (nonCurrentUsers.get(i).getAccess()) {
-                        case ACCEPTED -> ban.get(i).setIcon(iconBan);
-                        case BANNED -> ban.get(i).setIcon(iconUnban);
-                    }
-                    ban.get(i).setBounds(260, yBtn, ban.get(i).getIcon().getIconWidth(), ban.get(i).getIcon().getIconHeight());
-                    contactPanelContent.add(ban.get(i));
-                    yBtn += 90;
+        int yBtn = 20;
+        for (int i = 0; i < nonCurrentUsers.size(); i++) {
+            if (nonCurrentUsers.get(i).getUserName() != null) {
+                int idToBan = nonCurrentUsers.get(i).getId();
+                ban.get(i).setActionCommand("Ban " + idToBan);
+                ban.get(i).setOpaque(false);
+                ban.get(i).setContentAreaFilled(false);
+                ban.get(i).setBorderPainted(false);
+                ban.get(i).setIcon(iconBan);
+                switch (nonCurrentUsers.get(i).getAccess()) {
+                    case ACCEPTED -> ban.get(i).setIcon(iconBan);
+                    case BANNED -> ban.get(i).setIcon(iconUnban);
                 }
+                ban.get(i).setBounds(260, yBtn, ban.get(i).getIcon().getIconWidth(), ban.get(i).getIcon().getIconHeight());
+                contactPanelContent.add(ban.get(i));
+                yBtn += 90;
             }
         }
 
@@ -535,7 +527,6 @@ public class Home extends JFrame {
         iconInfos = new ImageIcon(imgInfos);
 
         int y = 15;
-
         for (int i = 0; i < nonCurrentUsers.size(); i++) {
             if (nonCurrentUsers.get(i).getUserName() != null) {
                 info.add(new JButton(iconInfos));
@@ -551,6 +542,19 @@ public class Home extends JFrame {
                 y += 90;
             }
         }
+
+        //Stats Icon
+        iconStats = new ImageIcon("IMG/Stats.png");
+        Image imgStats = iconStats.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        iconStats = new ImageIcon(imgStats);
+        stats = new JButton(iconStats);
+        stats.setActionCommand("Stats");
+        stats.setOpaque(false);
+        stats.setContentAreaFilled(false);
+        stats.setBorderPainted(false);
+        stats.setFocusPainted(false);
+        stats.setBounds(90, 730, iconStats.getIconWidth(), iconStats.getIconHeight());
+
         JPanel contactPanelFooter = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -562,14 +566,16 @@ public class Home extends JFrame {
                 g.setColor(Color.WHITE);
                 g.setFont(customFont2.deriveFont(25f));
                 g.drawString("ChatCheur", 110, 680);
+                stats.setVisible(currentUser.getPermission().equals(User.Permission.ADMINISTRATOR));
             }
         };
         contactPanelFooter.setLayout(null);
         contactPanelFooter.setBounds(0, 630, 350, 170);
         add(contactPanelFooter);
+        contactPanelFooter.add(stats);
 
         //Setting Icon
-        iconSettings = new ImageIcon("IMG/Settings.png");
+        ImageIcon iconSettings = new ImageIcon("IMG/Settings.png");
         Image imgSetting = iconSettings.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
         iconSettings = new ImageIcon(imgSetting);
         settings = new JButton(iconSettings);
@@ -580,21 +586,6 @@ public class Home extends JFrame {
         settings.setFocusPainted(false);
         settings.setBounds(25, 730, iconSettings.getIconWidth(), iconSettings.getIconHeight());
         contactPanelFooter.add(settings);
-
-        //Stats Icon
-        if (currentUser.getPermission() == User.Permission.ADMINISTRATOR) {
-            iconStats = new ImageIcon("IMG/Stats.png");
-            Image imgStats = iconStats.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-            iconStats = new ImageIcon(imgStats);
-            stats = new JButton(iconStats);
-            stats.setActionCommand("Stats");
-            stats.setOpaque(false);
-            stats.setContentAreaFilled(false);
-            stats.setBorderPainted(false);
-            stats.setFocusPainted(false);
-            stats.setBounds(90, 730, iconStats.getIconWidth(), iconStats.getIconHeight());
-            contactPanelFooter.add(stats);
-        }
 
         //Log out Icon
         ImageIcon iconLogOut = new ImageIcon("IMG/logOut.png");
@@ -757,7 +748,7 @@ public class Home extends JFrame {
         for (User user : userList) {
             if (user.getId() != currentUser.getId()) {
                 nonCurrentUsers.add(user);
-            }else{
+            } else {
                 currentUser = user;
             }
         }

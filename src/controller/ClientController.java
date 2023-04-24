@@ -164,7 +164,7 @@ public class ClientController implements ActionListener {
         try {
             //On supprime menu
             this.view1.dispose();
-            this.view2 = new Home(users, logs, messages, view1.getUsername());
+            this.view2 = new Home(users, messages, view1.getUsername());
             //On met la 1ere fenetre a null
             this.view1 = null;
             this.view2.addAllListener(this);
