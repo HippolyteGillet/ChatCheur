@@ -14,7 +14,7 @@ public class Settings extends JDialog{
 
     private JTextField textField1, textField2;
     private JButton changeUsername, changePassword;
-    private JButton theme1, theme2, theme3;
+    private JButton theme1, theme2, theme3, reset;
 
     public Settings(Color c1, Color c2, Color c3, Color c4, Color c5, Color c6) throws IOException, FontFormatException {
         setTitle("Settings");
@@ -36,6 +36,7 @@ public class Settings extends JDialog{
                 g.setColor(c1);
                 g.fillRoundRect(250, 250, 200, 60, 60, 60);
                 g.fillRoundRect(250, 610, 200, 60, 60, 60);
+                g.fillRoundRect(250, 1060, 200, 60, 60, 60);
             }
         };
         panel.setBackground(c4);
@@ -169,6 +170,18 @@ public class Settings extends JDialog{
         theme3.setActionCommand("theme3");
         panel.add(theme3);
 
+        reset = new JButton("Reset");
+        reset.setFont(customFont);
+        reset.setForeground(Color.BLACK);
+        reset.setOpaque(false);
+        reset.setHorizontalAlignment(JButton.CENTER);
+        reset.setBounds(250, 1060, 200, 60);
+        reset.setFocusPainted(false);
+        reset.setContentAreaFilled(false);
+        reset.setBorderPainted(false);
+        reset.setActionCommand("reset");
+        panel.add(reset);
+
         panel.setLayout(null);
         panel.setVisible(true);
 
@@ -195,5 +208,6 @@ public class Settings extends JDialog{
         theme1.addActionListener(clientController);
         theme2.addActionListener(clientController);
         theme3.addActionListener(clientController);
+        reset.addActionListener(clientController);
     }
 }

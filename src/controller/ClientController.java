@@ -246,7 +246,7 @@ public class ClientController implements ActionListener {
         view2 = null;
         //On crée la fenetre de base
         try {
-            view1 = new Menu(users, logs, messages);
+            view1 = new Menu(users, logs, messages, C1, C2, C3, C4, C5, C6);
             view1.addAllListener(this);
         } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
@@ -261,7 +261,7 @@ public class ClientController implements ActionListener {
 
     public void infoUser(int i) {
         try {
-            view7 = new InfoUser(users.get(i - 1), currentUser);
+            view7 = new InfoUser(users.get(i - 1), currentUser, C1, C2, C3, C4, C5, C6);
             view7.addAllListener(this);
         } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
@@ -353,7 +353,7 @@ public class ClientController implements ActionListener {
     //-------------------------------------PASSWORD-------------------------------------------
     public void mdpOublie() {
         try {
-            view4 = new NewPassword();
+            view4 = new NewPassword(C1, C2, C3, C4, C5, C6);
             view4.addAllListener(this);
         } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
@@ -502,6 +502,29 @@ public class ClientController implements ActionListener {
             view6.dispose();
             view6 = null;
         }
+    }
+
+    public void resetColors(){
+        C1 = new Color(238, 213, 173);
+        C2 = new Color(147, 185, 175);
+        C3 = new Color( 27,47,46);
+        C4 = new Color(140,56,6);
+        C5 = new Color(183, 90, 25);
+        C6 = Color.WHITE;
+        view2.dispose();
+        try {
+            view2 = new Home(users, messages, currentUser.getUserName(), C1, C2, C3, C4, C5, C6);
+            view2.addAllListener(this);
+            view2.setVisible(true);
+            view2.setResizable(true);
+            view2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            view2.setLocationRelativeTo(null);
+            view2.repaint();
+        }catch (IOException | FontFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+        view6.dispose();
+        pageSettings();
     }
 
     public void initialColors(){
@@ -708,6 +731,8 @@ public class ClientController implements ActionListener {
             case "theme2" -> setTheme2();
 
             case "theme3" -> setTheme3();
+
+            case "reset" -> resetColors();
         }
     }
 
