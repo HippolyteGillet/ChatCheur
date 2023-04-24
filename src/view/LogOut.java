@@ -23,7 +23,7 @@ public class LogOut extends JDialog {
         }
     }
 
-    public LogOut(JFrame parentFrame, Color c1, Color c2, Color c3, Color c4, Color c5) {
+    public LogOut(JFrame parentFrame, Color c1, Color c2, Color c3, Color c4, Color c5, Color c6) {
         setBounds(650, 200, 400, 400);
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

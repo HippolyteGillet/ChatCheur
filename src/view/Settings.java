@@ -16,7 +16,7 @@ public class Settings extends JDialog{
     private JButton changeUsername, changePassword;
     private JButton theme1, theme2, theme3;
 
-    public Settings(Color c1, Color c2, Color c3, Color c4, Color c5) throws IOException, FontFormatException {
+    public Settings(Color c1, Color c2, Color c3, Color c4, Color c5, Color c6) throws IOException, FontFormatException {
         setTitle("Settings");
         setBounds(400, 60, 700, 770);
         setResizable(false);
@@ -65,7 +65,7 @@ public class Settings extends JDialog{
         textField1.setHorizontalAlignment(JTextField.CENTER);
         textField1.setBounds(150, 120, 400, 80);
         textField1.setFont(customFont);
-        textField1.setForeground(new Color(100, 98, 98));
+        textField1.setForeground(c6);
         textField1.setCaretColor(Color.GRAY);
         textField1.setBorder(null);
         textField1.setOpaque(false);
@@ -89,7 +89,7 @@ public class Settings extends JDialog{
         textField2.setHorizontalAlignment(JTextField.CENTER);
         textField2.setBounds(150, 480, 400, 80);
         textField2.setFont(customFont);
-        textField2.setForeground(new Color(100, 98, 98));
+        textField2.setForeground(c6);
         textField2.setCaretColor(Color.GRAY);
         textField2.setBorder(null);
         textField2.setOpaque(false);

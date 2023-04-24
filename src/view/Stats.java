@@ -25,7 +25,7 @@ public class Stats extends JDialog{
     public Stats(ArrayList<User> typeUser, ArrayList<User> typeModerator, ArrayList<User> typeAdministrator,
                  ArrayList<User> usersOnline, ArrayList<User> usersAway, ArrayList<User> usersOffline,
                  ArrayList<User> banned, ArrayList<Integer> messagesPerHour, ArrayList<Integer> connectionsPerHour,
-                 ArrayList<User> topUsers, Color c1, Color c2, Color c3, Color c4, Color c5) throws IOException, FontFormatException {
+                 ArrayList<User> topUsers, Color c1, Color c2, Color c3, Color c4, Color c5, Color c6) throws IOException, FontFormatException {
         setTitle("Statitics");
         setBounds(400, 80, 700, 700);
         setResizable(false);
