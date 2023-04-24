@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public class Moderator extends User{
 
-    Moderator(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDateTime lastConnectionTime) {
+    public Moderator(int id, String userName, String password, String email, String firstName, String lastName, State state, LocalDateTime lastConnectionTime) {
         super(id, userName, password, email, firstName, lastName, state, lastConnectionTime);
         setPermission(Permission.MODERATOR);
         //java.DAO update:

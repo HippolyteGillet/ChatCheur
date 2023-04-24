@@ -104,6 +104,11 @@ public class ClientController implements ActionListener {
         this.messages = messages;
     }
 
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
+    }
+
+
 
     //--------------------------CONNECTION-------------------------------
     public void connection(String username, String psw) {
@@ -278,11 +283,6 @@ public class ClientController implements ActionListener {
                 }
             }
 
-        }//TODO
-        if (userToChange.getId() < currentUser.getId()) {
-            positionIcon = userToChange.getId() - 1;
-        } else {
-            positionIcon = userToChange.getId() - 2;
         }
 
         //Si l'utilisateur est banni, on le débanni, sinon on le banni
@@ -297,7 +297,6 @@ public class ClientController implements ActionListener {
                     }
                 }
                 view2.repaint();
-
                 userDao.update(userToChange);
                 Log logBan = new Log(userToChange.getId(), Log.TypeLog.UNBAN);
                 logDao.create(logBan);
@@ -328,6 +327,10 @@ public class ClientController implements ActionListener {
 
     public void sendToServerChange(User userChanged) {
         this.out.println("Change: " + userChanged);
+    }
+
+    public void sendToServerRole(User userChanged) {
+        this.out.println("Role: " + userChanged);
     }
 
     public void sendToServerMessage(Message message) {
@@ -478,6 +481,7 @@ public class ClientController implements ActionListener {
         if (!Objects.equals(view6.getTextField1().getText(), "")) {
             currentUser.setUserName(view6.getTextField1().getText());
             userDao.update(currentUser);
+            sendToServerChange(currentUser);
             view6.dispose();
             view6 = null;
             view2.repaint();
@@ -488,6 +492,7 @@ public class ClientController implements ActionListener {
         if (!Objects.equals(view6.getTextField2().getText(), "")) {
             currentUser.setPassword(sha256(view6.getTextField2().getText()));
             userDao.update(currentUser);
+            sendToServerChange(currentUser);
             view6.dispose();
             view6 = null;
         }
@@ -519,6 +524,7 @@ public class ClientController implements ActionListener {
                 case "USER" -> user.setPermission(User.Permission.USER);
             }
         }
+        sendToServerRole(user);
         userDao.update(user);
     }
 
