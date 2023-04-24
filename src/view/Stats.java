@@ -25,7 +25,7 @@ public class Stats extends JDialog{
     public Stats(ArrayList<User> typeUser, ArrayList<User> typeModerator, ArrayList<User> typeAdministrator,
                  ArrayList<User> usersOnline, ArrayList<User> usersAway, ArrayList<User> usersOffline,
                  ArrayList<User> banned, ArrayList<Integer> messagesPerHour, ArrayList<Integer> connectionsPerHour,
-                 ArrayList<User> topUsers) throws IOException, FontFormatException {
+                 ArrayList<User> topUsers, Color c1, Color c2, Color c3, Color c4, Color c5) throws IOException, FontFormatException {
         setTitle("Statitics");
         setBounds(400, 80, 700, 700);
         setResizable(false);
@@ -42,7 +42,7 @@ public class Stats extends JDialog{
             }
         };
         //panel.setBackground(new Color(238, 213, 173));
-        panel.setBackground(new Color(147, 185, 175));
+        panel.setBackground(c2);
         panel.setLayout(null);
         panel.setVisible(true);
 
@@ -62,11 +62,11 @@ public class Stats extends JDialog{
         PiePlot piePlot = (PiePlot) chart.getPlot();
 
         //change pieChart background color
-        piePlot.setBackgroundPaint(new Color(234, 213, 178));
+        piePlot.setBackgroundPaint(c1);
         //change blocks background pieChart
         piePlot.setSectionPaint("USER",new Color(Color.WHITE.getRGB()));
         piePlot.setSectionPaint("MODERATOR",new Color(Color.GRAY.getRGB()));
-        piePlot.setSectionPaint("ADMIN",new Color( 27,47,46));
+        piePlot.setSectionPaint("ADMIN",c3);
 
 
         ChartPanel chartPanel = new ChartPanel(chart);
@@ -95,11 +95,11 @@ public class Stats extends JDialog{
         piePlot = (PiePlot) chart.getPlot();
 
         //change pieChart background color
-        piePlot.setBackgroundPaint(new Color(234, 213, 178));
+        piePlot.setBackgroundPaint(c1);
         //change blocks background pieChart
         piePlot.setSectionPaint("ONLINE",new Color(Color.WHITE.getRGB()));
         piePlot.setSectionPaint("AWAY",new Color(130, 61, 24));
-        piePlot.setSectionPaint("OFFLINE",new Color( 27,47,46));
+        piePlot.setSectionPaint("OFFLINE", c3);
         piePlot.setSectionPaint("BAN",new Color(Color.GRAY.getRGB()));
 
         chartPanel= new ChartPanel(chart);
@@ -129,9 +129,9 @@ public class Stats extends JDialog{
         CategoryPlot categoryPlot = chart.getCategoryPlot();
 
         //change bar color
-        categoryPlot.setBackgroundPaint(new Color(238, 213, 173));
+        categoryPlot.setBackgroundPaint(c1);
         BarRenderer renderer = (BarRenderer) categoryPlot.getRenderer();
-        renderer.setSeriesPaint(0, new Color( 27,47,46));
+        renderer.setSeriesPaint(0, c3);
 
         //put the chart into a panel
         chartPanel = new ChartPanel(chart);
@@ -158,9 +158,9 @@ public class Stats extends JDialog{
         categoryPlot = chart.getCategoryPlot();
 
         //change bar background
-        categoryPlot.setBackgroundPaint(new Color(238, 213, 173));
+        categoryPlot.setBackgroundPaint(c1);
         renderer = (BarRenderer) categoryPlot.getRenderer();
-        renderer.setSeriesPaint(0, new Color( 27,47,46));
+        renderer.setSeriesPaint(0, c3);
 
         //put the chart into a panel
         chartPanel = new ChartPanel(chart);

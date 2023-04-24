@@ -34,7 +34,7 @@ public class Home extends JFrame {
     private final int MAXHEIGHT = 300;
     List<User> nonCurrentUsers;
 
-    public Home(List<User> userList, List<Message> messageList, String username) throws IOException, FontFormatException {
+    public Home(List<User> userList, List<Message> messageList, String username, Color c1, Color c2, Color c3, Color c4, Color c5) throws IOException, FontFormatException {
         for (User user : userList) {
             if (user.getUserName().equals(username)) {
                 currentUser = user;
@@ -264,7 +264,7 @@ public class Home extends JFrame {
                 }
             }
         };
-        conversationPanelContent.setBackground(new Color(238, 213, 173));
+        conversationPanelContent.setBackground(c1);
         conversationPanelContent.setBounds(350, 0, 950, 720);
         conversationPanelContent.setLayout(null);
 
@@ -272,7 +272,7 @@ public class Home extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(new Color(238, 213, 173));
+                g.setColor(c1);
                 g.fillRect(0, 0, 950, 200);
                 g.setColor(Color.WHITE);
                 g.fillRoundRect(100, 10, 750, 60, 50, 50);
@@ -354,9 +354,9 @@ public class Home extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(new Color(147, 185, 175));
+                g.setColor(c2);
                 g.fillRect(0, 0, 350, 140);
-                g.setColor(new Color(20, 48, 46));
+                g.setColor(c3);
                 g.fillRoundRect(25, 15, 300, 90, 75, 75);
                 g.setFont(customFont1.deriveFont(25f));
                 g.setColor(Color.WHITE);
@@ -416,7 +416,7 @@ public class Home extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(new Color(147, 185, 175));
+                g.setColor(c2);
                 if (userList.size() > 6) {
                     g.fillRect(0, 0, 350, 490 + (userList.size() - 6) * 90);
                 } else {
@@ -431,7 +431,7 @@ public class Home extends JFrame {
                             g.setColor(new Color(100, 98, 98));
                             ban.get(i).setVisible(!currentUser.getPermission().equals(User.Permission.USER));
                         } else {
-                            g.setColor(new Color(20, 48, 46));
+                            g.setColor(c3);
                             ban.get(i).setIcon(iconUnban);
                             ban.get(i).setVisible(!currentUser.getPermission().equals(User.Permission.USER));
                         }
@@ -458,7 +458,6 @@ public class Home extends JFrame {
                     }
                 }
             }
-
         };
         contactPanelContent.setLayout(null);
         contactPanelContent.setBounds(0, 170, 350, 490);
@@ -559,9 +558,9 @@ public class Home extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(new Color(147, 185, 175));
+                g.setColor(c2);
                 g.fillRect(0, 630, 350, 170);
-                g.setColor(new Color(20, 48, 46));
+                g.setColor(c3);
                 g.fillRoundRect(90, 650, 160, 50, 50, 50);
                 g.setColor(Color.WHITE);
                 g.setFont(customFont2.deriveFont(25f));
