@@ -15,13 +15,14 @@ import java.util.List;
 public class UserDao implements DAO<User> {
     private final Connection connect = ConnectionDataBaseSQL.getInstance();
 
+    /**
+     * Create a new User with java's data
+     * @param object Object is that we want to send in the database
+     * @return the created user
+     */
     @Override
     public User create(User object) {
         try {
-            //ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE
-            //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user2");
-            //if (!result.first()){}
-            //while (result.next()){}
             PreparedStatement preparedStatement = this.connect.prepareStatement("INSERT INTO user VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement.setInt(1, object.getId());
             preparedStatement.setString(2, object.getUserName());
@@ -35,10 +36,6 @@ public class UserDao implements DAO<User> {
             preparedStatement.setObject(10, object.getState().name());
 
             preparedStatement.executeUpdate();
-
-            System.out.println("Insertion OK");
-            //object = this.find(object.getId());
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -46,14 +43,16 @@ public class UserDao implements DAO<User> {
         return object;
     }
 
+    /**
+     * Find a user in the database with the ID's user
+     * @param id ID is single
+     * @return the retrieved user
+     */
     @Override
     public User find(int id) {
-        //ConnectionDataBaseSQL.accessDriver();
         User user = new User();
         try {
             ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE ID = " + id);
-            //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + id);
-            //if (result.first()){}
             while (result.next()) {
                 user = new User(id, result.getString("USER_NAME"), result.getString("PASSWORD"),
                         result.getString("EMAIL"), result.getString("FIRST_NAME"),
@@ -69,23 +68,14 @@ public class UserDao implements DAO<User> {
         return user;
     }
 
-    public int newIdUser() {
-        int previousId = 0;
-        try {
-            ResultSet result = this.connect.createStatement().executeQuery("SELECT MAX(id) as id FROM user");
-            while (result.next()) previousId = result.getInt("id");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return previousId + 1;
-    }
-
+    /**
+     * Update a user put in the parameters
+     * @param object obj is the object that we want tu update in the database
+     * @return the updated user in the database
+     */
     @Override
     public User update(User object) {
-        //ConnectionDataBaseSQL.accessDriver();
         try {
-            //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + object.getId());
-            //if (result.first()){}
             this.connect.createStatement().executeUpdate("UPDATE user SET user_name = '" + object.getUserName() +
                     "', first_name = '" + object.getFirstName() + "', last_name = '" + object.getLastName() +
                     "', email = '" + object.getEmail() + "', password = '" + object.getPassword() +
@@ -93,9 +83,6 @@ public class UserDao implements DAO<User> {
                     "', ACCESS = '" + object.getAccess() +
                     "', state = '" + object.getState() +
                     "' WHERE id = " + object.getId());
-
-            //else System.out.println("User not found.");
-
         } catch (SQLException e) {
 
             e.printStackTrace();
@@ -104,6 +91,10 @@ public class UserDao implements DAO<User> {
         return object;
     }
 
+    /**
+     * Delete a user with his id
+     * @param id The ID is the only identification of the object
+     */
     @Override
     public void delete(int id) {
         try {
@@ -122,6 +113,10 @@ public class UserDao implements DAO<User> {
         }
     }
 
+    /**
+     * Retrieve all the users from the database
+     * @return all the users
+     */
     public List<User> retrieveUsersFromDB() {
         List<User> users = new ArrayList<>();
         int id = 0;
@@ -143,13 +138,15 @@ public class UserDao implements DAO<User> {
         return users;
     }
 
+    /**
+     * Find a user with a username in the parameters of the function
+     * @param stringUserName
+     * @return the user found
+     */
     public User findUserName(String stringUserName) {
-        //ConnectionDataBaseSQL.accessDriver();
         User user = new User();
         try {
             ResultSet result = this.connect.createStatement().executeQuery("SELECT * FROM user WHERE USER_NAME = '" + stringUserName + "'");
-            //ResultSet result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE).executeQuery("SELECT * FROM user WHERE id = " + id);
-            //if (result.first()){}
             while (result.next()) {
                 user = new User(result.getInt("ID"), result.getString("USER_NAME"), result.getString("PASSWORD"),
                         result.getString("EMAIL"), result.getString("FIRST_NAME"),
@@ -165,8 +162,10 @@ public class UserDao implements DAO<User> {
         return user;
     }
 
-    // Functions for statistics
-
+    /**
+     * Find the number of the online users in database
+     * @return a list with those users
+     */
     public ArrayList<User> findNumberUsersOnline(){
         ArrayList<User> usersOnline = new ArrayList<>();
         User user = new User();
@@ -191,6 +190,10 @@ public class UserDao implements DAO<User> {
         return usersOnline;
     }
 
+    /**
+     * Find the number of the away users in database
+     * @return a list with those users
+     */
     public ArrayList<User> findNumberUsersAway(){
         ArrayList<User> usersAway = new ArrayList<>();
         User user = new User();
@@ -215,6 +218,10 @@ public class UserDao implements DAO<User> {
         return usersAway;
     }
 
+    /**
+     * Find the number of the offline users in database
+     * @return a list with those users
+     */
     public ArrayList<User> findNumberUsersOffline(){
         ArrayList<User> usersOffline = new ArrayList<>();
         User user = new User();
@@ -239,6 +246,10 @@ public class UserDao implements DAO<User> {
         return usersOffline;
     }
 
+    /**
+     * Find the number of the users who are user in database
+     * @return a list with those users
+     */
     public ArrayList<User> findNumberUser(){
         ArrayList<User> users = new ArrayList<>();
         User user = new User();
@@ -263,6 +274,10 @@ public class UserDao implements DAO<User> {
         return users;
     }
 
+    /**
+     * Find the number of the users who are moderator in database
+     * @return a list with those users
+     */
     public ArrayList<User> findNumberModerator(){
         ArrayList<User> moderators = new ArrayList<>();
         User user = new User();
@@ -287,6 +302,10 @@ public class UserDao implements DAO<User> {
         return moderators;
     }
 
+    /**
+     * Find the number of the users who are administrator in database
+     * @return a list with those users
+     */
     public ArrayList<User> findNumberAdministrator(){
         ArrayList<User> administrators = new ArrayList<>();
         User user = new User();
@@ -311,6 +330,10 @@ public class UserDao implements DAO<User> {
         return administrators;
     }
 
+    /**
+     * Find the number of the users who are banned in database
+     * @return a list with those users
+     */
     public ArrayList<User> findNumberBanned(){
         ArrayList<User> banned = new ArrayList<>();
         User user = new User();

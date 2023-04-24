@@ -5,32 +5,33 @@ import java.sql.Connection;
 public interface DAO<T> {
 
     /**
-     * Permet de récupérer un objet dans la BDD via son Id
+     * Allows you to retrieve an object from the DB via its ID
      *
-     * @param id L'id est l'identification unique de l'objet
+     * @param id ID is single
      * @return T
-     * La fonction retourne un objet crée depuis la BDD
+     * The function returns a created object since the database
      */
     T find(int id);
 
     /**
-     * Permet d'envoyer les données de l'objet dans la BDD
+     * Allows to send object's datas in the database
      *
-     * @param object L'object est ce qu'on veut envoyer dans la BDD
+     * @param object Object is that we want to send in the database
+     *
      */
     T create(T object);
 
     /**
-     * Permet de mettre à jour les données de l'objet dans BDD
+     * Allows to update object's datas in the database
      *
-     * @param obj obj est l'objet que l'on veut mettre à jour dans la BDD
+     * @param obj obj is the object that we want tu update in the database
      */
     T update(T obj);
 
     /**
-     * Permet la suppression d'un objet dans la BDD
+     * Allows the deletion of an object in the database
      *
-     * @param id L'id est l'identification unique de l'objet
+     * @param id The ID is the only identification of the object
      */
     void delete(int id);
 }
