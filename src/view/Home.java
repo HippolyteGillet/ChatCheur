@@ -559,7 +559,7 @@ public class Home extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.setColor(c2);
-                g.fillRect(0, 630, 350, 170);
+                g.fillRect(0, 630, 350, 200);
                 g.setColor(c3);
                 g.fillRoundRect(90, 650, 160, 50, 50, 50);
                 g.setColor(Color.WHITE);
@@ -569,7 +569,7 @@ public class Home extends JFrame {
             }
         };
         contactPanelFooter.setLayout(null);
-        contactPanelFooter.setBounds(0, 630, 350, 170);
+        contactPanelFooter.setBounds(0, 630, 350, 200);
         add(contactPanelFooter);
         contactPanelFooter.add(stats);
 

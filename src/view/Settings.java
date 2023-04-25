@@ -32,11 +32,11 @@ public class Settings extends JDialog {
                 g.setFont(customFont.deriveFont(30f));
                 g.fillRoundRect(150, 120, 400, 80, 60, 60);
                 g.fillRoundRect(150, 480, 400, 80, 60, 60);
-                g.fillRoundRect(75, 880, 550, 140, 60, 60);
+                g.fillRoundRect(75, 800, 550, 140, 60, 60);
                 g.setColor(c1);
                 g.fillRoundRect(250, 250, 200, 60, 60, 60);
                 g.fillRoundRect(250, 610, 200, 60, 60, 60);
-                g.fillRoundRect(250, 1060, 200, 60, 60, 60);
+                g.fillRoundRect(250, 980, 200, 60, 60, 60);
             }
         };
         panel.setBackground(c4);
@@ -59,7 +59,7 @@ public class Settings extends JDialog {
         label3.setFont(customFont);
         label3.setForeground(Color.WHITE);
         label3.setHorizontalAlignment(JLabel.CENTER);
-        label3.setBounds(0, 750, 700, 60);
+        label3.setBounds(0, 720, 700, 60);
         panel.add(label3);
 
         textField1 = new JTextField("New username");
@@ -148,7 +148,7 @@ public class Settings extends JDialog {
         theme1.setFont(customFont);
         theme1.setOpaque(false);
         theme1.setHorizontalAlignment(JButton.CENTER);
-        theme1.setBounds(140, 905, 100, 90);
+        theme1.setBounds(140, 825, 100, 90);
         theme1.setFocusPainted(false);
         theme1.setContentAreaFilled(false);
         theme1.setBorderPainted(true);
@@ -160,7 +160,7 @@ public class Settings extends JDialog {
         theme2.setFont(customFont);
         theme2.setOpaque(false);
         theme2.setHorizontalAlignment(JButton.CENTER);
-        theme2.setBounds(300, 905, 100, 90);
+        theme2.setBounds(300, 825, 100, 90);
         theme2.setFocusPainted(false);
         theme2.setContentAreaFilled(false);
         theme2.setBorderPainted(true);
@@ -172,7 +172,7 @@ public class Settings extends JDialog {
         theme3.setFont(customFont);
         theme3.setOpaque(false);
         theme3.setHorizontalAlignment(JButton.CENTER);
-        theme3.setBounds(460, 905, 100, 90);
+        theme3.setBounds(460, 825, 100, 90);
         theme3.setFocusPainted(false);
         theme3.setContentAreaFilled(false);
         theme3.setBorderPainted(true);
@@ -185,7 +185,7 @@ public class Settings extends JDialog {
         reset.setForeground(Color.BLACK);
         reset.setOpaque(false);
         reset.setHorizontalAlignment(JButton.CENTER);
-        reset.setBounds(250, 1060, 200, 60);
+        reset.setBounds(250, 980, 200, 60);
         reset.setFocusPainted(false);
         reset.setContentAreaFilled(false);
         reset.setBorderPainted(false);
@@ -199,7 +199,7 @@ public class Settings extends JDialog {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setBounds(0, 0, 700, 700);
-        panel.setPreferredSize(new Dimension(700, 2160));
+        panel.setPreferredSize(new Dimension(700, 1070));
         getContentPane().add(scrollPane);
     }
 
