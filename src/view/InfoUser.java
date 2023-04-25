@@ -23,22 +23,24 @@ public class InfoUser extends JDialog {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(c2);
+                g.setColor(c3);
                 g.fillRoundRect(100, 20, 400, 90, 80, 80);
-                g.setColor(c5);
+                g.setColor(Color.WHITE);
                 g.setFont(customFont.deriveFont(40f));
                 g.drawString("Informations", 175, 75);
+                g.setColor(c3);
                 g.fillRoundRect(35, 190, 250, 80, 80, 80);
                 g.fillRoundRect(315, 190, 250, 80, 80, 80);
                 g.fillRoundRect(35, 360, 250, 80, 80, 80);
                 g.fillRoundRect(315, 360, 250, 80, 80, 80);
+                g.setColor(Color.WHITE);
                 g.setFont(customFont.deriveFont(30f));
                 g.drawString("Nom", 125, 180);
                 g.drawString("Prénom", 380, 180);
                 g.drawString("Pseudo", 110, 350);
                 g.drawString("Role", 410, 350);
 
-                g.setColor(c4);
+                g.setColor(Color.WHITE);
                 g.setFont(customFont.deriveFont(25f));
                 FontMetrics metrics = g.getFontMetrics(customFont.deriveFont(25f));
                 int x1 = (330 - metrics.stringWidth(user.getLastName())) / 2;
@@ -53,7 +55,7 @@ public class InfoUser extends JDialog {
                 }
             }
         };
-        panel.setBackground(c1);
+        panel.setBackground(c2);
         panel.setLayout(null);
 
         String[] options = {"ADMINISTRATOR", "MODERATOR", "USER"};
@@ -62,20 +64,9 @@ public class InfoUser extends JDialog {
         comboBox.setFont(customFont.deriveFont(20f));
         comboBox.setEditable(true);
         comboBox.setFocusable(false);
+        comboBox.setBackground(c4);
         comboBox.setSelectedItem(user.getPermission().name());
         comboBox.setActionCommand("newRole");
-
-//        comboBox.addActionListener(e -> {
-//            String selected = (String) comboBox.getSelectedItem();
-//            if (selected != null) {
-//                switch (selected) {
-//                    case "ADMINISTRATOR" -> user.setPermission(User.Permission.ADMINISTRATOR);
-//                    case "MODERATOR" -> user.setPermission(User.Permission.MODERATOR);
-//                    case "USER" -> user.setPermission(User.Permission.USER);
-//                }
-//            }
-//            userDao.update(user);
-//        });
         panel.add(comboBox);
 
         if(!currentUser.getPermission().equals(User.Permission.ADMINISTRATOR)){
