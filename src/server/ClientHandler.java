@@ -6,6 +6,7 @@ import model.user.Administrator;
 import model.user.Moderator;
 import model.user.User;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -62,6 +63,7 @@ public class ClientHandler extends Thread {
         controller.getUsers().get(Integer.parseInt(newUser[0])-1).setLastConnectionTime(date);
         if (controller.getCurrentUser().getId() == (Integer.parseInt(newUser[0]))) {
             controller.setCurrentUser(controller.getUsers().get(Integer.parseInt(newUser[0])-1));
+            JOptionPane.showMessageDialog(null, "Your status as been changed by an administrator");
         }
         controller.getView2().updateNonCurrentWithFullArray(controller.getUsers());
         this.controller.getView2().repaint();
@@ -81,6 +83,7 @@ public class ClientHandler extends Thread {
         if (controller.getCurrentUser() != null) {
             if (controller.getCurrentUser().getId() == (Integer.parseInt(newUser[0])) && newUser[7].equals("BANNED")) {
                 controller.getCurrentUser().setAccess(User.Access.BANNED);
+                JOptionPane.showMessageDialog(null, "You have been banned by an administrator");
                 controller.disconnection(false);
             }else {
                 controller.getView2().updateNonCurrentWithFullArray(controller.getUsers());
