@@ -6,17 +6,14 @@ import DAO.UserDao;
 import model.Log;
 import model.Message;
 import model.user.User;
-import view.*;
-import server.ChatcheurThread;
 import view.Menu;
+import view.*;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,14 +22,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Objects;
 
 public class ClientController implements ActionListener {
+
     private final LogDao logDao = new LogDao();
     private final MessageDao messageDao = new MessageDao();
     private final UserDao userDao = new UserDao();
@@ -50,6 +46,14 @@ public class ClientController implements ActionListener {
     private PrintWriter out;
     private Color C1, C2, C3, C4, C5, C6;
 
+    /**
+     * Builer for the class
+     * @param users list of user from the DB
+     * @param logs list of logs from the DB
+     * @param messages lsit of messages from the DB
+     * @param view the view to control
+     * @param socket the socket of the server
+     */
     public ClientController(List<User> users, List<Log> logs, List<Message> messages, Menu view, Socket socket) {
         this.currentUser = null;
         this.users = users;
@@ -70,6 +74,11 @@ public class ClientController implements ActionListener {
         }
     }
 
+    /**
+     * This function cost a string input
+     * @param input password to be costed
+     * @return the costed password
+     */
     public static String sha256(String input) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -85,32 +94,32 @@ public class ClientController implements ActionListener {
 
     }
 
+    //--------------------------------GETTER AND SETTER BASICS------------------
     public List<User> getUsers() {
         return users;
-    }
-
-    public List<Log> getLogs() {
-        return logs;
-    }
-
-    public void setLogs(List<Log> logs) {
-        this.logs = logs;
     }
 
     public List<Message> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
-    }
-
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
     }
 
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
 
     //--------------------------CONNECTION-------------------------------
+
+    /**
+     * This function search for a matching username and password and does all the actions
+     * related to the connection like managing the windows and telling the server the connection
+     * @param username username of the user in the DB
+     * @param psw password of the user in the DB
+     */
     public void connection(String username, String psw) {
         boolean userFinded = false;
         //On parcourt tous les users
@@ -151,6 +160,10 @@ public class ClientController implements ActionListener {
         //view2.repaint();
     }
 
+    /**
+     * This function send to the DB the connection of the user
+     * @param user the user connected
+     */
     public void connectionToDB(User user) {
         //On met a jour BDD
         this.userDao.update(user);
@@ -160,6 +173,9 @@ public class ClientController implements ActionListener {
         logDao.create(logConnection);
     }
 
+    /**
+     * This function manages windows once the connection is established
+     */
     public void gererFenetresConnection() {
         //On crée fenetre
         try {
@@ -181,6 +197,10 @@ public class ClientController implements ActionListener {
 
     //-----------------------------MESSAGE---------------------------------
 
+    /**
+     * This function send the message to the server and update the view
+     * @param message the new message to send
+     */
     public void send(String message) {
         if (view2.getTextField().getText().contains("'")) {
             message = message.replace("'", "‘");
@@ -224,6 +244,12 @@ public class ClientController implements ActionListener {
     }
 
     //-------------------------DISCONNECTION--------------------------------------
+
+    /**
+     * This function disconnect the user from the client does all the actions
+     * related to the disconnection
+     * @param sendToServer if true it will send the disconnection to the server
+     */
     public void disconnection(boolean sendToServer) {
         this.currentUser.setState(User.State.OFFLINE);
         if (sendToServer) sendToServerDisconnection();
@@ -235,6 +261,9 @@ public class ClientController implements ActionListener {
         gererFenetresDisconnection();
     }
 
+    /**
+     * This function manages windows once the disconnection is established
+     */
     public void gererFenetresDisconnection() {
         //On ferme les autres fenetres
         if (view3 != null) {
@@ -252,6 +281,9 @@ public class ClientController implements ActionListener {
         }
     }
 
+    /**
+     * This function manages windows before the disconnection is established
+     */
     public void gererFenetresLogOut() {
         view3 = new LogOut(view2, C1, C2, C3, C4, C5, C6);
         view3.setVisible(true);
@@ -270,6 +302,10 @@ public class ClientController implements ActionListener {
 
     //----------------------------------BANNISSEMENT-----------------------------------------
 
+    /**
+     * This function ban a user, update the view and send to the server the kick
+     * @param i represent the user to ban
+     */
     public void bannissement(int i) {
         //On cree nouvelle list sans le current user
         List<User> nonCurrentUsers = new ArrayList<>();
@@ -321,18 +357,31 @@ public class ClientController implements ActionListener {
     }
 
     //-----------------------------------ENVOIE SERVEUR-----------------------------------------
+
+    /**
+     * This function send the connection of the current user to the server
+     */
     public void sendToServerConnection() {
         this.out.println("Connection: " + this.currentUser.getUserName() + " connected to server " + this.currentUser);
     }
 
+    /**
+     * This function send a ban to the server
+     */
     public void sendToServerChange(User userChanged) {
         this.out.println("Change: " + userChanged);
     }
 
+    /**
+     * This function send the change of role of a user to the server
+     */
     public void sendToServerRole(User userChanged) {
         this.out.println("Role: " + userChanged);
     }
 
+    /**
+     * This function send a message of the current user to the server
+     */
     public void sendToServerMessage(Message message) {
         try {
             this.out.println("Message de " + this.currentUser.getUserName() + " : " + message);
@@ -341,15 +390,25 @@ public class ClientController implements ActionListener {
         }
     }
 
+    /**
+     * This function send the disconnection of the current user to the server
+     */
     public void sendToServerDisconnection() {
         this.out.println("Disconnection: " + currentUser.getUserName() + " disconnected from server " + this.currentUser);
     }
 
+    /**
+     * This function send end to the server
+     */
     public void sendToServeurEnd() {
         this.out.println("End");
     }
 
     //-------------------------------------PASSWORD-------------------------------------------
+
+    /**
+     * This function allows the user to change his password
+     */
     public void mdpOublie() {
         try {
             view4 = new NewPassword(C1, C2, C3, C4, C5, C6);
@@ -360,6 +419,9 @@ public class ClientController implements ActionListener {
         view4.setVisible(true);
     }
 
+    /**
+     * This function change the password of the current user
+     */
     public void newMdp() {
         boolean userExist = false;
         for (User user : users) {
@@ -391,6 +453,10 @@ public class ClientController implements ActionListener {
     }
 
     //-----------------------------------STATS------------------------------------------------
+
+    /**
+     * This function generates stats related to the user
+     */
     public void pageStats() {
         try {
             view5 = new Stats(getTypeUser(), getTypeModerator(), getTypeAdministrator(),
@@ -493,6 +559,9 @@ public class ClientController implements ActionListener {
         return view2;
     }
 
+    /**
+     * This function manages the windows related to the settings
+     */
     public void pageSettings() {
         try {
             view6 = new Settings(C1, C2, C3, C4, C5, C6);
@@ -503,6 +572,9 @@ public class ClientController implements ActionListener {
         view6.setVisible(true);
     }
 
+    /**
+     * This function changes the username of the current user
+     */
     public void changeUsn() {
         if (!Objects.equals(view6.getTextField1().getText(), "")) {
             currentUser.setUserName(view6.getTextField1().getText());
@@ -514,6 +586,9 @@ public class ClientController implements ActionListener {
         }
     }
 
+    /**
+     * This function changes the password of the current user
+     */
     public void changePsswrd() {
         if (!Objects.equals(view6.getTextField2().getText(), "")) {
             currentUser.setPassword(sha256(view6.getTextField2().getText()));
@@ -560,6 +635,9 @@ public class ClientController implements ActionListener {
         }
     }
 
+    /**
+     * This function changes the colors of the client
+     */
     public void setTheme1() {
         C1 = new Color(244, 225, 214);
         C2 = new Color(128, 14, 35);
@@ -583,6 +661,9 @@ public class ClientController implements ActionListener {
         pageSettings();
     }
 
+    /**
+     * This function changes the colors of the client
+     */
     public void setTheme2() {
         C1 = new Color(254, 232, 199);
         C2 = new Color(20, 79, 89);
@@ -606,6 +687,9 @@ public class ClientController implements ActionListener {
         pageSettings();
     }
 
+    /**
+     * This function changes the colors of the client
+     */
     public void setTheme3() {
         C1 = new Color(255, 246, 236);
         C2 = new Color(248, 146, 17);
@@ -629,6 +713,9 @@ public class ClientController implements ActionListener {
         pageSettings();
     }
 
+    /**
+     * This function changes the colors of the client
+     */
     public void addImage() {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new FileNameExtensionFilter("Images", "jpg", "jpeg", "png", "gif"));
@@ -645,6 +732,9 @@ public class ClientController implements ActionListener {
         }
     }
 
+    /**
+     * This function changes the role of the user selected
+     */
     public void newRole() {
         String selected = (String) view7.getComboBox().getSelectedItem();
         User user = users.get(view7.getSelectedUser().getId() - 1);
@@ -659,6 +749,9 @@ public class ClientController implements ActionListener {
         userDao.update(user);
     }
 
+    /**
+     * This function change the status of the current user
+     */
     public void changeUserStatus() {
         switch (currentUser.getState()) {
             case ONLINE -> {
@@ -692,6 +785,11 @@ public class ClientController implements ActionListener {
     }
 
     //------------------------------LISTENERS------------------------------------------
+
+    /**
+     * This function implements the listener for the different buttons of the view
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         String[] actionCommand = e.getActionCommand().split(" ");
@@ -762,10 +860,4 @@ public class ClientController implements ActionListener {
             case "reset" -> resetColors();
         }
     }
-
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
-    //Listener pour bouton connection
 }
