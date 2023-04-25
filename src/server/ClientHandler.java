@@ -131,7 +131,7 @@ public class ClientHandler extends Thread {
             if (controller.getCurrentUser().getId() == (Integer.parseInt(newUser[0])) && newUser[7].equals("BANNED")) {
                 controller.getCurrentUser().setAccess(User.Access.BANNED);
                 JOptionPane.showMessageDialog(null, "You have been banned by an administrator");
-                controller.disconnection(false);
+                controller.disconnection(true);
             } else {
                 controller.getView2().updateNonCurrentWithFullArray(controller.getUsers());
             }
