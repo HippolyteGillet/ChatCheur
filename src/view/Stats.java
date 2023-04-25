@@ -1,13 +1,10 @@
 package view;
 
-import controller.ClientController;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Objects;
 
 import model.user.User;
 import org.jfree.chart.ChartFactory;
@@ -26,13 +23,13 @@ public class Stats extends JDialog{
                  ArrayList<User> usersOnline, ArrayList<User> usersAway, ArrayList<User> usersOffline,
                  ArrayList<User> banned, ArrayList<Integer> messagesPerHour, ArrayList<Integer> connectionsPerHour,
                  ArrayList<User> topUsers, Color c1, Color c2, Color c3, Color c4, Color c5, Color c6) throws IOException, FontFormatException {
+        // Initialize the JDialog
         setTitle("Statitics");
         setBounds(400, 80, 700, 700);
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(25f);
-        // Création du JPanel et ajout à la JDialog
         JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -41,7 +38,6 @@ public class Stats extends JDialog{
                 g.setFont(customFont.deriveFont(30f));
             }
         };
-        //panel.setBackground(new Color(238, 213, 173));
         panel.setBackground(c2);
         panel.setLayout(null);
         panel.setVisible(true);
@@ -61,21 +57,15 @@ public class Stats extends JDialog{
 
         PiePlot piePlot = (PiePlot) chart.getPlot();
 
-        //change pieChart background color
         piePlot.setBackgroundPaint(c1);
-        //change blocks background pieChart
         piePlot.setSectionPaint("USER",new Color(Color.WHITE.getRGB()));
         piePlot.setSectionPaint("MODERATOR",new Color(Color.GRAY.getRGB()));
         piePlot.setSectionPaint("ADMIN",c3);
 
-
         ChartPanel chartPanel = new ChartPanel(chart);
-        //panel1.removeAll();
-        //chartPanel.getPreferredSize();
         chartPanel.validate();
         chartPanel.setBounds(50,10, 600, 360);
         panel.add(chartPanel);
-        //chartPanel.setVisible(true);
 
         //----------------------Graph 2--------------------------
 
@@ -94,18 +84,14 @@ public class Stats extends JDialog{
 
         piePlot = (PiePlot) chart.getPlot();
 
-        //change pieChart background color
         piePlot.setBackgroundPaint(c1);
-        //change blocks background pieChart
         piePlot.setSectionPaint("ONLINE",new Color(Color.WHITE.getRGB()));
         piePlot.setSectionPaint("AWAY",new Color(130, 61, 24));
         piePlot.setSectionPaint("OFFLINE", c3);
         piePlot.setSectionPaint("BAN",new Color(Color.GRAY.getRGB()));
 
         chartPanel= new ChartPanel(chart);
-        //chartPanel.setPreferredSize(new Dimension(20, 8));
         chartPanel.getPreferredSize();
-        //panel1.removeAll();
         chartPanel.setBounds(50, 400, 600, 360);
         panel.add(chartPanel);
         chartPanel.validate();
@@ -142,7 +128,6 @@ public class Stats extends JDialog{
         //----------------------Graph 4--------------------------
 
         barDataset = new DefaultCategoryDataset();
-
         for (int i = 0; i < 24; i++) {
             barDataset .addValue(connectionsPerHour.get(i), "",(i+1) + "");
         }
@@ -172,8 +157,8 @@ public class Stats extends JDialog{
 
         JLabel topTitle = new JLabel("Top Users");
         topTitle.setFont(customFont.deriveFont(Font.BOLD, 32f));
-        topTitle.setForeground(Color.BLACK);
-        topTitle.setBounds(200, 1580, 300, 60);
+        topTitle.setForeground(Color.WHITE);
+        topTitle.setBounds(200, 1600, 300, 60);
         topTitle.setHorizontalAlignment(JLabel.CENTER);
         panel.add(topTitle);
 
@@ -225,10 +210,5 @@ public class Stats extends JDialog{
         scrollPane.setBounds(0, 0, 700, 700);
         panel.setPreferredSize(new Dimension(700, 2160));
         getContentPane().add(scrollPane);
-
-    }
-
-    public void addAllListener(ClientController clientController) {
-        //buttonOk.addActionListener(clientController);
     }
 }

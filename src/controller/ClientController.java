@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class ClientController implements ActionListener {
-
     private final LogDao logDao = new LogDao();
     private final MessageDao messageDao = new MessageDao();
     private final UserDao userDao = new UserDao();
@@ -210,9 +209,9 @@ public class ClientController implements ActionListener {
             Log logToSend = new Log(currentUser.getId(), Log.TypeLog.MESSAGE);
             //On met a jour la vue
             messages.add(messagToSend);
-            int y = view2.calculY(messages);
+            int y = view2.calculateY(messages);
             if (message.charAt(0) == '/') {
-                ImageIcon imageIcon = new ImageIcon("imageEnvoyees" + message);
+                ImageIcon imageIcon = new ImageIcon("imgSent" + message);
                 int imageIconWidth = imageIcon.getIconWidth();
                 int imageIconHeight = imageIcon.getIconHeight();
                 double ratio = (double) imageIconWidth / (double) imageIconHeight;
@@ -274,7 +273,7 @@ public class ClientController implements ActionListener {
         view2 = null;
         //On crée la fenetre de base
         try {
-            view1 = new Menu(users, logs, messages, C1, C2, C3, C4, C5, C6);
+            view1 = new Menu(C1, C2, C3, C4, C5, C6);
             view1.addAllListener(this);
         } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
@@ -285,7 +284,7 @@ public class ClientController implements ActionListener {
      * This function manages windows before the disconnection is established
      */
     public void gererFenetresLogOut() {
-        view3 = new LogOut(view2, C1, C2, C3, C4, C5, C6);
+        view3 = new LogOut(C1, C2, C3, C4, C5, C6);
         view3.setVisible(true);
         view3.addAllListener(this);
     }
@@ -320,13 +319,9 @@ public class ClientController implements ActionListener {
             }
 
         }
-
-        //Si l'utilisateur est banni, on le débanni, sinon on le banni
         if (userToChange.getAccess().equals(User.Access.BANNED)) {
             int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir débannir cet utilisateur ?", "Confirmer le débannissement", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
-                //A trouver une solution pour le i
-                //view2.setIconBan(positionIcon);
                 for (User userJava : users) {
                     if (userJava.getId() == userToChange.getId()) {
                         userJava.setAccess(User.Access.ACCEPTED);
@@ -340,7 +335,6 @@ public class ClientController implements ActionListener {
         } else {
             int response = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir bannir cet utilisateur ?", "Confirmer le bannissement", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
-                //view2.setIconUnban(positionIcon);
                 for (User userJava : users) {
                     if (userJava.getId() == userToChange.getId()) {
                         userJava.setAccess(User.Access.BANNED);
@@ -409,7 +403,7 @@ public class ClientController implements ActionListener {
     /**
      * This function allows the user to change his password
      */
-    public void mdpOublie() {
+    public void forgotPassword() {
         try {
             view4 = new NewPassword(C1, C2, C3, C4, C5, C6);
             view4.addAllListener(this);
@@ -439,12 +433,12 @@ public class ClientController implements ActionListener {
                 view4.dispose();
                 view4 = null;
             } else {
-                JOptionPane.showMessageDialog(null, "Les mots de passe ne correspondent pas", "Erreur", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Unmatching passwords", "Error", JOptionPane.ERROR_MESSAGE);
                 view4.setTextFieldNewPassword("");
                 view4.setTextFieldConfirmPassword("");
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Veuillez entrer un User existant", "Erreur", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Please enter an existing user", "Error", JOptionPane.ERROR_MESSAGE);
             view4.setTextFieldUserName("");
             view4.setTextFieldNewPassword("");
             view4.setTextFieldConfirmPassword("");
@@ -539,14 +533,6 @@ public class ClientController implements ActionListener {
         return topUsers;
     }
 
-    public void contenuIntrouvable() {
-        MessageDao messageDao = new MessageDao();
-        messageDao.delete(messages.get(messages.size() - 1).getId());
-        messages.remove(messages.size() - 1);
-        JOptionPane.showMessageDialog(view2, "Image introuvable, veuillez charger votre image sous le bon nom dans le fichier imageEnvoyees", "Erreur de chargement d'image", JOptionPane.ERROR_MESSAGE);
-        view2.repaint();
-    }
-
     public void setUser(User user) {
         this.users.set(user.getId() - 1, user);
     }
@@ -597,7 +583,7 @@ public class ClientController implements ActionListener {
             view6.dispose();
             view6 = null;
         } else {
-            JOptionPane.showMessageDialog(view6, "Veuillez entrer un mot de passe", "Erreur de changement de mot de passe", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(view6, "Please write a password", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -721,7 +707,7 @@ public class ClientController implements ActionListener {
         chooser.setFileFilter(new FileNameExtensionFilter("Images", "jpg", "jpeg", "png", "gif"));
         if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
-            File destination = new File("imageEnvoyees/" + file.getName());
+            File destination = new File("imgSent/" + file.getName());
             try {
                 Files.copy(file.toPath(), destination.toPath());
             } catch (IOException e) {
@@ -821,9 +807,9 @@ public class ClientController implements ActionListener {
             case "send" -> send(view2.getTextField().getText());
 
             //Gère l'oublie de mdp
-            case "mdpOublie" -> {
+            case "forgotPassword" -> {
                 initialColors();
-                mdpOublie();
+                forgotPassword();
             }
 
             //Gère les stats
@@ -831,9 +817,6 @@ public class ClientController implements ActionListener {
                 initialColors();
                 pageStats();
             }
-
-            case "SmileyIntrouvable", "ImageIntrouvable" -> contenuIntrouvable();
-
             case "Settings" -> {
                 initialColors();
                 pageSettings();

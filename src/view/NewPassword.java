@@ -11,19 +11,19 @@ import java.io.IOException;
 
 public class NewPassword extends JDialog {
 
-    private JButton buttonOk;
+    private final JButton buttonOk;
 
-    private JTextField textFieldUserName;
+    private final JTextField textFieldUserName;
 
-    private JTextField textFieldNewPassword, textFieldConfirmPassword;
+    private final JTextField textFieldNewPassword, textFieldConfirmPassword;
 
     public NewPassword(Color c1, Color c2, Color c3, Color c4, Color c5, Color c6) throws IOException, FontFormatException {
+        // Initialization of the JFrame
         setBounds(420, 150, 600, 600);
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(25f);
 
-        // Création du JPanel et ajout à la JDialog
         JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -37,14 +37,15 @@ public class NewPassword extends JDialog {
                 g.fillRoundRect(125, 370, 350, 70, 70, 70);
                 g.setColor(Color.WHITE);
                 g.setFont(customFont.deriveFont(30f));
-                g.drawString("Changer votre", 200, 55);
-                g.drawString("mot de passe", 210, 95);
+                g.drawString("Change your", 210, 55);
+                g.drawString("password", 225, 95);
             }
         };
         panel.setBackground(c2);
         panel.setLayout(null);
 
-        textFieldUserName = new JTextField("Utilisateur");
+        // User textField
+        textFieldUserName = new JTextField("User");
         textFieldUserName.setHorizontalAlignment(JTextField.CENTER);
         textFieldUserName.setBounds(125, 150, 350, 70);
         textFieldUserName.setFont(customFont);
@@ -55,7 +56,7 @@ public class NewPassword extends JDialog {
         textFieldUserName.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (textFieldUserName.getText().equals("Utilisateur")) {
+                if (textFieldUserName.getText().equals("User")) {
                     textFieldUserName.setText("");
                     textFieldUserName.setForeground(Color.BLACK);
                 }
@@ -64,13 +65,14 @@ public class NewPassword extends JDialog {
             public void focusLost(FocusEvent e) {
                 if (textFieldUserName.getText().isEmpty()) {
                     textFieldUserName.setForeground(Color.GRAY);
-                    textFieldUserName.setText("Utilisateur");
+                    textFieldUserName.setText("User");
                 }
             }
         });
         panel.add(textFieldUserName);
 
-        textFieldNewPassword = new JTextField("Nouveau mot de passe");
+        // Password textField
+        textFieldNewPassword = new JTextField("New Password");
         textFieldNewPassword.setHorizontalAlignment(JTextField.CENTER);
         textFieldNewPassword.setBounds(125, 260, 350, 70);
         textFieldNewPassword.setFont(customFont);
@@ -81,7 +83,7 @@ public class NewPassword extends JDialog {
         textFieldNewPassword.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (textFieldNewPassword.getText().equals("Nouveau mot de passe")) {
+                if (textFieldNewPassword.getText().equals("New Password")) {
                     textFieldNewPassword.setText("");
                     textFieldNewPassword.setForeground(Color.BLACK);
                 }
@@ -90,13 +92,14 @@ public class NewPassword extends JDialog {
             public void focusLost(FocusEvent e) {
                 if (textFieldNewPassword.getText().isEmpty()) {
                     textFieldNewPassword.setForeground(Color.GRAY);
-                    textFieldNewPassword.setText("Nouveau mot de passe");
+                    textFieldNewPassword.setText("New Password");
                 }
             }
         });
         panel.add(textFieldNewPassword);
 
-        textFieldConfirmPassword = new JTextField("Confirmer mot de passe");
+        // Confirm Password textField
+        textFieldConfirmPassword = new JTextField("Confirm Password");
         textFieldConfirmPassword.setHorizontalAlignment(JTextField.CENTER);
         textFieldConfirmPassword.setBounds(125, 370, 350, 70);
         textFieldConfirmPassword.setFont(customFont);
@@ -107,7 +110,7 @@ public class NewPassword extends JDialog {
         textFieldConfirmPassword.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (textFieldConfirmPassword.getText().equals("Confirmer mot de passe")) {
+                if (textFieldConfirmPassword.getText().equals("Confirm Password")) {
                     textFieldConfirmPassword.setText("");
                     textFieldConfirmPassword.setForeground(Color.BLACK);
                 }
@@ -116,13 +119,13 @@ public class NewPassword extends JDialog {
             public void focusLost(FocusEvent e) {
                 if (textFieldConfirmPassword.getText().isEmpty()) {
                     textFieldConfirmPassword.setForeground(Color.GRAY);
-                    textFieldConfirmPassword.setText("Confirmer mot de passe");
+                    textFieldConfirmPassword.setText("Confirm Password");
                 }
             }
         });
-
         panel.add(textFieldConfirmPassword);
 
+        // Ok button to change the password
         buttonOk = new JButton("Ok !");
         buttonOk.setActionCommand("Ok");
         buttonOk.setBounds(450, 480, 100, 60);
@@ -130,6 +133,7 @@ public class NewPassword extends JDialog {
         buttonOk.setForeground(Color.WHITE);
         buttonOk.setBackground(c3);
         buttonOk.setBorder(BorderFactory.createLineBorder(c2));
+        buttonOk.setFocusable(false);
         buttonOk.setFocusPainted(false);
         panel.add(buttonOk);
 
