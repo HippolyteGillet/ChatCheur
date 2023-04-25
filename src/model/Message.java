@@ -1,7 +1,6 @@
 package model;
 
 import java.time.LocalDateTime;
-
 import static java.time.LocalDateTime.now;
 
 public class Message {
@@ -10,6 +9,9 @@ public class Message {
     private LocalDateTime localDateTime;
     private String content;
 
+    /**
+     * Constructors
+     */
     public Message() {
         this.id = -1;
         this.user_id = -1;
@@ -38,6 +40,9 @@ public class Message {
         this.content = message.getContent();
     }
 
+    /**
+     * getters and setters for id
+     */
     public int getId() {
         return id;
     }
@@ -46,30 +51,30 @@ public class Message {
         this.id = id;
     }
 
+    /**
+     * getters and setters for user id
+     */
     public int getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
-
+    /**
+     * getters and setters for message date and time
+     */
     public LocalDateTime getLocalDateTime() {
         return localDateTime;
     }
 
-    public void setLocalDateTime(LocalDateTime localDateTime) {
-        this.localDateTime = localDateTime;
-    }
-
+    /**
+     * getters and setters for the content
+     */
     public String getContent() {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
+    /**
+     * To string method
+     */
     @Override
     public String toString() {
         return "Message{" + "id=" + this.id + ", User_id=" + this.user_id + ", TimeStamp=" + this.localDateTime + ", Content=" + this.content;
