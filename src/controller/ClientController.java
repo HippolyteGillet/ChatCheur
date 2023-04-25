@@ -110,7 +110,6 @@ public class ClientController implements ActionListener {
     }
 
 
-
     //--------------------------CONNECTION-------------------------------
     public void connection(String username, String psw) {
         boolean userFinded = false;
@@ -131,7 +130,7 @@ public class ClientController implements ActionListener {
                             gererFenetresConnection();
                             sendToServerConnection();
                             connectionToDB(this.currentUser);
-                        }else {
+                        } else {
                             JOptionPane.showMessageDialog(null, "Vous êtes déjà connecté sur un autre appareil");
                         }
                     } else {
@@ -189,9 +188,7 @@ public class ClientController implements ActionListener {
         if (!message.equals("Saisir du texte") && !message.isEmpty() && currentUser != null) {
             Message messagToSend = new Message(currentUser.getId(), message, messageDao.getLastID() + 1);
             Log logToSend = new Log(currentUser.getId(), Log.TypeLog.MESSAGE);
-            sendToServerMessage(messagToSend);
             //On met a jour la vue
-            view2.setInputReceived(true);
             messages.add(messagToSend);
             int y = view2.calculY(messages);
             if (message.charAt(0) == '/') {
@@ -216,6 +213,7 @@ public class ClientController implements ActionListener {
             view2.getTextField().setText(null);
             view2.repaint();
 
+            sendToServerMessage(messagToSend);
             try {
                 messageDao.create(messagToSend);
                 logDao.create(logToSend);
@@ -347,7 +345,7 @@ public class ClientController implements ActionListener {
         this.out.println("Disconnection: " + currentUser.getUserName() + " disconnected from server " + this.currentUser);
     }
 
-    public void sendToServeurEnd(){
+    public void sendToServeurEnd() {
         this.out.println("End");
     }
 
@@ -363,16 +361,31 @@ public class ClientController implements ActionListener {
     }
 
     public void newMdp() {
-        if (!Objects.equals(view6.getTextField2().getText(), "")) {
-            currentUser = userDao.findUserName(view4.getTextFieldUserName());
-            currentUser.setPassword(sha256(view4.getTextFieldNewPassword()));
-            userDao.update(currentUser);
-            sendToServerChange(currentUser);
-            currentUser = null;
-            view4.dispose();
-            view4 = null;
+        boolean userExist = false;
+        for (User user : users) {
+            if (user.getUserName().equals(view4.getTextFieldUserName())) {
+                userExist = true;
+            }
+        }
+        if (userExist) {
+            if (Objects.equals(view4.getTextFieldNewPassword(), view4.getTextFieldConfirmPassword())) {
+                currentUser = userDao.findUserName(view4.getTextFieldUserName());
+                currentUser.setPassword(sha256(view4.getTextFieldNewPassword()));
+                userDao.update(currentUser);
+                sendToServerChange(currentUser);
+                currentUser = null;
+                view4.dispose();
+                view4 = null;
+            } else {
+                JOptionPane.showMessageDialog(null, "Les mots de passe ne correspondent pas", "Erreur", JOptionPane.ERROR_MESSAGE);
+                view4.setTextFieldNewPassword("");
+                view4.setTextFieldConfirmPassword("");
+            }
         } else {
-            JOptionPane.showMessageDialog(null, "Veuillez entrer un mot de passe", "Erreur", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Veuillez entrer un User existant", "Erreur", JOptionPane.ERROR_MESSAGE);
+            view4.setTextFieldUserName("");
+            view4.setTextFieldNewPassword("");
+            view4.setTextFieldConfirmPassword("");
         }
 
     }
@@ -508,17 +521,17 @@ public class ClientController implements ActionListener {
             sendToServerChange(currentUser);
             view6.dispose();
             view6 = null;
-        }else{
+        } else {
             JOptionPane.showMessageDialog(view6, "Veuillez entrer un mot de passe", "Erreur de changement de mot de passe", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public void resetColors(){
+    public void resetColors() {
         C1 = new Color(246, 245, 254);
         C2 = new Color(251, 108, 122);
-        C3 = new Color( 21,21,21);
-        C4 = new Color(111,35,255);
-        C5 = new Color(128,101,254);
+        C3 = new Color(21, 21, 21);
+        C4 = new Color(111, 35, 255);
+        C5 = new Color(128, 101, 254);
         C6 = Color.BLACK;
         view2.dispose();
         try {
@@ -529,28 +542,29 @@ public class ClientController implements ActionListener {
             view2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             view2.setLocationRelativeTo(null);
             view2.repaint();
-        }catch (IOException | FontFormatException ex) {
+        } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
         }
         view6.dispose();
         pageSettings();
     }
 
-    public void initialColors(){
+    public void initialColors() {
         if (C1 == null && C2 == null && C3 == null && C4 == null && C5 == null && C6 == null) {
             C1 = new Color(246, 245, 254);
             C2 = new Color(251, 108, 122);
-            C3 = new Color( 21,21,21);
-            C4 = new Color(111,35,255);
-            C5 = new Color(128,101,254);
+            C3 = new Color(21, 21, 21);
+            C4 = new Color(111, 35, 255);
+            C5 = new Color(128, 101, 254);
             C6 = Color.BLACK;
         }
     }
-    public void setTheme1(){
+
+    public void setTheme1() {
         C1 = new Color(244, 225, 214);
         C2 = new Color(128, 14, 35);
-        C3 = new Color( 20,38,46);
-        C4 = new Color(37,122,134);
+        C3 = new Color(20, 38, 46);
+        C4 = new Color(37, 122, 134);
         C5 = new Color(63, 168, 158);
         C6 = Color.BLACK;
         view2.dispose();
@@ -562,19 +576,19 @@ public class ClientController implements ActionListener {
             view2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             view2.setLocationRelativeTo(null);
             view2.repaint();
-        }catch (IOException | FontFormatException ex) {
+        } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
         }
         view6.dispose();
         pageSettings();
     }
 
-    public void setTheme2(){
+    public void setTheme2() {
         C1 = new Color(254, 232, 199);
         C2 = new Color(20, 79, 89);
-        C3 = new Color( 1,17,27);
+        C3 = new Color(1, 17, 27);
         C4 = new Color(100, 29, 14);
-        C5 = new Color(251,102,9);
+        C5 = new Color(251, 102, 9);
         C6 = Color.BLACK;
         view2.dispose();
         try {
@@ -585,19 +599,19 @@ public class ClientController implements ActionListener {
             view2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             view2.setLocationRelativeTo(null);
             view2.repaint();
-        }catch (IOException | FontFormatException ex) {
+        } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
         }
         view6.dispose();
         pageSettings();
     }
 
-    public void setTheme3(){
+    public void setTheme3() {
         C1 = new Color(255, 246, 236);
         C2 = new Color(248, 146, 17);
         C3 = Color.BLACK;
-        C4 = new Color(17,24,46);
-        C5 = new Color(102,133,202);
+        C4 = new Color(17, 24, 46);
+        C5 = new Color(102, 133, 202);
         C6 = Color.BLACK;
         view2.dispose();
         try {
@@ -608,7 +622,7 @@ public class ClientController implements ActionListener {
             view2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             view2.setLocationRelativeTo(null);
             view2.repaint();
-        }catch (IOException | FontFormatException ex) {
+        } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
         }
         view6.dispose();
@@ -672,6 +686,7 @@ public class ClientController implements ActionListener {
         currentUser.setState(User.State.AWAY);
         userDao.update(currentUser);
         view2.dispose();
+        sendToServerChange(currentUser);
         sendToServeurEnd();
         // Fermer la fenêtre
     }
