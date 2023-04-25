@@ -33,8 +33,10 @@ public class Home extends JFrame {
     private final int MAXWIDTH = 500;
     private final int MAXHEIGHT = 300;
     List<User> nonCurrentUsers;
+    List<User> userList;
 
-    public Home(List<User> userList, List<Message> messageList, String username, Color c1, Color c2, Color c3, Color c4, Color c5, Color c6) throws IOException, FontFormatException {
+    public Home(List<User> userListIn, List<Message> messageList, String username, Color c1, Color c2, Color c3, Color c4, Color c5, Color c6) throws IOException, FontFormatException {
+        userList = userListIn;
         for (User user : userList) {
             if (user.getUserName().equals(username)) {
                 currentUser = user;
@@ -743,6 +745,7 @@ public class Home extends JFrame {
     }
 
     public void updateNonCurrentWithFullArray(List<User> userList) {
+        this.userList = userList;
         nonCurrentUsers = new ArrayList<>();
         for (User user : userList) {
             if (user.getId() != currentUser.getId()) {
