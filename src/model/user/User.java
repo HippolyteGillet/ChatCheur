@@ -18,6 +18,9 @@ public class User {
     private State state;
     private LocalDateTime lastConnectionTime;
 
+    /**
+     * Automatic constructor mainly for the creation of a user in the DAO's classes
+     */
     public User() {
     }
 
@@ -34,14 +37,18 @@ public class User {
         this.lastConnectionTime = lastConnectionTime;
     }
 
+    /**
+     * We decrypt a message with all parameters of an administrator, a moderator or a user, and we create the user
+     * @return a type (ADMINISTRATOR, MODERATOR, USER)
+     */
     public static User convertionMessageIntoUser(String[] user) {
         String[] realUser = new String[15];
-        //Pour chaque case de user on récupère la valeur
+        //For each user cell, we get the value
         for (int i = 0; i < user.length - 5; i++) {
-            //Les valeurs à récupérer sont à partir de la case 5
-            //On sépare le string avec le '='
+            //The values to be recovered are from box 5
+            //Separate the string with the '='.
             String temp = user[i + 5].split("=")[1];
-            //On enlève la virgule de fin
+            //Remove the trailing comma
             realUser[i] = temp.substring(0, temp.length() - 1);
         }
         if (user[0].equals("Connection:")){
@@ -60,13 +67,16 @@ public class User {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Erreur dans la conversion du message en user");
+            System.out.println("Error in converting message to user");
             return null;
         }
         return null;
-        //return new User(Integer.parseInt(realUser[0]), realUser[1], realUser[2], realUser[3], realUser[4], realUser[5], User.State.valueOf(realUser[8]), LocalDateTime.now());
     }
 
+    /**
+     * We decrypt a message with all parameters of a message, and we create a new message
+     * @return a MESSAGE
+     */
     public static Message convertionMessageIntoMessage(String[] message) {
         String[] realMessage = new String[15];
         for (int i = 0; i < message.length - 4; i++) {
@@ -88,20 +98,20 @@ public class User {
         return new Message(Integer.parseInt(realMessage[0]), Integer.parseInt(realMessage[1]), LocalDateTime.now(), realMessage[3]);
     }
 
+    /**
+     * getters and setters for id
+     */
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
-
-        // Pas de update pour l'id car on ne peut pas le changer
-
-        //DAO update:
-        //userDAO.update(this);
-
     }
 
+    /**
+     * getters and setters for username
+     */
     public String getUserName() {
         return userName;
     }
@@ -111,6 +121,9 @@ public class User {
 
     }
 
+    /**
+     * getters and setters for password
+     */
     public String getPassword() {
         return password;
     }
@@ -120,33 +133,30 @@ public class User {
 
     }
 
+    /**
+     * getters and setters for email
+     */
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-
-    }
-
+    /**
+     * getters and setters for first name
+     */
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-
-    }
-
+    /**
+     * getters and setters for last name
+     */
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-
-    }
-
+    /**
+     * getters and setters for permission
+     */
     public Permission getPermission() {
         return this.permission;
     }
@@ -156,6 +166,9 @@ public class User {
 
     }
 
+    /**
+     * getters and setters for access
+     */
     public Access getAccess() {
         return this.access;
     }
@@ -164,6 +177,9 @@ public class User {
         this.access = access;
     }
 
+    /**
+     * getters and setters for state
+     */
     public State getState() {
         return state;
     }
@@ -173,6 +189,9 @@ public class User {
 
     }
 
+    /**
+     * getters and setters for the last connection
+     */
     public LocalDateTime getLastConnectionTime() {
         return lastConnectionTime;
     }
@@ -182,28 +201,17 @@ public class User {
 
     }
 
-    public void connect() {
-        this.state = State.ONLINE;
-        this.lastConnectionTime = LocalDateTime.now();
-    }
-
-    public void disconnect() {
-        this.state = State.OFFLINE;
-    }
-
-    public void away() {
-        this.state = State.AWAY;
-    }
-
-    public void back() {
-        this.state = State.ONLINE;
-    }
-
+    /**
+     * To string method
+     */
     @Override
     public String toString() {
         return "User{" + "id=" + id + ", userName=" + userName + ", password=" + password + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName + ", permission=" + permission + ", status=" + access + ", state=" + state + ", lastConnectionTime=" + lastConnectionTime + '}';
     }
 
+    /**
+     * All the enums
+     */
     public enum Access {
         BANNED,
         ACCEPTED
