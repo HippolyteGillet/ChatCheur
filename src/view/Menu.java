@@ -23,13 +23,13 @@ public class Menu extends JFrame {
     private JButton button, mdpOublie;
     private JLabel label;
 
-    public Menu(List<User> userList, List<Log> logList, List<Message> messageList) throws IOException, FontFormatException {
+    public Menu(List<User> userList, List<Log> logList, List<Message> messageList, Color c1, Color c2, Color c3, Color c4, Color c5, Color c6) throws IOException, FontFormatException {
         // Création de mon conteneur JPanel
         panel = new JPanel(new BorderLayout()) {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.setColor(new Color(20, 48, 46));
+                g.setColor(c3);
                 g.fillRoundRect(100, 40, 500, 125, 120, 120);
                 g.fillRoundRect(200, 500, 300, 75, 60, 60);
                 g.setColor(Color.WHITE);
@@ -48,7 +48,7 @@ public class Menu extends JFrame {
         };
         panel.setLayout(null);
         add(panel);
-        panel.setBackground(new Color(147, 185, 175));
+        panel.setBackground(c2);
         setTitle("ChatCheur");
         setSize(700, 700);
         Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(30f);
@@ -59,7 +59,7 @@ public class Menu extends JFrame {
         textField1.setFont(customFont);
         textField1.setForeground(Color.GRAY);
         textField1.setCaretColor(Color.GRAY);
-        textField1.setBorder(BorderFactory.createLineBorder(new Color(147, 185, 175)));
+        textField1.setBorder(BorderFactory.createLineBorder(c2));
         textField1.setOpaque(false);
         textField1.addFocusListener(new FocusListener() {
             @Override
@@ -87,7 +87,7 @@ public class Menu extends JFrame {
         textField2.setFont(customFont);
         textField2.setForeground(Color.GRAY);
         textField2.setCaretColor(Color.GRAY);
-        textField2.setBorder(BorderFactory.createLineBorder(new Color(147, 185, 175)));
+        textField2.setBorder(BorderFactory.createLineBorder(c2));
         textField2.setOpaque(false);
         textField2.addFocusListener(new FocusListener() {
             @Override

@@ -35,15 +35,15 @@ public class LogOut extends JDialog {
 
                 g.setColor(c3);
                 g.fillRoundRect(50, 40, 300, 70, 60, 60);
-                g.setColor(c5);
+                g.setColor(Color.WHITE);
                 g.setFont(font);
                 g.drawString("Se déconnecter ?", 75, 85);
 
-                g.setColor(c5);
+                g.setColor(c3);
                 g.fillRoundRect(125, 160, 150, 60, 60, 60);
                 g.fillRoundRect(125, 250, 150, 60, 60, 60);
 
-                g.setColor(c3);
+                g.setColor(Color.WHITE);
                 g.drawString("Oui", 170, 200);
                 g.drawString("Non", 170, 290);
 

@@ -15,9 +15,18 @@ import java.util.List;
 import java.util.Locale;
 
 public class LogDao implements DAO<Log> {
+
+    /**
+     * We create a final variable connect to get have access to the database
+     * with getInstance()
+     */
     private final Connection connect = ConnectionDataBaseSQL.getInstance();
 
-    //Méthode pour récupérer un log dans la BDD
+    /**
+     * Function allows us to find an element in the Log table with an ID
+     * @param id ID is single
+     * @return a Log with this id
+     */
     @Override
     public Log find(int id) {
         try (Statement statement = this.connect.createStatement()) {
@@ -39,7 +48,11 @@ public class LogDao implements DAO<Log> {
         return null;
     }
 
-    //Méthode pour ajouter un log dans la BDD
+    /**
+     * Create a new log in the database
+     * @param log Object is that we want to send in the database
+     * @return log
+     */
     @Override
     public Log create(Log log) {
         try (Statement statement = this.connect.createStatement()) {
@@ -53,6 +66,12 @@ public class LogDao implements DAO<Log> {
     }
 
     //Méthode pour modifier les valeurs d'un log dans la BDD
+
+    /**
+     * Update the database
+     * @param log obj is the object that we want tu update in the database
+     * @return log
+     */
     @Override
     public Log update(Log log) {
         try (Statement statement = this.connect.createStatement()) {
@@ -67,7 +86,10 @@ public class LogDao implements DAO<Log> {
         return log;
     }
 
-    //Méthode pour supprimer un modele.log dans la BDD
+    /**
+     * Delete a Log with an ID
+     * @param id The ID is the only identification of the object
+     */
     @Override
     public void delete(int id) {
         try (Statement statement = this.connect.createStatement()) {
@@ -77,6 +99,10 @@ public class LogDao implements DAO<Log> {
         }
     }
 
+    /**
+     * Retrieves all the logs from database
+     * @return all logs
+     */
     public List<Log> retrieveLogsFromDB() {
         List<Log> logs = new ArrayList<>();
         int id = 0;
@@ -96,6 +122,12 @@ public class LogDao implements DAO<Log> {
         return logs;
     }
 
+    /**
+     * We retrieve the number of connections during an hour
+     * @param beginHour or first hour
+     * @param endHour or final hour
+     * @return logs - number of connections between two hours
+     */
     public Integer findConnectionsPerHour(LocalDateTime beginHour, LocalDateTime endHour) {
         int logs = 0;
         try (Statement statement = this.connect.createStatement()) {

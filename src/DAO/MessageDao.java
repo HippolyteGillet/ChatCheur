@@ -16,6 +16,12 @@ public class MessageDao implements DAO<Message> {
     private final Connection connect = ConnectionDataBaseSQL.getInstance();
 
     //Méthode pour récupérer un message dans la BDD
+
+    /**
+     * Function allows us to find an element in the Messages table with an ID
+     * @param id ID is single
+     * @return a Message with the ID
+     */
     @Override
     public Message find(int id) {
         try (Statement statement = this.connect.createStatement()) {
@@ -37,6 +43,11 @@ public class MessageDao implements DAO<Message> {
         return null;
     }
 
+    /**
+     * Create a new log in the database
+     * @param message Object is that we want to send in the database
+     * @return message
+     */
     @Override
     public Message create(Message message) {
         try (Statement statement = this.connect.createStatement()) {
@@ -50,6 +61,11 @@ public class MessageDao implements DAO<Message> {
         return message;
     }
 
+    /**
+     * Update the database
+     * @param message obj is the object that we want tu update in the database
+     * @return message
+     */
     @Override
     public Message update(Message message) {
         try (Statement statement = this.connect.createStatement()) {
@@ -66,6 +82,10 @@ public class MessageDao implements DAO<Message> {
         return message;
     }
 
+    /**
+     * Delete a Message with an ID
+     * @param id The ID is the only identification of the object
+     */
     @Override
     public void delete(int id) {
         try (Statement statement = this.connect.createStatement()) {
@@ -76,6 +96,10 @@ public class MessageDao implements DAO<Message> {
         }
     }
 
+    /**
+     * Retrieves all the messages from database
+     * @return all messages
+     */
     public List<Message> retrieveMessagesFromDB() {
         List<Message> messages = new ArrayList<>();
         int id = 0;
@@ -95,6 +119,12 @@ public class MessageDao implements DAO<Message> {
         return messages;
     }
 
+    /**
+     * We retrieve the number of messages sent during an hour
+     * @param beginHour or first hour
+     * @param endHour or final hour
+     * @return messages - number of messages between two hours
+     */
     public Integer retrieveMessagesEachHour(LocalDateTime beginHour, LocalDateTime endHour) {
         int i = 0;
         try {
@@ -110,6 +140,10 @@ public class MessageDao implements DAO<Message> {
         return i;
     }
 
+    /**
+     * find the 3 top users who sent more messages
+     * @return a ArrayList with the 3 id of the top users
+     */
     public ArrayList<Integer> findTopUsers() {
         ArrayList<Integer> idTopUsers = new ArrayList<>();
         int id = 0;
@@ -126,7 +160,10 @@ public class MessageDao implements DAO<Message> {
         return idTopUsers;
     }
 
-    //Méthode pour compter le nombre de messages dans la BDD
+    /**
+     * Retrieve the last ID in the table
+     * @return last ID
+     */
     public int getLastID() {
         int count = 0;
         try {

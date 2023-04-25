@@ -117,22 +117,23 @@ public class ClientController implements ActionListener {
         //On parcourt tous les users
         for (User user : this.users) {
             //On cherche un user avec le nom et le mdp correspondent
-            //chiffrer le mdp en SHA-256
-
             if (user.getUserName().equals(username)) {
                 if (user.getUserName().equals(username) && user.getPassword().equals(sha256(psw))) {
                     userFinded = true;
                     System.out.println("User trouve : " + username);
                     //On regarde si le user est banni
                     if (user.getAccess().equals(User.Access.ACCEPTED)) {
-                        this.currentUser = user;
-                        this.currentUser.setState(User.State.ONLINE);
-                        this.currentUser.setLastConnectionTime(LocalDateTime.now());
+                        if (!user.getState().equals(User.State.ONLINE)) {
+                            this.currentUser = user;
+                            this.currentUser.setState(User.State.ONLINE);
+                            this.currentUser.setLastConnectionTime(LocalDateTime.now());
 
-                        gererFenetresConnection();
-                        sendToServerConnection();
-                        connectionToDB(this.currentUser);
-
+                            gererFenetresConnection();
+                            sendToServerConnection();
+                            connectionToDB(this.currentUser);
+                        }else {
+                            JOptionPane.showMessageDialog(null, "Vous êtes déjà connecté sur un autre appareil");
+                        }
                     } else {
                         System.out.println("Connexion refusee, le user est banni");
                         view1.afficherBannissement();
@@ -246,7 +247,7 @@ public class ClientController implements ActionListener {
         view2 = null;
         //On crée la fenetre de base
         try {
-            view1 = new Menu(users, logs, messages);
+            view1 = new Menu(users, logs, messages, C1, C2, C3, C4, C5, C6);
             view1.addAllListener(this);
         } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
@@ -261,7 +262,7 @@ public class ClientController implements ActionListener {
 
     public void infoUser(int i) {
         try {
-            view7 = new InfoUser(users.get(i - 1), currentUser);
+            view7 = new InfoUser(users.get(i - 1), currentUser, C1, C2, C3, C4, C5, C6);
             view7.addAllListener(this);
         } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
@@ -353,7 +354,7 @@ public class ClientController implements ActionListener {
     //-------------------------------------PASSWORD-------------------------------------------
     public void mdpOublie() {
         try {
-            view4 = new NewPassword();
+            view4 = new NewPassword(C1, C2, C3, C4, C5, C6);
             view4.addAllListener(this);
         } catch (IOException | FontFormatException ex) {
             throw new RuntimeException(ex);
@@ -362,12 +363,18 @@ public class ClientController implements ActionListener {
     }
 
     public void newMdp() {
-        currentUser = userDao.findUserName(view4.getTextFieldUserName());
-        currentUser.setPassword(view4.getTextFieldNewPassword());
-        userDao.update(currentUser);
-        currentUser = null;
-        view4.dispose();
-        view4 = null;
+        if (!Objects.equals(view6.getTextField2().getText(), "")) {
+            currentUser = userDao.findUserName(view4.getTextFieldUserName());
+            currentUser.setPassword(sha256(view4.getTextFieldNewPassword()));
+            userDao.update(currentUser);
+            sendToServerChange(currentUser);
+            currentUser = null;
+            view4.dispose();
+            view4 = null;
+        } else {
+            JOptionPane.showMessageDialog(null, "Veuillez entrer un mot de passe", "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
 
     //-----------------------------------STATS------------------------------------------------
@@ -501,25 +508,50 @@ public class ClientController implements ActionListener {
             sendToServerChange(currentUser);
             view6.dispose();
             view6 = null;
+        }else{
+            JOptionPane.showMessageDialog(view6, "Veuillez entrer un mot de passe", "Erreur de changement de mot de passe", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public void resetColors(){
+        C1 = new Color(246, 245, 254);
+        C2 = new Color(251, 108, 122);
+        C3 = new Color( 21,21,21);
+        C4 = new Color(111,35,255);
+        C5 = new Color(128,101,254);
+        C6 = Color.BLACK;
+        view2.dispose();
+        try {
+            view2 = new Home(users, messages, currentUser.getUserName(), C1, C2, C3, C4, C5, C6);
+            view2.addAllListener(this);
+            view2.setVisible(true);
+            view2.setResizable(true);
+            view2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            view2.setLocationRelativeTo(null);
+            view2.repaint();
+        }catch (IOException | FontFormatException ex) {
+            throw new RuntimeException(ex);
+        }
+        view6.dispose();
+        pageSettings();
     }
 
     public void initialColors(){
         if (C1 == null && C2 == null && C3 == null && C4 == null && C5 == null && C6 == null) {
-            C1 = new Color(238, 213, 173);
-            C2 = new Color(147, 185, 175);
-            C3 = new Color( 27,47,46);
-            C4 = new Color(140,56,6);
-            C5 = new Color(183, 90, 25);
-            C6 = Color.WHITE;
+            C1 = new Color(246, 245, 254);
+            C2 = new Color(251, 108, 122);
+            C3 = new Color( 21,21,21);
+            C4 = new Color(111,35,255);
+            C5 = new Color(128,101,254);
+            C6 = Color.BLACK;
         }
     }
     public void setTheme1(){
-        C1 = new Color(0, 0, 173);
-        C2 = new Color(147, 185, 175);
-        C3 = new Color( 27,47,46);
-        C4 = new Color(140,56,6);
-        C5 = Color.WHITE;
+        C1 = new Color(244, 225, 214);
+        C2 = new Color(128, 14, 35);
+        C3 = new Color( 20,38,46);
+        C4 = new Color(37,122,134);
+        C5 = new Color(63, 168, 158);
         C6 = Color.BLACK;
         view2.dispose();
         try {
@@ -538,11 +570,11 @@ public class ClientController implements ActionListener {
     }
 
     public void setTheme2(){
-        C1 = new Color(200, 0, 173);
-        C2 = new Color(147, 185, 175);
-        C3 = new Color( 27,47,46);
-        C4 = new Color(140,56,6);
-        C5 = Color.WHITE;
+        C1 = new Color(254, 232, 199);
+        C2 = new Color(20, 79, 89);
+        C3 = new Color( 1,17,27);
+        C4 = new Color(100, 29, 14);
+        C5 = new Color(251,102,9);
         C6 = Color.BLACK;
         view2.dispose();
         try {
@@ -561,11 +593,11 @@ public class ClientController implements ActionListener {
     }
 
     public void setTheme3(){
-        C1 = new Color(0, 0, 173);
-        C2 = new Color(147, 185, 175);
-        C3 = new Color( 27,47,46);
-        C4 = new Color(140,56,6);
-        C5 = Color.WHITE;
+        C1 = new Color(255, 246, 236);
+        C2 = new Color(248, 146, 17);
+        C3 = Color.BLACK;
+        C4 = new Color(17,24,46);
+        C5 = new Color(102,133,202);
         C6 = Color.BLACK;
         view2.dispose();
         try {
@@ -676,7 +708,10 @@ public class ClientController implements ActionListener {
             case "send" -> send(view2.getTextField().getText());
 
             //Gère l'oublie de mdp
-            case "mdpOublie" -> mdpOublie();
+            case "mdpOublie" -> {
+                initialColors();
+                mdpOublie();
+            }
 
             //Gère les stats
             case "Stats" -> {
@@ -708,6 +743,8 @@ public class ClientController implements ActionListener {
             case "theme2" -> setTheme2();
 
             case "theme3" -> setTheme3();
+
+            case "reset" -> resetColors();
         }
     }
 

@@ -37,8 +37,16 @@ class Client {
         List<Message> messagesModel = messageDao.retrieveMessagesFromDB();
         List<Log> logsModel = logDao.retrieveLogsFromDB();
 
+        // Create initial colors
+        Color C1 = new Color(246, 245, 254);
+        Color C2 = new Color(251, 108, 122);
+        Color C3 = new Color( 21,21,21);
+        Color C4 = new Color(111,35,255);
+        Color C5 = new Color(128,101,254);
+        Color C6 = Color.BLACK;
+
         //Create a view
-        Menu view = new Menu(usersModel, logsModel, messagesModel);
+        Menu view = new Menu(usersModel, logsModel, messagesModel, C1, C2, C3, C4, C5, C6);
 
         //---------------------------------------SERVER PART----------------------------------------------
         Socket socket = new Socket("localhost", 8999);

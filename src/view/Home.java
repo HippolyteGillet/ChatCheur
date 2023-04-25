@@ -428,7 +428,7 @@ public class Home extends JFrame {
                 for (int i = 0; i < nonCurrentUsers.size(); i++) {
                     if (nonCurrentUsers.get(i).getUserName() != null) {
                         if (nonCurrentUsers.get(i).getAccess().equals(User.Access.BANNED)) {
-                            g.setColor(c6);
+                            g.setColor(Color.GRAY);
                             ban.get(i).setVisible(!currentUser.getPermission().equals(User.Permission.USER));
                         } else {
                             g.setColor(c3);
@@ -482,7 +482,7 @@ public class Home extends JFrame {
                 for (User user : userList) {
                     if (user.getUserName() != null && user.getId() != currentUser.getId()) {
                         if (user.getAccess().equals(User.Access.BANNED)) {
-                            g.setColor(c6);
+                            g.setColor(Color.GRAY);
                         } else {
                             switch (user.getState()) {
                                 case ONLINE -> g.setColor(Color.GREEN);
@@ -559,7 +559,7 @@ public class Home extends JFrame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 g.setColor(c2);
-                g.fillRect(0, 630, 350, 170);
+                g.fillRect(0, 630, 350, 200);
                 g.setColor(c3);
                 g.fillRoundRect(90, 650, 160, 50, 50, 50);
                 g.setColor(Color.WHITE);
@@ -569,7 +569,7 @@ public class Home extends JFrame {
             }
         };
         contactPanelFooter.setLayout(null);
-        contactPanelFooter.setBounds(0, 630, 350, 170);
+        contactPanelFooter.setBounds(0, 630, 350, 200);
         add(contactPanelFooter);
         contactPanelFooter.add(stats);
 
