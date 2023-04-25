@@ -3,6 +3,7 @@ package view;
 import controller.ClientController;
 import model.Message;
 import model.user.User;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -23,7 +24,7 @@ public class Home extends JFrame {
     private final JTextField textField;
     private final List<JButton> ban = new ArrayList<>();
     private final List<JButton> info = new ArrayList<>();
-    private final JButton sendButton, imageButton, statusCurrent, logOut, smileyErrorBtn, imageErrorBtn, settings, closing, stats;
+    private final JButton sendButton, imageButton, statusCurrent, logOut, settings, closing, stats;
     private final JScrollPane convScrollPane;
     private final JPanel conversationPanelContent;
     private final int MAXWIDTH = 500;
@@ -53,9 +54,7 @@ public class Home extends JFrame {
                 nonCurrentUsers.add(user);
             }
         }
-        imageErrorBtn = new JButton("ImageIntrouvable");
-        smileyErrorBtn = new JButton("SmileyIntrouvable");
-        y = calculY(messageList);
+        y = calculateY(messageList);
 
         // Format to display the time and date
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
@@ -71,56 +70,28 @@ public class Home extends JFrame {
                 for (int i = messageList.size() - 1; i >= 0; i--) {
                     // if the message is an image
                     if (messageList.get(i).getContent().charAt(0) == '/') {
-                        ImageIcon image = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1));
-                        if (image.getImage().getWidth(null) == -1) {
-                            imageErrorBtn.setActionCommand("ImageIntrouvable");
-                            imageErrorBtn.doClick();
-                        } else {
-                            imageErrorBtn.setActionCommand("send");
-                            int imageIconWidth = image.getIconWidth();
-                            int imageIconHeight = image.getIconHeight();
-                            double ratio = (double) imageIconWidth / (double) imageIconHeight;
-                            if (imageIconWidth > MAXWIDTH) {
-                                imageIconWidth = MAXWIDTH;
-                                imageIconHeight = (int) (imageIconWidth / ratio);
-                            }
-                            if (imageIconHeight > MAXHEIGHT) {
-                                imageIconHeight = MAXHEIGHT;
-                                imageIconWidth = (int) (imageIconHeight * ratio);
-                            }
-                            Image resizedImage = image.getImage().getScaledInstance(imageIconWidth, imageIconHeight, Image.SCALE_SMOOTH);
-                            image = new ImageIcon(resizedImage);
-                            int x;
-                            if (messageList.get(i).getUser_id() != currentUser.getId()) {
-                                x = 50;
-                            } else {
-                                x = 900 - imageIconWidth - 20;
-                            }
-                            g.drawImage(image.getImage(), x + 30, yDraw - (imageIconHeight) + 35, null);
-                            yDraw -= imageIconHeight - 35;
+                        ImageIcon image = new ImageIcon("imgSent/" + messageList.get(i).getContent().substring(1));
+                        int imageIconWidth = image.getIconWidth();
+                        int imageIconHeight = image.getIconHeight();
+                        double ratio = (double) imageIconWidth / (double) imageIconHeight;
+                        if (imageIconWidth > MAXWIDTH) {
+                            imageIconWidth = MAXWIDTH;
+                            imageIconHeight = (int) (imageIconWidth / ratio);
                         }
-                    }
-                    // if the message is a smiley
-                    if (messageList.get(i).getContent().charAt(0) == '$') {
-                        ImageIcon image = new ImageIcon("Smileys/" + messageList.get(i).getContent().substring(1) + ".png");
-                        Image smiley = image.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-                        image = new ImageIcon(smiley);
-                        if (image.getImage().getWidth(null) == -1) {
-                            smileyErrorBtn.setActionCommand("SmileyIntrouvable");
-                            smileyErrorBtn.doClick();
-                        } else {
-                            smileyErrorBtn.setActionCommand("send");
-                            int imageIconWidth = image.getIconWidth();
-                            int imageIconHeight = image.getIconHeight();
-                            int x;
-                            if (messageList.get(i).getUser_id() != currentUser.getId()) {
-                                x = 50;
-                            } else {
-                                x = 900 - imageIconWidth - 20;
-                            }
-                            g.drawImage(image.getImage(), x + 30, yDraw - (imageIconHeight) + 20, null);
-                            yDraw -= imageIconHeight + 20;
+                        if (imageIconHeight > MAXHEIGHT) {
+                            imageIconHeight = MAXHEIGHT;
+                            imageIconWidth = (int) (imageIconHeight * ratio);
                         }
+                        Image resizedImage = image.getImage().getScaledInstance(imageIconWidth, imageIconHeight, Image.SCALE_SMOOTH);
+                        image = new ImageIcon(resizedImage);
+                        int x;
+                        if (messageList.get(i).getUser_id() != currentUser.getId()) {
+                            x = 50;
+                        } else {
+                            x = 900 - imageIconWidth - 20;
+                        }
+                        g.drawImage(image.getImage(), x + 30, yDraw - (imageIconHeight) + 35, null);
+                        yDraw -= imageIconHeight - 35;
                     }
                     // Calculation of the position of the message
                     int x, xTime, yTime;
@@ -139,7 +110,7 @@ public class Home extends JFrame {
                     } else {
                         // If the message is an image
                         if (messageList.get(i).getContent().charAt(0) == '/') {
-                            ImageIcon image = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1));
+                            ImageIcon image = new ImageIcon("imgSent/" + messageList.get(i).getContent().substring(1));
                             int imageIconWidth = image.getIconWidth();
                             int imageIconHeight = image.getIconHeight();
                             double ratio = (double) imageIconWidth / (double) imageIconHeight;
@@ -153,7 +124,6 @@ public class Home extends JFrame {
                             }
                             Image resizedImage = image.getImage().getScaledInstance(imageIconWidth, imageIconHeight, Image.SCALE_SMOOTH);
                             image = new ImageIcon(resizedImage);
-
                             x = 900 - image.getIconWidth();
                         } else {
                             x = 900 - textWidth - 20;
@@ -166,7 +136,6 @@ public class Home extends JFrame {
                     int height = textHeight + 10;
 
                     // Next, we draw the message
-
                     // if the message is a text
                     if (!messageList.isEmpty()) {
                         LocalDateTime time = messageList.get(i).getLocalDateTime();
@@ -372,6 +341,7 @@ public class Home extends JFrame {
                     textField.setForeground(Color.BLACK);
                 }
             }
+
             @Override
             public void focusLost(FocusEvent e) {
                 if (textField.getText().isEmpty()) {
@@ -496,13 +466,13 @@ public class Home extends JFrame {
                 // We draw the status for each user
                 for (User status : userList) {
                     if (status.getState() != null && status.getId() != currentUser.getId()) {
-                        String statu = "";
+                        String newStatus = "";
                         switch (status.getState()) {
-                            case ONLINE -> statu = "Online";
-                            case OFFLINE -> statu = "Offline";
-                            case AWAY -> statu = "Away";
+                            case ONLINE -> newStatus = "Online";
+                            case OFFLINE -> newStatus = "Offline";
+                            case AWAY -> newStatus = "Away";
                         }
-                        g.drawString(statu, 25, y2);
+                        g.drawString(newStatus, 25, y2);
                         y2 += 90;
                     }
                 }
@@ -691,17 +661,15 @@ public class Home extends JFrame {
         }
         this.sendButton.addActionListener(controller);
         this.imageButton.addActionListener(controller);
-        this.smileyErrorBtn.addActionListener(controller);
-        this.imageErrorBtn.addActionListener(controller);
         if (currentUser.getPermission() == User.Permission.ADMINISTRATOR) this.stats.addActionListener(controller);
         this.settings.addActionListener(controller);
         statusCurrent.addActionListener(controller);
         this.closing.addActionListener(controller);
     }
 
-    public int calculY(List<Message> messageList) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm"); // Format d'affichage pour l'heure
-        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Format d'affichage pour la date
+    public int calculateY(List<Message> messageList) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         int y = 0;
         for (int i = 0; i < messageList.size(); i++) {
             if (i < messageList.size() - 1) {
@@ -710,11 +678,9 @@ public class Home extends JFrame {
                 LocalDateTime time = messageList.get(i).getLocalDateTime();
                 String formattedTime = time.format(formatter);
                 String formattedDate = time.format(formatter2);
-
                 if (messageList.get(i).getContent().charAt(0) == '$') {
                     y += 60;
                 }
-
                 if (formattedTime.equals(formattedPreviousTime) && messageList.get(i + 1).getUser_id() == messageList.get(i).getUser_id()) {
                     y += 53;
                 } else {
@@ -727,7 +693,7 @@ public class Home extends JFrame {
                 y += 90;
             }
             if (messageList.get(i).getContent().charAt(0) == '/') {
-                ImageIcon imageSent = new ImageIcon("imageEnvoyees/" + messageList.get(i).getContent().substring(1));
+                ImageIcon imageSent = new ImageIcon("imgSent/" + messageList.get(i).getContent().substring(1));
                 int imageIconWidth = imageSent.getIconWidth();
                 int imageIconHeight = imageSent.getIconHeight();
                 double ratio = (double) imageIconWidth / (double) imageIconHeight;

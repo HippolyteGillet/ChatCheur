@@ -46,7 +46,7 @@ class Client {
         Color C6 = Color.BLACK;
 
         //Create a view
-        Menu view = new Menu(usersModel, logsModel, messagesModel, C1, C2, C3, C4, C5, C6);
+        Menu view = new Menu(C1, C2, C3, C4, C5, C6);
 
         //---------------------------------------SERVER PART----------------------------------------------
         Socket socket = new Socket("localhost", 8999);

@@ -9,14 +9,17 @@ import java.io.File;
 import java.io.IOException;
 
 public class InfoUser extends JDialog {
-    private JComboBox<String> comboBox;
-    private User selectedUser;
+    private final JComboBox<String> comboBox;
+    private final User selectedUser;
     public InfoUser(User user, User currentUser, Color c1, Color c2, Color c3, Color c4, Color c5, Color c6) throws IOException, FontFormatException {
+        // Initialize the JDialog
         selectedUser = user;
         setBounds(500, 150, 600, 600);
         setResizable(false);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File("Avenir Next.ttc")).deriveFont(25f);
+
+        // Create the JPanel and add it to the JDialog
         JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -33,10 +36,10 @@ public class InfoUser extends JDialog {
                 g.fillRoundRect(315, 360, 250, 80, 80, 80);
                 g.setColor(Color.WHITE);
                 g.setFont(customFont.deriveFont(30f));
-                g.drawString("Nom", 125, 180);
-                g.drawString("Prénom", 380, 180);
+                g.drawString("Fist Name", 90, 180);
+                g.drawString("Last Name", 370, 180);
                 g.drawString("Pseudo", 110, 350);
-                g.drawString("Role", 410, 350);
+                g.drawString("Access", 395, 350);
 
                 g.setColor(Color.WHITE);
                 g.setFont(customFont.deriveFont(25f));
@@ -56,6 +59,7 @@ public class InfoUser extends JDialog {
         panel.setBackground(c2);
         panel.setLayout(null);
 
+        // ComboBox to change the role of the user if the current user is an administrator
         String[] options = {"ADMINISTRATOR", "MODERATOR", "USER"};
         comboBox = new JComboBox<>(options);
         comboBox.setBounds(350, 372, 200, 50);
@@ -66,7 +70,6 @@ public class InfoUser extends JDialog {
         comboBox.setSelectedItem(user.getPermission().name());
         comboBox.setActionCommand("newRole");
         panel.add(comboBox);
-
         if(!currentUser.getPermission().equals(User.Permission.ADMINISTRATOR)){
             comboBox.setVisible(false);
         }
