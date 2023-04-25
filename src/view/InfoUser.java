@@ -1,6 +1,5 @@
 package view;
 
-import DAO.UserDao;
 import controller.ClientController;
 import model.user.User;
 
@@ -13,7 +12,6 @@ public class InfoUser extends JDialog {
     private JComboBox<String> comboBox;
     private User selectedUser;
     public InfoUser(User user, User currentUser, Color c1, Color c2, Color c3, Color c4, Color c5, Color c6) throws IOException, FontFormatException {
-        UserDao userDao = new UserDao();
         selectedUser = user;
         setBounds(500, 150, 600, 600);
         setResizable(false);
