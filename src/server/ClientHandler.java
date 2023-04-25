@@ -123,6 +123,9 @@ public class ClientHandler extends Thread {
         controller.getUsers().get(Integer.parseInt(newUser[0]) - 1).setPassword(newUser[2]);
         controller.getUsers().get(Integer.parseInt(newUser[0]) - 1).setState(User.State.valueOf(newUser[8]));
         controller.getUsers().get(Integer.parseInt(newUser[0]) - 1).setAccess(User.Access.valueOf(newUser[7]));
+        if (User.Access.valueOf(newUser[7]).equals(User.Access.BANNED)) {
+            controller.getUsers().get(Integer.parseInt(newUser[0]) - 1).setState(User.State.OFFLINE);
+        }
 
         if (controller.getCurrentUser() != null) {
             if (controller.getCurrentUser().getId() == (Integer.parseInt(newUser[0])) && newUser[7].equals("BANNED")) {
