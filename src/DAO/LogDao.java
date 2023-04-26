@@ -1,8 +1,6 @@
 package DAO;
 
 import model.Log;
-import model.Message;
-import model.user.User;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -12,7 +10,6 @@ import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class LogDao implements DAO<Log> {
 
